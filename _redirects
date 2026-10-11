@@ -1,3 +1,7 @@
+# Send the old Netlify address to the custom domain.
+https://lamng3.netlify.app/*  https://lamng3.com/:splat  301!
+http://lamng3.netlify.app/*  https://lamng3.com/:splat  301!
+
 /blog/2026/segment-tree-nodes-dynamic-sparse/  /blog/range-queries/#segment-tree  301
 /blog/2026/segment-tree-walk-amortized-allocation/  /blog/range-queries/#segment-tree-walk  301
 /blog/2026/coordinate-compression-fenwick-ranks/  /blog/range-queries/#fenwick-tree  301
