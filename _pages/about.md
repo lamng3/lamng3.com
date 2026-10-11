@@ -27,7 +27,7 @@ description: >-
 <section id="experiences">
   <h2>Experiences</h2>
   <ul class="post-list">
-    <li><span><strong>Center for Materials Data Science</strong> · Machine Learning Researcher, <a href="https://mds3-coe.com/">AI for Scientific Discovery</a></span><time>2026</time></li>
+    <li><span><strong>Center for Materials Data Science</strong> · Researcher, <a href="https://mds3-coe.com/">AI for Scientific Discovery</a></span><time>2026</time></li>
     <li><span><strong>Microsoft</strong> · Software Engineer, <a href="https://www.microsoft.com/en-us/security/business/security-101/what-is-agentic-ai-security">Agentic Security</a></span><time>2025</time></li>
     <li><span><strong>Microsoft</strong> · Software Engineer Intern, <a href="https://www.microsoft.com/en-us/security/business/ai-machine-learning/microsoft-security-copilot">Security Copilot</a></span><time>2024</time></li>
     <li><span><strong>Amazon</strong> · Software Engineer Intern, <a href="https://developer.amazon.com/en-US/alexa">Alexa Voice AI</a></span><time>2023</time></li>
