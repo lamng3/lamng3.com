@@ -51,6 +51,12 @@ description: >-
       <a href="https://github.com/lamng3/kroma">[Code]</a>
     </li>
     <li>
+      <span class="authors">L. Nguyen.</span>
+      <span class="ptitle">Hermes: Verified Query Planning over the SPARQL Algebra with Language Agents.</span>
+      <a href="https://github.com/lamng3/hermes/blob/master/paper/hermes.pdf">[Paper]</a>
+      <a href="https://github.com/lamng3/hermes">[Code]</a>
+    </li>
+    <li>
       <span class="authors">R. Kundu, R. Mehdi, V. D. Tran, E. Frakes, A. Daundkar, M. Sumudumalie, V. S. Mandayam, J. A. Lample, M. Li, L. S. Bruckman, E. I. Barcelos, A. Sehirlioglu, R. H. French, and Y. Wu.</span>
       <span class="ptitle">OntoCheck: Query-Driven Ontology Assessments for Scientific Domain Applications.</span>
       <a href="https://github.com/cwru-sdle/OntoCheck/blob/main/SupplementaryMaterials/2605-KunduMehdiTran-OntoCheck-SupplementaryMaterial.pdf">[Paper]</a>
@@ -71,10 +77,6 @@ description: >-
     <li>
       <p class="title"><a href="https://github.com/lamng3/OntoDB">OntoDB</a><span class="meta">: Database management system for ontologies. RDF storage, SPARQL queries, B+ tree indexes, and ARIES recovery</span></p>
       <p class="links-inline"><a href="https://github.com/lamng3/OntoDB">Repository</a> · <a href="https://lamng3.github.io/ontodb-docs/">Documentation</a></p>
-    </li>
-    <li>
-      <p class="title"><a href="https://github.com/lamng3/hermes">Hermes</a><span class="meta">: Natural language to SPARQL over ontologies</span></p>
-      <p class="links-inline"><a href="https://github.com/lamng3/hermes">Repository</a> · <a href="https://lamng3.github.io/hermes-docs/">Documentation</a></p>
     </li>
   </ul>
 </section>
