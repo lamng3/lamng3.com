@@ -12,7 +12,7 @@ description: >-
   <nav class="links" aria-label="Profiles">
     <a href="https://github.com/lamng3">GitHub</a>
     <a href="https://scholar.google.com/citations?user=ws80Q0IAAAAJ">Scholar</a>
-    <a href="https://leetcode.com/u/triplethread/">LeetCode</a>
+    <a href="https://leetcode.com/u/lamng3/">LeetCode</a>
   </nav>
 </header>
 
@@ -28,7 +28,7 @@ description: >-
     <div class="layer"><span class="name">Integration</span><span class="role"><a href="https://arxiv.org/abs/2507.14032">KROMA</a>: retrieval-grounded ontology matching</span></div>
     <div class="layer"><span class="name">Database</span><span class="role"><a href="https://github.com/lamng3/OntoDB">OntoDB</a>: database management system for ontologies</span></div>
   </figure>
-  <p>Before this I trained competitive programming, reaching the top 1.26% in <a href="https://leetcode.com/u/triplethread/">LeetCode contests</a> with 1000+ problems solved, and I still find data structures and algorithms a useful lens for thinking about agentic memory.</p>
+  <p>Before this I trained competitive programming, reaching the top 1.26% in <a href="https://leetcode.com/u/lamng3/">LeetCode contests</a> with 1000+ problems solved, and I still find data structures and algorithms a useful lens for thinking about agentic memory.</p>
   <p>Reaching me is O(log log log n), practically a constant. Please feel free to reach out at lamng3.work [at] gmail [dot] com if you'd like to talk about any of the above.</p>
 </section>
 
