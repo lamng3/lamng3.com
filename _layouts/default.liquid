@@ -32,12 +32,24 @@
           {% endif %}
           >Blog</a
         >
+        {% if page.url contains '/blog/' and page.url != '/blog/' %}
+          <button class="nav-search" type="button" data-search-open aria-label="Search the blog">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5 21 21" />
+            </svg>
+            <span>Search</span>
+            <kbd class="search-shortcut">⌘K</kbd>
+          </button>
+        {% endif %}
       </nav>
       {{ content }}
       <footer>
         <p>© {{ site.time | date: '%Y' }} Lam Nguyen</p>
       </footer>
     </main>
+    {% if page.url contains '/blog/' %}
+      {% include search.liquid %}
+    {% endif %}
     {% if page.toc %}
       <script defer src="{{ '/assets/js/toc.js' | relative_url }}"></script>
     {% endif %}
