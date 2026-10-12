@@ -10,6 +10,14 @@ description: Study notes on algorithms, data structures, and the systems built o
   <p class="lede">Study notes on algorithms, data structures, and the systems built on them, and where they turn up again in agentic memory.</p>
 </header>
 
+<div class="search-wrap">
+  <button class="search-field" type="button" data-search-open aria-label="Search the blog">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5 21 21" /></svg>
+    <span class="search-field-text">Search techniques, problems, keywords…</span>
+    <kbd class="search-shortcut">⌘K</kbd>
+  </button>
+</div>
+
 <ul class="post-list">
   {% for topic in site.data.topics %}
     {% assign topic_url = '/blog/' | append: topic.slug | append: '/' %}

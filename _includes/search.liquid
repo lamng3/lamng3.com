@@ -1,0 +1,50 @@
+<div class="spotlight" id="spotlight" hidden>
+  <div class="spotlight-backdrop" data-search-close></div>
+  <div class="spotlight-panel" role="dialog" aria-modal="true" aria-label="Search the blog">
+    <div class="spotlight-bar">
+      <svg class="spotlight-glass" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="10.5" cy="10.5" r="6.5" />
+        <path d="M15.5 15.5 21 21" />
+      </svg>
+      <input
+        class="spotlight-input"
+        type="search"
+        placeholder="Search notes"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+        enterkeyhint="go"
+        role="combobox"
+        aria-expanded="true"
+        aria-controls="spotlight-list"
+        aria-autocomplete="list"
+      >
+      <kbd class="spotlight-esc" data-search-close>esc</kbd>
+    </div>
+    <div class="spotlight-body">
+      <div class="spotlight-list" id="spotlight-list" role="listbox" aria-label="Results"></div>
+      <div class="spotlight-preview" aria-live="polite"></div>
+    </div>
+    <div class="spotlight-hints" aria-hidden="true">
+      <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+      <span><kbd>↵</kbd> open</span>
+      <span><kbd class="mod-key">⌘</kbd><kbd>↵</kbd> new tab</span>
+      <span><kbd>esc</kbd> close</span>
+    </div>
+  </div>
+</div>
+<script type="application/json" id="search-data">
+  {
+    "build": {{ site.time | date: '%s' | jsonify }},
+    "topics": [
+      {%- for topic in site.data.topics -%}
+        {%- assign topic_url = '/blog/' | append: topic.slug | append: '/' -%}
+        {%- assign topic_page = site.pages | where: 'url', topic_url | first -%}
+        { "title": {{ topic.title | jsonify }}, "url": {{ topic_url | relative_url | jsonify }}, "desc": {{ topic_page.description | jsonify }} }
+        {%- unless forloop.last %},{% endunless -%}
+      {%- endfor -%}
+    ]
+  }
+</script>
+<script defer src="{{ '/assets/js/search.js' | relative_url }}"></script>
