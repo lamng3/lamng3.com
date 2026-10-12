@@ -1,6 +1,8 @@
 - slug: contest-setup
   title: Contest Setup
-  sections: []
+  sections:
+  - id: python-templates
+    title: From Java to C++ to Python
 - slug: binary-search
   title: Binary Search
   sections:
