@@ -141,7 +141,19 @@ def _walk(self, path):
 
 Everything in [LeetCode 588](https://leetcode.com/problems/design-in-memory-file-system/) is then one walk plus one line. `mkdir` is the walk itself. `addContentToFile` walks to the file, creating its parents if needed, and appends to `content`. `readContentFromFile` returns it. `ls` on a directory returns `sorted(node.children)`, and `ls` on a file returns just its own name. [`FileSystem.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/strings/trie/FileSystem.py) is the whole class.
 
-A creating walk is only right when the operation is allowed to create. [LeetCode 1166](https://leetcode.com/problems/design-file-system/) refuses to create a path whose parent is missing, so it has to walk the parent with `.get` and fail on `None`, the same rule as `search` above. [`1166.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/leetcode/solve/trie/1166.py) does exactly that, and its only `[]` is the line that creates the new node. Questions about whole folders are DFS over this tree too. [LeetCode 1948](https://leetcode.com/problems/delete-duplicate-folders-in-system/) builds the same trie from a list of paths, then fingerprints each subtree bottom-up to find identical folders. That second half is [Merkle-style hashing](/blog/hashing/#xor-hashing).
+A creating walk is only right when the operation is allowed to create. [LeetCode 1166](https://leetcode.com/problems/design-file-system/) refuses to create a path whose parent is missing, so it has to walk the parent with `.get` and fail on `None`, the same rule as `search` above.
+
+It is easy to copy the walk from 588 and add an `if node is None: return None` check, but that check can never fire, because `node.children[name]` always returns a node. The walk creates every path it was only meant to look up, and the answers go wrong in two ways:
+
+```python
+fs.createPath("/c/d", 1)  # True, should be False: the walk just created /c
+fs.get("/x")              # -1, and /x now exists as an empty node
+fs.createPath("/x", 5)    # False, should be True: "x" is already a child
+```
+
+Reading with `node.children.get(name)` fixes both. In [`1166.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/leetcode/solve/trie/1166.py), the only `[]` left is the line that creates the new node.
+
+Questions about whole folders are DFS over this tree too. [LeetCode 1948](https://leetcode.com/problems/delete-duplicate-folders-in-system/) builds the same trie from a list of paths, then fingerprints each subtree bottom-up to find identical folders. That second half is [Merkle-style hashing](/blog/hashing/#xor-hashing).
 
 ## From the Notebook {#notebook}
 
