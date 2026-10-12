@@ -3,7 +3,7 @@ layout: post
 title: "Selected LeetCode Problems"
 description: "A running, hand-picked list of LeetCode problems I found interesting, each tagged with the topic or technique it exercises. A companion index to the technique write-ups on this blog."
 permalink: /blog/selected-leetcode-problems/
-last_updated: 2026-10-09
+last_updated: 2026-10-11
 author: Lam Nguyen
 toc:
   sidebar: right
@@ -36,3 +36,5 @@ A running list of LeetCode problems worth remembering, each labeled with the top
 | [400 — Nth Digit](https://leetcode.com/problems/nth-digit/) | [Digit Counting](/blog/combinatorics/#digit-counting) |
 | [4053 — Minimum Operations to Make Every Element Palindromic](https://leetcode.com/problems/minimum-operations-to-make-every-element-palindromic/) | [Precompute, Binary Search](/blog/data-structure-design/#static-precompute) |
 | [3357 — Minimize the Maximum Adjacent Element Difference](https://leetcode.com/problems/minimize-the-maximum-adjacent-element-difference/) | [Binary Search on the Answer](/blog/binary-search/#search-d-not-x) |
+| [211 — Design Add and Search Words Data Structure](https://leetcode.com/problems/design-add-and-search-words-data-structure/) | [Trie, DFS](/blog/strings/#trie) |
+| [588 — Design In-Memory File System](https://leetcode.com/problems/design-in-memory-file-system/) | [Trie over Path Names](/blog/strings/#trie-file-system) |
