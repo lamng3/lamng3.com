@@ -42,7 +42,9 @@
     title: XOR Hashing
 - slug: strings
   title: Strings
-  sections: []
+  sections:
+  - id: trie
+    title: Trie
 - slug: graphs-and-trees
   title: Graphs and Trees
   sections:
