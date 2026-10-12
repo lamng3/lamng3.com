@@ -661,7 +661,7 @@ int main() {
 
 Implementations from my [competitive programming notebook](https://github.com/lamng3/competitive-programming-notebook), tagged with their [USACO Guide](https://usaco.guide/) level where they have one.
 
-- **Dynamic programming** (gold). [`3418.cpp`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/examples/dynamic_programming/3418.cpp): One DP writeup. [`usaco/dp/`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/usaco/dp): DP solutions. [`dp_on_tree/`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/leetcode/solve/dp_on_tree): Tree DP solutions. [`lis/`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/leetcode/solve/lis): Longest increasing subsequence.
+- **Dynamic programming** (gold). [`3418.cpp`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/examples/dynamic_programming/3418.cpp): One DP writeup. [`usaco/dp/`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/usaco/dp): DP solutions. [`dp_on_tree/`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/leetcode/solve/dp_on_tree): Tree DP solutions. [`lis/`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/leetcode/solve/lis): Longest increasing subsequence. [`DigitDP.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/dynamic_programming/digit_dp/DigitDP.py): A generic digit DP in Python: pass a start state, a `step`, and an `accept`.
 
 ## Practice {#practice}
 

@@ -261,6 +261,12 @@ public:
 
 A couple of notes on the code. `mn` and `mx` are the $$m$$ and $$M$$ from above, and `x`, `y` inside `can` are the forced pair for that $$D$$. A run is found by remembering where it started in `L` and processing it once the next entry is not $$-1$$. Everything stays `int`: $$D \le 10^9$$ and $$m \le 10^9$$, so $$m + D \le 2 \cdot 10^9$$, still under `INT_MAX`.
 
+## From the Notebook {#notebook}
+
+Implementations from my [competitive programming notebook](https://github.com/lamng3/competitive-programming-notebook), tagged with their [USACO Guide](https://usaco.guide/) level where they have one.
+
+- **Binary search** (silver). [`BinarySearch.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/searching/binary_search/BinarySearch.py): `first_true` and `last_true` over a monotone check, written with `left <= right` and a separate `ans`, and a real-valued version.
+
 ## Practice {#practice}
 
 **Search D, Not x**
