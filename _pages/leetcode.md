@@ -3,7 +3,7 @@ layout: post
 title: "Selected LeetCode Problems"
 description: "A running, hand-picked list of LeetCode problems I found interesting, each tagged with the topic or technique it exercises. A companion index to the technique write-ups on this blog."
 permalink: /blog/selected-leetcode-problems/
-last_updated: 2026-10-13
+last_updated: 2026-10-14
 author: Lam Nguyen
 toc:
   sidebar: right
@@ -39,3 +39,4 @@ A running list of LeetCode problems worth remembering, each labeled with the top
 | [211 — Design Add and Search Words Data Structure](https://leetcode.com/problems/design-add-and-search-words-data-structure/) | [Trie, DFS](/blog/strings/#trie) |
 | [588 — Design In-Memory File System](https://leetcode.com/problems/design-in-memory-file-system/) | [Trie over Path Names](/blog/strings/#trie-file-system) |
 | [308 — Range Sum Query 2D - Mutable](https://leetcode.com/problems/range-sum-query-2d-mutable/) | [Quadtree](/blog/databases/#quadtree-308) |
+| [427 — Construct Quad Tree](https://leetcode.com/problems/construct-quad-tree/) | [Region Quadtree](/blog/databases/#quadtree-427) |
