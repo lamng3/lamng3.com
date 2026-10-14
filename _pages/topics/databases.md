@@ -674,6 +674,36 @@ $$
 
 so this query costs $$O(n)$$, no better than scanning the row. In general a query costs about its perimeter, not $$O(\log n)$$. If all you need is rectangle sums with point updates on a dense grid, a 2D [Fenwick tree](/blog/range-queries/#fenwick-tree) (a Fenwick tree of Fenwick trees) does both in $$O(\log n \log m)$$ with less code.
 
+### Worked example: LeetCode 308 {#quadtree-308}
+
+[LeetCode 308 — Range Sum Query 2D - Mutable](https://leetcode.com/problems/range-sum-query-2d-mutable/) asks for exactly this: a matrix of at most $$200 \times 200$$, and up to $$5000$$ calls mixing `update(row, col, val)` and `sumRegion(row1, col1, row2, col2)`. The rectangle is inclusive on both corners, which is the convention `query` already uses, so the solution is the tree plus a thin wrapper:
+
+```python
+class NumMatrix:
+
+    def __init__(self, matrix: list[list[int]]):
+        self.quadtree = QuadTree(matrix)
+
+    def update(self, row: int, col: int, val: int) -> None:
+        self.quadtree.update(row, col, val)
+
+    def sumRegion(self, row1: int, col1: int, row2: int, col2: int) -> int:
+        return self.quadtree.query(row1, col1, row2, col2)
+```
+
+On the sample, `sumRegion(2, 1, 4, 3)` returns $$8$$, and after `update(3, 2, 2)` it returns $$10$$.
+
+The constraints are also a good place to see the perimeter cost from the previous section. I counted the nodes `query` visits on a $$200 \times 200$$ grid:
+
+| Query | Nodes visited |
+| --- | --- |
+| the whole grid | $$1$$ |
+| one full row, `(100, 0, 100, 199)` | $$909$$ |
+| the whole grid minus its border, `(1, 1, 198, 198)` | $$2717$$ |
+| worst of $$3000$$ random rectangles | $$2841$$ |
+
+The whole grid is one stored sum, but shaving a single cell off each side puts the boundary through every level of the tree, and the cost jumps by three orders of magnitude. An update visits $$33$$ nodes. So the worst case is about $$5000 \times 2800 \approx 1.4 \times 10^7$$ node visits, small enough to pass in Python, though a 2D Fenwick tree answers each query with four prefix sums of about $$8 \times 8$$ steps, roughly $$256$$ in all. The full solution is [`308.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/leetcode/solve/quadtree/308.py).
+
 ### So why a quadtree?
 
 Because the structure above is the dense version, a full tree down to every cell. The quadtree's real strength is that **it does not have to be full**. Split a square only while it holds more than a few points (a point-region quadtree), or only while its cells are not all equal (a region quadtree), and the tree's size follows the data instead of the grid. Empty ocean on a map, or a solid block in an image, is one leaf. A 2D Fenwick tree cannot do that: it allocates every cell up front.
@@ -723,7 +753,7 @@ Implementations from my [competitive programming notebook](https://github.com/la
 - **Filters** (advanced). [`bloomfilter.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/data_structures/bloomfilter.h): Bloom filter. [`BloomFilter.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/BloomFilter.py): The same filter in Python. [`countminsketch.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/data_structures/countminsketch.h): Count-min sketch with seeded hashes, merge, and top k. [`CountMinSketch.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/CountMinSketch.py): The same sketch in Python. [`cuckoofilter.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/data_structures/cuckoofilter.h): Cuckoo filter with fingerprints, kicks, and deletes. [`CuckooFilter.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/CuckooFilter.py): The same filter in Python.
 - **Hash** (advanced). [`hash.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/data_structures/utils/hash.h): String hashes, mixers, and a rolling hash. [`hash.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/utils/hash.py): The string hashes in Python.
 - **Skip list** (advanced). [`skiplist.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/data_structures/skiplist.h): Skip list. [`Skiplist.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/Skiplist.py): The same structure in Python.
-- **Quadtree**. [`QuadTree.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/QuadTree.py): Rectangle sums with point updates on a grid.
+- **Quadtree**. [`QuadTree.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/QuadTree.py): Rectangle sums with point updates on a grid. [`308.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/leetcode/solve/quadtree/308.py): LeetCode 308 with the quadtree.
 - **Caches** (advanced). [`fifo.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/eviction/fifo.h): FIFO eviction. [`lru.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/eviction/lru.h): LRU eviction. [`lfu.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/eviction/lfu.h): LFU eviction. [`lru-2q.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/eviction/lru-2q.h): LRU-2Q eviction.
 
 ## Practice {#practice}
@@ -750,7 +780,7 @@ All take an edge list and need real traversal over the adjacency — topological
 
 - [LeetCode 427 — Construct Quad Tree](https://leetcode.com/problems/construct-quad-tree/) (region quadtree)
 - [LeetCode 558 — Logical OR of Two Binary Grids Represented as Quad-Trees](https://leetcode.com/problems/logical-or-of-two-binary-grids-represented-as-quad-trees/)
-- [LeetCode 308 — Range Sum Query 2D - Mutable](https://leetcode.com/problems/range-sum-query-2d-mutable/) (rectangle sums with point updates)
+- [LeetCode 308 — Range Sum Query 2D - Mutable](https://leetcode.com/problems/range-sum-query-2d-mutable/) (rectangle sums with point updates, [worked above](#quadtree-308))
 
 **Cache Eviction**
 
