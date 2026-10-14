@@ -3,7 +3,7 @@ layout: post
 title: "Databases"
 description: "Ideas from competitive programming that show up inside database systems: keeping old versions around (persistence, MVCC, copy-on-write B-trees), laying sparse data out for fast scans (compressed sparse row), answering membership in little memory (filters and sketches), keeping a sorted table in memory (skip lists), summing over rectangles of a grid (quadtrees), and deciding what stays in a full cache (eviction)."
 permalink: /blog/databases/
-last_updated: 2026-10-13
+last_updated: 2026-10-14
 author: Lam Nguyen
 toc:
   sidebar: right
@@ -662,6 +662,8 @@ class QuadTree:
 
 One Python detail: the default argument is resolved with `if node is None`, not `node = node or self.root`. The `or` form works only as long as every `Node` is truthy. Give `Node` a `__len__` one day, and a leaf with no children becomes falsy, so the recursion silently restarts from the root.
 
+My implementation is [`QuadTree.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/QuadTree.py), and [`test_quadtree.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/tests/test_quadtree.py) checks it against a brute-force sum on random grids up to $$9 \times 9$$, including single rows, single columns, and sizes that are not powers of two.
+
 ### The catch: queries are not logarithmic
 
 In 1D, a query range has two ends, so at most two nodes per level are cut partially, which gives $$O(\log n)$$. In 2D a rectangle has a **perimeter**, and every node its boundary passes through is cut partially.
@@ -710,7 +712,57 @@ Because the structure above is the dense version, a full tree down to every cell
 
 The descent also has a name you have likely seen. Number the quadrants $$0$$ to $$3$$ and write down the path from the root to a cell: that string is a **quadkey**. Bing Maps names its map tiles this way, and a geohash is the same idea, interleaving the bits of longitude and latitude. Two cells that share a long prefix are close, which turns a 2D lookup into a prefix search on a 1D key, and a 1D key is something a B-tree or a sorted table already indexes well. MongoDB's legacy `2d` index stores geohashes for this reason.
 
-My implementation is [`QuadTree.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/QuadTree.py), and [`test_quadtree.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/tests/test_quadtree.py) checks it against a brute-force sum on random grids up to $$9 \times 9$$, including single rows, single columns, and sizes that are not powers of two.
+### Worked example: LeetCode 427, where the node forgets its region {#quadtree-427}
+
+[LeetCode 427 — Construct Quad Tree](https://leetcode.com/problems/construct-quad-tree/) builds exactly this sparse kind of tree. Given an $$n \times n$$ grid of $$0$$s and $$1$$s, with $$n = 2^x$$, return a quadtree in which every leaf is a square of one value, and a square is split only when its cells differ.
+
+The node is not the one from `QuadTree.py`. It has no coordinates and no list of children, only a value, a leaf flag, and four **named** children:
+
+```python
+class Node:
+    def __init__(self, val, isLeaf, topLeft, topRight, bottomLeft, bottomRight):
+        ...
+```
+
+So where did the region go? In LeetCode 308 every node stores its rectangle `(r0, c0, r1, c1)`, because `query` compares that rectangle against an arbitrary query rectangle long after the tree is built. Here nothing is ever asked by coordinate. The region is needed only while building, so it lives in the **scope of the recursive call**: `build(r0, c0, r1, c1)` knows its square from its arguments, hands each quarter to a child call, and returns a node that does not need to remember any of it. Where a child sits relative to its parent is carried by which field holds it.
+
+The guarantee $$n = 2^x$$ is what makes four fixed fields enough. Every split of a $$2^k \times 2^k$$ square gives four non-empty $$2^{k-1} \times 2^{k-1}$$ squares, so the empty-quadrant check from the rectangle sums version disappears, and `topLeft` through `bottomRight` are always filled.
+
+<details markdown="1">
+<summary>Python implementation</summary>
+
+```python
+class QuadTree:
+    def __init__(self, grid: List[List[int]]):
+        self.g = grid
+        self.root = self.build(0, 0, len(grid) - 1, len(grid[0]) - 1)
+
+    def build(self, r0, c0, r1, c1):
+        if r0 == r1 and c0 == c1:
+            return Node(self.g[r0][c0] == 1, True, None, None, None, None)
+
+        rm, cm = (r0 + r1) // 2, (c0 + c1) // 2
+        tl = self.build(r0, c0, rm, cm)
+        tr = self.build(r0, cm + 1, rm, c1)
+        bl = self.build(rm + 1, c0, r1, cm)
+        br = self.build(rm + 1, cm + 1, r1, c1)
+
+        # merge when 4 identical leaves
+        if tl.isLeaf and tr.isLeaf and bl.isLeaf and br.isLeaf and tl.val == tr.val == bl.val == br.val:
+            return Node(tl.val, True, None, None, None, None)
+        return Node(False, False, tl, tr, bl, br)
+
+
+class Solution:
+    def construct(self, grid: List[List[int]]) -> 'Node':
+        return QuadTree(grid).root
+```
+
+</details>
+
+The merge rule is the interesting line. Build bottom-up, and collapse a node into one leaf when its four children are leaves holding the same value. Why is it enough to look only at the children? By induction, every child returned is already merged as far as it can go, so a child whose square is all one value **is** a leaf. A square is all one value exactly when its four quarters are each all one value, and the same one, so the check is complete. The first instinct, checking "is this square uniform?" by scanning it at every node, rescans each cell once per level and costs $$O(n^2 \log n)$$; merging bottom-up looks at each cell once, $$O(n^2)$$.
+
+The full solution is [`427.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/leetcode/solve/quadtree/427.py).
 
 ## Cache Eviction {#cache-eviction}
 
@@ -753,7 +805,7 @@ Implementations from my [competitive programming notebook](https://github.com/la
 - **Filters** (advanced). [`bloomfilter.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/data_structures/bloomfilter.h): Bloom filter. [`BloomFilter.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/BloomFilter.py): The same filter in Python. [`countminsketch.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/data_structures/countminsketch.h): Count-min sketch with seeded hashes, merge, and top k. [`CountMinSketch.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/CountMinSketch.py): The same sketch in Python. [`cuckoofilter.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/data_structures/cuckoofilter.h): Cuckoo filter with fingerprints, kicks, and deletes. [`CuckooFilter.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/CuckooFilter.py): The same filter in Python.
 - **Hash** (advanced). [`hash.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/data_structures/utils/hash.h): String hashes, mixers, and a rolling hash. [`hash.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/utils/hash.py): The string hashes in Python.
 - **Skip list** (advanced). [`skiplist.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/data_structures/skiplist.h): Skip list. [`Skiplist.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/Skiplist.py): The same structure in Python.
-- **Quadtree**. [`QuadTree.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/QuadTree.py): Rectangle sums with point updates on a grid. [`308.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/leetcode/solve/quadtree/308.py): LeetCode 308 with the quadtree.
+- **Quadtree**. [`QuadTree.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/QuadTree.py): Rectangle sums with point updates on a grid. [`308.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/leetcode/solve/quadtree/308.py): LeetCode 308 with the quadtree. [`427.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/leetcode/solve/quadtree/427.py): LeetCode 427, a region quadtree that merges equal leaves.
 - **Caches** (advanced). [`fifo.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/eviction/fifo.h): FIFO eviction. [`lru.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/eviction/lru.h): LRU eviction. [`lfu.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/eviction/lfu.h): LFU eviction. [`lru-2q.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/eviction/lru-2q.h): LRU-2Q eviction.
 
 ## Practice {#practice}
@@ -778,7 +830,7 @@ All take an edge list and need real traversal over the adjacency — topological
 
 **Quadtree**
 
-- [LeetCode 427 — Construct Quad Tree](https://leetcode.com/problems/construct-quad-tree/) (region quadtree)
+- [LeetCode 427 — Construct Quad Tree](https://leetcode.com/problems/construct-quad-tree/) (region quadtree, [worked above](#quadtree-427))
 - [LeetCode 558 — Logical OR of Two Binary Grids Represented as Quad-Trees](https://leetcode.com/problems/logical-or-of-two-binary-grids-represented-as-quad-trees/)
 - [LeetCode 308 — Range Sum Query 2D - Mutable](https://leetcode.com/problems/range-sum-query-2d-mutable/) (rectangle sums with point updates, [worked above](#quadtree-308))
 
