@@ -85,6 +85,8 @@
     title: Filters and Sketches
   - id: skip-list
     title: Skip List
+  - id: quadtree
+    title: Quadtree
   - id: cache-eviction
     title: Cache Eviction
 - slug: selected-leetcode-problems
