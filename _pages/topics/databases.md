@@ -1,15 +1,15 @@
 ---
 layout: post
 title: "Databases"
-description: "Ideas from competitive programming that show up inside database systems: keeping old versions around (persistence, MVCC, copy-on-write B-trees), laying sparse data out for fast scans (compressed sparse row), answering membership in little memory (filters and sketches), keeping a sorted table in memory (skip lists), and deciding what stays in a full cache (eviction)."
+description: "Ideas from competitive programming that show up inside database systems: keeping old versions around (persistence, MVCC, copy-on-write B-trees), laying sparse data out for fast scans (compressed sparse row), answering membership in little memory (filters and sketches), keeping a sorted table in memory (skip lists), summing over rectangles of a grid (quadtrees), and deciding what stays in a full cache (eviction)."
 permalink: /blog/databases/
-last_updated: 2026-10-10
+last_updated: 2026-10-13
 author: Lam Nguyen
 toc:
   sidebar: right
 ---
 
-Ideas from competitive programming that show up inside database systems: keeping old versions around (persistence, MVCC, copy-on-write B-trees), laying sparse data out for fast scans (compressed sparse row), answering membership in little memory (filters and sketches), keeping a sorted table in memory (skip lists), and deciding what stays in a full cache (eviction).
+Ideas from competitive programming that show up inside database systems: keeping old versions around (persistence, MVCC, copy-on-write B-trees), laying sparse data out for fast scans (compressed sparse row), answering membership in little memory (filters and sketches), keeping a sorted table in memory (skip lists), summing over rectangles of a grid (quadtrees), and deciding what stays in a full cache (eviction).
 
 <details markdown="1">
 <summary>C++ template used by every implementation on this page</summary>
@@ -593,6 +593,95 @@ Delete uses the same `left` array, unlinking the target level by level and stopp
 
 That simplicity is why in-memory sorted tables reach for skip lists. LevelDB and RocksDB keep their memtables in one before flushing to sorted runs on disk (the runs that the Bloom filters above guard), and Redis implements sorted sets with one.
 
+## Quadtree {#quadtree}
+
+A skip list keeps keys in order along a line. A map, a game board, or a table of readings by latitude and longitude has two coordinates, and the question becomes: **what is the sum (or count) over this rectangle**, while single cells keep changing?
+
+### Two first instincts, and why each falls short
+
+The first instinct is the 2D prefix sum. Store $$P[r][c] = \sum_{i \le r,\, j \le c} g[i][j]$$, and any rectangle comes out of four lookups by inclusion-exclusion. Queries are $$O(1)$$, but changing one cell changes every $$P[r][c]$$ below and to the right of it, which is $$O(nm)$$ per update.
+
+The second instinct is to reuse a 1D structure: one [segment tree](/blog/range-queries/#segment-tree) per row. An update touches one tree in $$O(\log m)$$, but a query has to ask every row it covers, which is $$O(n \log m)$$.
+
+Both make one axis cheap and the other expensive. The question that unblocks it: **what does "split the range in half" mean when the range is a rectangle?**
+
+### Split both axes at once
+
+Cut the rectangle at its middle row and its middle column. That gives four children, the quadrants, and a node stores the sum of its rectangle. This is the segment tree's idea exactly, with four children in place of two:
+
+- **Update** a cell: walk down the one quadrant that contains it, set the leaf, and re-sum on the way back up. The side halves at each level, so this is $$O(\log \max(n, m))$$.
+- **Query** a rectangle: return $$0$$ for a node disjoint from it, the stored sum for a node inside it, and recurse into the children otherwise.
+
+Grids are rarely $$2^k \times 2^k$$, so the halving is uneven. A node that is a single row has $$r_0 = r_1$$, so its middle row is $$r_0$$ and the two bottom quadrants $$[r_0 + 1, r_1]$$ are empty. Skipping empty quadrants is the only special case: a single row then splits like a 1D segment tree, and a $$3 \times 5$$ grid needs no padding.
+
+<details markdown="1">
+<summary>Python implementation</summary>
+
+```python
+class Node:
+    def __init__(self, r0, c0, r1, c1):
+        self.r0, self.c0, self.r1, self.c1 = r0, c0, r1, c1
+        self.sum = 0
+        self.children = []
+
+class QuadTree:
+    def __init__(self, grid):
+        self.g = grid
+        self.root = self.build(0, 0, len(grid)-1, len(grid[0])-1)
+
+    def build(self, r0, c0, r1, c1):
+        node = Node(r0, c0, r1, c1)
+        if r0 == r1 and c0 == c1:
+            node.sum = self.g[r0][c0]
+            return node
+        rm, cm = (r0 + r1) // 2, (c0 + c1) // 2
+        for a, b, c, d in [(r0, c0, rm, cm), (r0, cm + 1, rm, c1),
+                           (rm + 1, c0, r1, cm), (rm + 1, cm + 1, r1, c1)]:
+            if a <= c and b <= d: # skip empty quadrants
+                node.children.append(self.build(a, b, c, d))
+        node.sum = sum(child.sum for child in node.children)
+        return node
+
+    def update(self, r, c, v, node=None):
+        if node is None: node = self.root
+        if not (node.r0 <= r <= node.r1 and node.c0 <= c <= node.c1): return
+        if not node.children:
+            node.sum = v
+            return
+        for child in node.children: self.update(r, c, v, child)
+        node.sum = sum(child.sum for child in node.children)
+
+    def query(self, r0, c0, r1, c1, node=None):
+        if node is None: node = self.root
+        if node.r1 < r0 or r1 < node.r0 or node.c1 < c0 or c1 < node.c0: return 0
+        if r0 <= node.r0 and node.r1 <= r1 and c0 <= node.c0 and node.c1 <= c1: return node.sum
+        return sum(self.query(r0, c0, r1, c1, child) for child in node.children)
+```
+
+</details>
+
+One Python detail: the default argument is resolved with `if node is None`, not `node = node or self.root`. The `or` form works only as long as every `Node` is truthy. Give `Node` a `__len__` one day, and a leaf with no children becomes falsy, so the recursion silently restarts from the root.
+
+### The catch: queries are not logarithmic
+
+In 1D, a query range has two ends, so at most two nodes per level are cut partially, which gives $$O(\log n)$$. In 2D a rectangle has a **perimeter**, and every node its boundary passes through is cut partially.
+
+Take an $$n \times n$$ grid and the query "one full row". At depth $$d$$ the nodes have side $$n / 2^d$$, and the row passes through $$2^d$$ of them, each cut partially. Summing over depths,
+
+$$
+\sum_{d=0}^{\log_2 n} 2^d \approx 2n,
+$$
+
+so this query costs $$O(n)$$, no better than scanning the row. In general a query costs about its perimeter, not $$O(\log n)$$. If all you need is rectangle sums with point updates on a dense grid, a 2D [Fenwick tree](/blog/range-queries/#fenwick-tree) (a Fenwick tree of Fenwick trees) does both in $$O(\log n \log m)$$ with less code.
+
+### So why a quadtree?
+
+Because the structure above is the dense version, a full tree down to every cell. The quadtree's real strength is that **it does not have to be full**. Split a square only while it holds more than a few points (a point-region quadtree), or only while its cells are not all equal (a region quadtree), and the tree's size follows the data instead of the grid. Empty ocean on a map, or a solid block in an image, is one leaf. A 2D Fenwick tree cannot do that: it allocates every cell up front.
+
+The descent also has a name you have likely seen. Number the quadrants $$0$$ to $$3$$ and write down the path from the root to a cell: that string is a **quadkey**. Bing Maps names its map tiles this way, and a geohash is the same idea, interleaving the bits of longitude and latitude. Two cells that share a long prefix are close, which turns a 2D lookup into a prefix search on a 1D key, and a 1D key is something a B-tree or a sorted table already indexes well. MongoDB's legacy `2d` index stores geohashes for this reason.
+
+My implementation is [`QuadTree.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/QuadTree.py), and [`test_quadtree.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/tests/test_quadtree.py) checks it against a brute-force sum on random grids up to $$9 \times 9$$, including single rows, single columns, and sizes that are not powers of two.
+
 ## Cache Eviction {#cache-eviction}
 
 A cache is full the moment it is useful, so the real design question is not what to store, but **who leaves** when something new arrives. Every policy is a guess about the future from the past. My notebook puts them behind one interface, [`eviction_cache.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/eviction/eviction_cache.h): `get` counts as an access, and `put` returns the page it evicted, if any, so policies can be compared on the same trace.
@@ -634,6 +723,7 @@ Implementations from my [competitive programming notebook](https://github.com/la
 - **Filters** (advanced). [`bloomfilter.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/data_structures/bloomfilter.h): Bloom filter. [`BloomFilter.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/BloomFilter.py): The same filter in Python. [`countminsketch.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/data_structures/countminsketch.h): Count-min sketch with seeded hashes, merge, and top k. [`CountMinSketch.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/CountMinSketch.py): The same sketch in Python. [`cuckoofilter.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/data_structures/cuckoofilter.h): Cuckoo filter with fingerprints, kicks, and deletes. [`CuckooFilter.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/CuckooFilter.py): The same filter in Python.
 - **Hash** (advanced). [`hash.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/data_structures/utils/hash.h): String hashes, mixers, and a rolling hash. [`hash.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/utils/hash.py): The string hashes in Python.
 - **Skip list** (advanced). [`skiplist.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/data_structures/skiplist.h): Skip list. [`Skiplist.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/Skiplist.py): The same structure in Python.
+- **Quadtree**. [`QuadTree.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/databases/data_structures/QuadTree.py): Rectangle sums with point updates on a grid.
 - **Caches** (advanced). [`fifo.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/eviction/fifo.h): FIFO eviction. [`lru.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/eviction/lru.h): LRU eviction. [`lfu.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/eviction/lfu.h): LFU eviction. [`lru-2q.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/databases/eviction/lru-2q.h): LRU-2Q eviction.
 
 ## Practice {#practice}
@@ -655,6 +745,12 @@ All take an edge list and need real traversal over the adjacency — topological
 **Skip List**
 
 - [LeetCode 1206 — Design Skiplist](https://leetcode.com/problems/design-skiplist/)
+
+**Quadtree**
+
+- [LeetCode 427 — Construct Quad Tree](https://leetcode.com/problems/construct-quad-tree/) (region quadtree)
+- [LeetCode 558 — Logical OR of Two Binary Grids Represented as Quad-Trees](https://leetcode.com/problems/logical-or-of-two-binary-grids-represented-as-quad-trees/)
+- [LeetCode 308 — Range Sum Query 2D - Mutable](https://leetcode.com/problems/range-sum-query-2d-mutable/) (rectangle sums with point updates)
 
 **Cache Eviction**
 
