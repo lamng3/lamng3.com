@@ -1,8 +1,10 @@
 # One entry per publication. Each has a page at /publications/<slug>/ (see _pages/publications/).
 # pdf: a site path under /assets/papers/ (run scripts/sync-papers.sh) or an external URL that serves the PDF inline.
 # Order here is the order on the homepage and on /publications/.
+# selected: true puts an entry in the homepage's Selected Publications.
 
 - slug: kroma
+  selected: true
   short: KROMA
   title: "KROMA: Ontology Matching with Knowledge Retrieval and Large Language Models"
   authors: "L. Nguyen, E. Barcelos, R. French, and Y. Wu"
@@ -34,6 +36,7 @@
     }
 
 - slug: moira
+  selected: true
   abstract_label: Overview
   short: MOIRA
   title: "MOIRA: Memory-Augmented Ontology Integration with Cost-Bounded Reasoning Agents"
@@ -102,6 +105,7 @@
     - { label: PyPI, url: "https://pypi.org/project/OntoCheck/" }
 
 - slug: thesis
+  selected: true
   short: M.S. thesis
   title: "Ontology Matching with Knowledge Retrieval and Efficient Large Language Models"
   authors: "L. Nguyen"
