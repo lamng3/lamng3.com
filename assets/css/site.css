@@ -1056,3 +1056,105 @@ html.spotlight-open {
     transition: none;
   }
 }
+
+/* Publications: index lines and paper pages */
+.pub-index .ptitle {
+  font-weight: 600;
+}
+
+.tldr-line {
+  margin: 0.3rem 0 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.paper-kicker {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.paper h1 {
+  margin-bottom: 0.4rem;
+}
+
+.paper .authors {
+  margin-top: 0;
+}
+
+.tldr {
+  margin: 1.5rem 0;
+  padding: 0.9rem 1.1rem;
+  background: var(--code-bg);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+}
+
+.tldr p {
+  margin: 0;
+}
+
+.paper-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1.1rem;
+  margin: 0 0 1.5rem;
+  font-size: 0.95rem;
+}
+
+.paper-actions .button {
+  display: inline-block;
+  padding: 0.55rem 1rem;
+  border-radius: 6px;
+  background: var(--accent);
+  color: var(--on-accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.paper-actions .button:hover {
+  opacity: 0.9;
+}
+
+.pdf-frame {
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.pdf-frame iframe {
+  display: block;
+  width: 100%;
+  height: 85vh;
+  border: 0;
+  background: var(--code-bg);
+}
+
+.pdf-note {
+  display: none;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+/* Phones scroll an embedded PDF poorly; send them to the browser's own reader instead. */
+@media (max-width: 700px) {
+  .pdf-frame {
+    display: none;
+  }
+
+  .pdf-note {
+    display: block;
+  }
+
+  .paper-actions .button {
+    width: 100%;
+    text-align: center;
+    padding: 0.8rem 1rem;
+  }
+}
+
+.bibtex {
+  font-size: 0.8rem;
+  overflow-x: auto;
+}

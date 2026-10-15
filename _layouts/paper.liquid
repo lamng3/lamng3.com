@@ -1,0 +1,62 @@
+---
+layout: default
+---
+{%- assign pub = site.data.publications | where: 'slug', page.paper | first -%}
+<article class="post paper">
+  <header>
+    <p class="paper-kicker">
+      <a href="{{ '/publications/' | relative_url }}">Publications</a>
+      · {{ pub.venue }}{% if pub.year %}, {{ pub.year }}{% endif %}
+    </p>
+    <h1>{{ pub.title }}</h1>
+    <p class="authors">{{ pub.authors }}</p>
+  </header>
+
+  <section class="tldr" aria-label="TL;DR">
+    <p><strong>TL;DR</strong> {{ pub.tldr }}</p>
+  </section>
+
+  {% if pub.pdf %}
+    {%- assign pdf_url = pub.pdf -%}
+    {%- unless pdf_url contains '://' -%}{%- assign pdf_url = pdf_url | relative_url -%}{%- endunless -%}
+    <p class="paper-actions">
+      <a class="button" href="{{ pdf_url }}" target="_blank" rel="noopener">Read the {{ pub.pdf_label | default: 'PDF' }}</a>
+      {% for link in pub.links %}
+        {%- assign href = link.url -%}
+        {%- unless href contains '://' -%}{%- assign href = href | relative_url -%}{%- endunless -%}
+        <a href="{{ href }}">{{ link.label }}</a>
+      {% endfor %}
+    </p>
+  {% else %}
+    <p class="paper-actions">
+      {% for link in pub.links %}
+        <a href="{{ link.url }}">{{ link.label }}</a>
+      {% endfor %}
+    </p>
+  {% endif %}
+
+  {% if pub.highlights and pub.highlights.size > 0 %}
+    <h2 id="highlights">Highlights</h2>
+    <ul>
+      {% for h in pub.highlights %}<li>{{ h }}</li>{% endfor %}
+    </ul>
+  {% endif %}
+
+  <h2 id="abstract">{{ pub.abstract_label | default: 'Abstract' }}</h2>
+  <p>{{ pub.abstract }}</p>
+
+  {% if pub.pdf %}
+    <h2 id="read">Read</h2>
+    <div class="pdf-frame">
+      <iframe src="{{ pdf_url }}#view=FitH" title="{{ pub.short }} PDF" loading="lazy"></iframe>
+    </div>
+    <p class="pdf-note">On a phone, <a href="{{ pdf_url }}" target="_blank" rel="noopener">open the PDF</a> in your browser's reader.</p>
+  {% endif %}
+
+  {% if pub.bibtex %}
+    <h2 id="cite">Cite</h2>
+    <pre class="bibtex"><code>{{ pub.bibtex | strip | escape }}</code></pre>
+  {% endif %}
+
+  {{ content }}
+</article>
