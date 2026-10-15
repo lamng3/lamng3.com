@@ -27,12 +27,12 @@ description: >-
 <section id="experiences">
   <h2>Experiences</h2>
   <ul class="post-list">
-    <li><span><strong>Center for Materials Data Science</strong> · Researcher, <a href="https://mds3-coe.com/">AI for Scientific Discovery</a></span><time>2026</time></li>
-    <li><span><strong>Microsoft</strong> · Software Engineer, <a href="https://www.microsoft.com/en-us/security/business/security-101/what-is-agentic-ai-security">Agentic Security</a></span><time>2025</time></li>
-    <li><span><strong>Microsoft</strong> · Software Engineer Intern, <a href="https://www.microsoft.com/en-us/security/business/ai-machine-learning/microsoft-security-copilot">Security Copilot</a></span><time>2024</time></li>
-    <li><span><strong>Amazon</strong> · Software Engineer Intern, <a href="https://developer.amazon.com/en-US/alexa">Alexa Voice AI</a></span><time>2023</time></li>
-    <li><span><strong>Microsoft</strong> · Software Engineer Intern, <a href="https://learn.microsoft.com/en-us/azure/data-factory/introduction">Azure Data Factory</a></span><time>2023</time></li>
-    <li><span><strong>Microsoft</strong> · Software Engineer Intern, <a href="https://azure.microsoft.com/en-us/resources/cloud-computing-dictionary/what-is-a-data-governance">Azure Data Governance</a></span><time>2022</time></li>
+    <li><span><strong>Center for Materials Data Science</strong> · Researcher, AI for Scientific Discovery</span><time>2026</time></li>
+    <li><span><strong>Microsoft</strong> · Software Engineer, Agentic Security</span><time>2025</time></li>
+    <li><span><strong>Microsoft</strong> · Software Engineer Intern, Security Copilot</span><time>2024</time></li>
+    <li><span><strong>Amazon</strong> · Software Engineer Intern, Alexa Voice AI</span><time>2023</time></li>
+    <li><span><strong>Microsoft</strong> · Software Engineer Intern, Azure Data</span><time>2023</time></li>
+    <li><span><strong>Microsoft</strong> · Software Engineer Intern, Azure Data</span><time>2022</time></li>
   </ul>
 </section>
 
@@ -51,7 +51,7 @@ description: >-
       {% endunless %}
     {% endfor %}
   </ol>
-  <p class="links-inline"><a href="{{ '/publications/' | relative_url }}">All publications, with TL;DRs →</a></p>
+  <p class="links-inline"><a href="{{ '/publications/' | relative_url }}">All publications</a></p>
 </section>
 
 <section id="open-source">
@@ -59,7 +59,7 @@ description: >-
   <ul class="entries">
     <li>
       <p class="title"><a href="https://github.com/lamng3/OntoDB">OntoDB</a><span class="meta">: A database management system for ontologies: RDF storage, SPARQL queries, and crash recovery with a write-ahead log</span></p>
-      <p class="links-inline"><a href="https://github.com/lamng3/OntoDB">Repository</a> · <a href="https://lamng3.github.io/ontodb-docs/">Manual</a> · <a href="{{ '/publications/ontodb-book/' | relative_url }}">Book</a> · <a href="{{ '/blog/databases/#database-engine' | relative_url }}">Lecture</a></p>
+      <p class="links-inline"><a href="https://github.com/lamng3/OntoDB">Repository</a> · <a href="https://lamng3.github.io/ontodb-docs/">Manual</a> · <a href="{{ '/publications/ontodb-book/' | relative_url }}">Book</a> · <a href="{{ '/blog/databases/#database-engine' | relative_url }}">Walkthrough</a></p>
     </li>
   </ul>
 </section>
