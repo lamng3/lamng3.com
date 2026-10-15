@@ -89,6 +89,8 @@
     title: Quadtree
   - id: cache-eviction
     title: Cache Eviction
+  - id: database-engine
+    title: A Database Engine, End to End
 - slug: selected-leetcode-problems
   title: Selected LeetCode Problems
   sections: []
