@@ -55,7 +55,7 @@ mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 The sections after this one are pieces. This one is a lecture that puts them inside a whole engine, following one request from the disk up and back down again, and asking at each layer the question that forces the design. The example throughout is [OntoDB](https://github.com/lamng3/OntoDB), a database management system for ontologies that I am building: its data is RDF triples, and its query language is SPARQL.
 
-The companion book, [**OntoDB: Database Internals by Example**](https://github.com/lamng3/OntoDB/blob/main/book/ontodb-book.pdf) (PDF, 88 pages), develops every step below in full, with figures and a worked ARIES trace. The [OntoDB manual](https://lamng3.github.io/ontodb-docs/) shows how to run it.
+The companion book, [**OntoDB: Database Internals by Example**](https://github.com/lamng3/OntoDB/blob/main/book/ontodb-book.pdf) (PDF, 89 pages), develops every step below in full, with figures and a worked ARIES trace. The [OntoDB manual](https://lamng3.github.io/ontodb-docs/) shows how to run it.
 
 ### Why data lives in pages
 
