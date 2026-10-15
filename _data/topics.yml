@@ -77,6 +77,8 @@
 - slug: databases
   title: Databases
   sections:
+  - id: database-engine
+    title: A Database Engine, End to End
   - id: persistence
     title: Persistence
   - id: compressed-sparse-row
@@ -89,8 +91,6 @@
     title: Quadtree
   - id: cache-eviction
     title: Cache Eviction
-  - id: database-engine
-    title: A Database Engine, End to End
 - slug: selected-leetcode-problems
   title: Selected LeetCode Problems
   sections: []
