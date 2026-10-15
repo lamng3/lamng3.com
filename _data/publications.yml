@@ -14,10 +14,11 @@
   highlights:
     - "Highest F1 on all six OAEI-style tracks against MILA, OLaLa, and LLM4OM, for example 98.63 on NCIT–DOID and 94.94 on Mouse–Human."
     - "Removing knowledge retrieval or ontology refinement lowers F1 on every track reported."
-  pdf: https://arxiv.org/pdf/2507.14032
+  pdf: /assets/papers/kroma-full.pdf
+  pdf_label: "full version"
   links:
+    - { label: arXiv PDF, url: "https://arxiv.org/pdf/2507.14032" }
     - { label: Paper (Springer), url: "https://doi.org/10.1007/978-3-032-09527-5_34" }
-    - { label: arXiv, url: "https://arxiv.org/abs/2507.14032" }
     - { label: Code, url: "https://github.com/lamng3/kroma" }
     - { label: Documentation, url: "https://lamng3.github.io/kroma-docs/" }
   bibtex: |
@@ -137,4 +138,4 @@
   links:
     - { label: OntoDB, url: "https://github.com/lamng3/OntoDB" }
     - { label: Manual, url: "https://lamng3.github.io/ontodb-docs/" }
-    - { label: Lecture, url: "/blog/databases/#database-engine" }
+    - { label: Walkthrough, url: "/blog/databases/#database-engine" }
