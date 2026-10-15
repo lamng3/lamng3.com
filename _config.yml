@@ -34,5 +34,6 @@ exclude:
   - package-lock.json
   - README.md
   - CLAUDE.md
+  - SYNC.md
   - LICENSE
   - scripts
