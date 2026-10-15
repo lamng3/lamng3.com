@@ -1,0 +1,140 @@
+# One entry per publication. Each has a page at /publications/<slug>/ (see _pages/publications/).
+# pdf: a site path under /assets/papers/ (run scripts/sync-papers.sh) or an external URL that serves the PDF inline.
+# Order here is the order on the homepage and on /publications/.
+
+- slug: kroma
+  short: KROMA
+  title: "KROMA: Ontology Matching with Knowledge Retrieval and Large Language Models"
+  authors: "L. Nguyen, E. Barcelos, R. French, and Y. Wu"
+  venue: "International Semantic Web Conference (ISWC)"
+  year: 2025
+  status: published
+  tldr: "An LLM decides whether two concepts from different ontologies mean the same thing, after retrieval gives it the concepts' structural, lexical, and definitional context. Pruning candidates with bisimilarity and refining the alignment as answers arrive keeps the number of LLM calls low."
+  abstract: "Ontology Matching (OM) is a cornerstone task of semantic interoperability, yet existing systems often rely on handcrafted rules or specialized models with limited adaptability. We present KROMA, a novel OM framework that harnesses Large Language Models (LLMs) within a Retrieval-Augmented Generation (RAG) pipeline to dynamically enrich the semantic context of OM tasks with structural, lexical, and definitional knowledge. To optimize both performance and efficiency, KROMA integrates a bisimilarity-based concept matching and a lightweight ontology refinement step, which prune candidate concepts and substantially reduce the communication overhead from invoking LLMs. Through experiments on multiple benchmark datasets, we show that integrating knowledge retrieval with context-augmented LLMs significantly enhances ontology matching, outperforming both classic OM systems and cutting-edge LLM-based approaches while keeping communication overhead comparable. Our study highlights the feasibility and benefit of the proposed optimization techniques (targeted knowledge retrieval, prompt enrichment, and ontology refinement) for ontology matching at scale."
+  highlights:
+    - "Highest F1 on all six OAEI-style tracks against MILA, OLaLa, and LLM4OM, for example 98.63 on NCIT–DOID and 94.94 on Mouse–Human."
+    - "Removing knowledge retrieval or ontology refinement lowers F1 on every track reported."
+  pdf: https://arxiv.org/pdf/2507.14032
+  links:
+    - { label: Paper (Springer), url: "https://doi.org/10.1007/978-3-032-09527-5_34" }
+    - { label: arXiv, url: "https://arxiv.org/abs/2507.14032" }
+    - { label: Code, url: "https://github.com/lamng3/kroma" }
+    - { label: Documentation, url: "https://lamng3.github.io/kroma-docs/" }
+  bibtex: |
+    @inproceedings{nguyen_2025_kroma,
+        title={KROMA: Ontology Matching with Knowledge Retrieval and Large Language Models},
+        author={Lam Nguyen and Erika Barcelos and Roger French and Yinghui Wu},
+        booktitle={The Semantic Web -- ISWC 2025},
+        series={Lecture Notes in Computer Science},
+        publisher={Springer},
+        pages={629--649},
+        year={2025},
+        doi={10.1007/978-3-032-09527-5_34},
+    }
+
+- slug: moira
+  abstract_label: Overview
+  short: MOIRA
+  title: "MOIRA: Memory-Augmented Ontology Integration with Cost-Bounded Reasoning Agents"
+  authors: "L. Nguyen, E. Frakes, H. Ma, O. Dernek, R. H. French, and Y. Wu"
+  venue: "In submission"
+  year: 2026
+  status: in-submission
+  tldr: "A toolkit for integrating, matching, and refining ontologies, and for answering questions over them with language models, under a cost budget. Embeddings and answers are remembered across runs, so repeated or reworded questions are answered without calling the model again."
+  abstract: "MOIRA is a Python toolkit for ontology integration, matching, refinement, and ontology-grounded language-model reasoning. It combines RDF/OWL parsing, graph and text embeddings, pluggable retrieval, validation, uncertainty quantification, and Ontology-of-Thought traces, with a tiered query cache that replays repeated and reworded questions."
+  highlights:
+    - "The paper is in submission; results will be added here once it is published."
+  pdf:
+  links:
+    - { label: Code, url: "https://github.com/lamng3/moira" }
+    - { label: Documentation, url: "https://lamng3.github.io/moira-docs/" }
+  bibtex: |
+    @misc{nguyen_2026_moira,
+        title={MOIRA: Memory-Augmented Ontology Integration with Cost-Bounded Reasoning Agents},
+        author={Lam Nguyen and Ethan Frakes and Hanchao Ma and Ozan Dernek and Roger H. French and Yinghui Wu},
+        year={2026},
+        url={https://github.com/lamng3/moira},
+    }
+
+- slug: hermes
+  short: Hermes
+  title: "Hermes: Verified Query Planning over the SPARQL Algebra with Language Agents"
+  authors: "L. Nguyen"
+  venue: "Preprint"
+  year: 2026
+  status: preprint
+  tldr: "Instead of writing a whole SPARQL query at once, a language agent builds it one algebra operator at a time. A verifier types every step against the RDF schema and rejects ill-typed steps before they run, and execution feedback after each step tells the agent what the step did."
+  abstract: "Translating natural-language questions into SPARQL lets users query knowledge graphs without learning their schema. Large language models now write plausible SPARQL, but they write the whole query at once: a query that fails to parse, joins values of incompatible types, or returns nothing is detected only after it is complete, and the repair is another guess. Hermes is a query-planning agent that builds a SPARQL query one operator of the SPARQL algebra at a time, over a typed formalization of the language. The RDF schema gives every query variable a type, and a verifier checks each step before it runs. A plan is accepted only when it is well typed and meets a goal stated from the question."
+  highlights:
+    - "On the Text2SPARQL 2026 corporate benchmark with Qwen3-14B, set F1 of 0.282, against 0.231 without the verifier, 0.197 for constraint-guided search, and 0.089 for one-shot generation."
+    - "The verifier cuts the items without a runnable query from 26 to 9, at a higher model-call budget."
+  pdf: /assets/papers/hermes.pdf
+  links:
+    - { label: Code, url: "https://github.com/lamng3/hermes" }
+    - { label: Documentation, url: "https://lamng3.github.io/hermes-docs/" }
+    - { label: Leaderboard, url: "https://github.com/lamng3/hermes/blob/master/results/LEADERBOARD.md" }
+  bibtex: |
+    @misc{nguyen2026hermes,
+      title  = {Hermes: Verified Query Planning over the SPARQL Algebra with Language Agents},
+      author = {Nguyen, Lam},
+      year   = {2026},
+      url    = {https://github.com/lamng3/hermes}
+    }
+
+- slug: ontocheck
+  abstract_label: Overview
+  short: OntoCheck
+  title: "OntoCheck: Query-Driven Ontology Assessments for Scientific Domain Applications"
+  authors: "R. Kundu, R. Mehdi, V. D. Tran, E. Frakes, A. Daundkar, M. Sumudumalie, V. S. Mandayam, J. A. Lample, M. Li, L. S. Bruckman, E. I. Barcelos, A. Sehirlioglu, R. H. French, and Y. Wu"
+  venue: "Supplementary material and open-source tool"
+  year: 2026
+  status: preprint
+  tldr: "Judge an ontology by the questions its users will actually ask. Domain competency questions are written as SPARQL, and the terms those queries need are compared against the ontology's vocabulary to measure coverage and utilization."
+  abstract: "As scientific fields adopt FAIR data principles, ontologies have become essential for encoding the semantics of scientific investigations, yet evaluating ontology quality remains a manual, technically demanding bottleneck. OntoCheck is an open-source Python tool that unifies domain-agnostic structural metrics with a query-driven assessment: by analyzing SPARQL queries derived from natural-language competency questions, it compares the required query terms against an ontology's full vocabulary to yield complementary metrics for vocabulary coverage and utilization density."
+  highlights:
+    - "Evaluated across six scientific domains, and on a materials-science competency-question benchmark comparing MDS-Onto, PMDCo, AM-Ontology, EMMO, and CHAMEO."
+  pdf: /assets/papers/ontocheck-supplementary.pdf
+  pdf_label: "Supplementary material"
+  links:
+    - { label: Project page, url: "https://cwru-sdle.github.io/OntoCheck/" }
+    - { label: Code, url: "https://github.com/cwru-sdle/OntoCheck" }
+    - { label: PyPI, url: "https://pypi.org/project/OntoCheck/" }
+
+- slug: thesis
+  short: M.S. thesis
+  title: "Ontology Matching with Knowledge Retrieval and Efficient Large Language Models"
+  authors: "L. Nguyen"
+  venue: "M.S. thesis, Case Western Reserve University"
+  year: 2025
+  status: published
+  tldr: "A workflow that automates the stages of building and aligning ontologies with retrieval-augmented language models, from concept extraction and matching (KROMA) to relation extraction and evaluation, and runs the models on limited hardware through KV-cache quantization."
+  abstract: "Ontologies are formal representations of a domain's concepts and their interrelations. Nonetheless, building rich, accurate ontologies remains a time-consuming, expertise-intensive task. This thesis outlines a comprehensive workflow that integrates retrieval-augmented Large Language Models (LLMs) with structural algorithms to automate the key stages of ontology matching, all while optimizing resource efficiency. First, this work tackles Entity Recognition by surveying contemporary methods for identifying candidate concepts and evaluating LLM performance on the concept extraction task. Next, this thesis introduces Ontology Matching through KROMA, which has the capability to align related concepts efficiently. Then, this addresses Relation Extraction, through detailing an original work that utilize few-shot LLM prompting and minimal fine-tuning to discover hierarchical relationships. After that, this work outlines Ontology Evaluation, drawing on recent studies to summarize key metrics and structural tests for assessing the quality of ontologies. Finally, this discusses how to Optimize LLM for Ontology Matching, focusing on KV cache quantization, so models can run effectively on limited hardware without sacrificing accuracy."
+  highlights: []
+  pdf: "https://etd.ohiolink.edu/acprod/odb_etd/ws/send_file/send?accession=case1751987504689716&disposition=inline"
+  links:
+    - { label: OhioLINK, url: "https://etd.ohiolink.edu/acprod/odb_etd/ws/send_file/send?accession=case1751987504689716&disposition=inline" }
+  bibtex: |
+    @mastersthesis{nguyen2025thesis,
+      title  = {Ontology Matching with Knowledge Retrieval and Efficient Large Language Models},
+      author = {Nguyen, Lam},
+      school = {Case Western Reserve University},
+      year   = {2025}
+    }
+
+- slug: ontodb-book
+  abstract_label: Overview
+  short: OntoDB book
+  kind: book
+  title: "OntoDB: Database Internals by Example"
+  authors: "L. Nguyen"
+  venue: "Book, 55 pages"
+  year: 2026
+  status: living
+  tldr: "How a database engine works, from pages and buffer pools to B+ trees, query plans, locking, the write-ahead log, and ARIES, taught with OntoDB, a database management system for ontologies, as the running example."
+  abstract: "Each chapter explains the theory first, then shows the decision OntoDB made and why. Five parts follow a request through the engine: foundations; storage (pages, the buffer pool, B+ trees, indexing RDF, and log-structured trees for contrast); query processing (plans, the iterator model, joins, and optimization); transactions (isolation and concurrency control); and recovery (the write-ahead rule, ARIES with a worked example, and how OntoDB's persistent databases work today). The book grows as OntoDB does."
+  highlights: []
+  pdf: /assets/papers/ontodb-book.pdf
+  links:
+    - { label: OntoDB, url: "https://github.com/lamng3/OntoDB" }
+    - { label: Manual, url: "https://lamng3.github.io/ontodb-docs/" }
+    - { label: Lecture, url: "/blog/databases/#database-engine" }

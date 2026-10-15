@@ -39,45 +39,27 @@ description: >-
 <section id="publications">
   <h2>Selected Publications</h2>
   <ol class="entries pubs">
-    <li>
-      <span class="authors">L. Nguyen, E. Frakes, H. Ma, O. Dernek, R. H. French, and Y. Wu.</span>
-      <span class="ptitle">MOIRA: Memory-Augmented Ontology Integration with Cost-Bounded Reasoning Agents.</span>
-      <a href="https://github.com/lamng3/moira">[Code]</a>
-    </li>
-    <li>
-      <span class="authors">L. Nguyen, E. Barcelos, R. French, and Y. Wu.</span>
-      <span class="ptitle">KROMA: Ontology Matching with Knowledge Retrieval and Large Language Models.</span>
-      <span class="venue">International Semantic Web Conference (ISWC)</span>, 2025.
-      <a href="https://arxiv.org/abs/2507.14032">[Paper]</a>
-      <a href="https://github.com/lamng3/kroma">[Code]</a>
-    </li>
-    <li>
-      <span class="authors">L. Nguyen.</span>
-      <span class="ptitle">Hermes: Verified Query Planning over the SPARQL Algebra with Language Agents.</span>
-      <a href="https://github.com/lamng3/hermes/blob/master/paper/hermes.pdf">[Paper]</a>
-      <a href="https://github.com/lamng3/hermes">[Code]</a>
-    </li>
-    <li>
-      <span class="authors">R. Kundu, R. Mehdi, V. D. Tran, E. Frakes, A. Daundkar, M. Sumudumalie, V. S. Mandayam, J. A. Lample, M. Li, L. S. Bruckman, E. I. Barcelos, A. Sehirlioglu, R. H. French, and Y. Wu.</span>
-      <span class="ptitle">OntoCheck: Query-Driven Ontology Assessments for Scientific Domain Applications.</span>
-      <a href="https://github.com/cwru-sdle/OntoCheck/blob/main/SupplementaryMaterials/2605-KunduMehdiTran-OntoCheck-SupplementaryMaterial.pdf">[Paper]</a>
-      <a href="https://github.com/cwru-sdle/OntoCheck">[Code]</a>
-    </li>
-    <li>
-      <span class="authors">L. Nguyen.</span>
-      <span class="ptitle">Ontology Matching with Knowledge Retrieval and Efficient Large Language Models.</span>
-      <span class="venue">M.S. thesis, Case Western Reserve University</span>, 2025.
-      <a href="https://etd.ohiolink.edu/acprod/odb_etd/ws/send_file/send?accession=case1751987504689716&amp;disposition=inline">[Thesis]</a>
-    </li>
+    {% for pub in site.data.publications %}
+      {% unless pub.kind == 'book' %}
+        <li>
+          <span class="authors">{{ pub.authors }}.</span>
+          <a class="ptitle" href="{{ '/publications/' | append: pub.slug | append: '/' | relative_url }}">{{ pub.title }}.</a>
+          {% if pub.status == 'published' %}<span class="venue">{{ pub.venue }}</span>, {{ pub.year }}.{% endif %}
+          {% if pub.pdf %}{%- assign pdf_url = pub.pdf -%}{%- unless pdf_url contains '://' -%}{%- assign pdf_url = pdf_url | relative_url -%}{%- endunless -%}<a href="{{ pdf_url }}">[PDF]</a>{% endif %}
+          {% for link in pub.links %}{% if link.label == 'Code' %}<a href="{{ link.url }}">[Code]</a>{% endif %}{% endfor %}
+        </li>
+      {% endunless %}
+    {% endfor %}
   </ol>
+  <p class="links-inline"><a href="{{ '/publications/' | relative_url }}">All publications, with TL;DRs →</a></p>
 </section>
 
 <section id="open-source">
   <h2>Open Source</h2>
   <ul class="entries">
     <li>
-      <p class="title"><a href="https://github.com/lamng3/OntoDB">OntoDB</a><span class="meta">: Database management system for ontologies. RDF storage, SPARQL queries, B+ tree indexes, and ARIES recovery</span></p>
-      <p class="links-inline"><a href="https://github.com/lamng3/OntoDB">Repository</a> · <a href="https://lamng3.github.io/ontodb-docs/">Documentation</a></p>
+      <p class="title"><a href="https://github.com/lamng3/OntoDB">OntoDB</a><span class="meta">: A database management system for ontologies: RDF storage, SPARQL queries, and crash recovery with a write-ahead log</span></p>
+      <p class="links-inline"><a href="https://github.com/lamng3/OntoDB">Repository</a> · <a href="https://lamng3.github.io/ontodb-docs/">Manual</a> · <a href="{{ '/publications/ontodb-book/' | relative_url }}">Book</a> · <a href="{{ '/blog/databases/#database-engine' | relative_url }}">Lecture</a></p>
     </li>
   </ul>
 </section>
