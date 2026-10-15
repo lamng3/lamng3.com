@@ -40,7 +40,7 @@ description: >-
   <h2>Selected Publications</h2>
   <ol class="entries pubs">
     {% for pub in site.data.publications %}
-      {% unless pub.kind == 'book' %}
+      {% if pub.selected %}
         <li>
           <span class="authors">{{ pub.authors }}.</span>
           <a class="ptitle" href="{{ '/publications/' | append: pub.slug | append: '/' | relative_url }}">{{ pub.title }}.</a>
@@ -48,7 +48,7 @@ description: >-
           {% if pub.pdf %}{%- assign pdf_url = pub.pdf -%}{%- unless pdf_url contains '://' -%}{%- assign pdf_url = pdf_url | relative_url -%}{%- endunless -%}<a href="{{ pdf_url }}">[PDF]</a>{% endif %}
           {% for link in pub.links %}{% if link.label == 'Code' %}<a href="{{ link.url }}">[Code]</a>{% endif %}{% endfor %}
         </li>
-      {% endunless %}
+      {% endif %}
     {% endfor %}
   </ol>
   <p class="links-inline"><a href="{{ '/publications/' | relative_url }}">All publications</a></p>
