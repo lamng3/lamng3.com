@@ -91,7 +91,7 @@ RDF is one table with three columns: subject, predicate, object. Two problems an
 1. **Strings are long and repeated.** A **dictionary** maps each term to a dense 64-bit id once, so a triple becomes three integers, 24 bytes.
 2. **Byte order must be key order.** Comparing keys with `memcmp` needs the most significant byte first: in little-endian, the id 256 (`00 01 …`) would sort below 1 (`01 00 …`). Big-endian makes integer order and byte order the same.
 
-A pattern with its bound positions first is then a **prefix**, and a prefix is one contiguous key range. For subject 5, the range is $$[(5,0,0),\,(6,0,0))$$. But "which subjects have object `Material`?" binds only the *last* position, so no single ordering serves every pattern. OntoDB keeps the same triples in three orders, SPO, POS, and OSP, which makes every combination of bound positions a prefix scan. Extra orderings change the **cost** of an answer, never the answer.
+A pattern with its bound positions first is then a **prefix**, and a prefix is one contiguous key range. For subject 5, the range is $$[(5,0,0),\,(6,0,0))$$. But "which subjects have object `Material`?" binds only the *last* position, so no single ordering serves every pattern. OntoDB keeps the same triples in three orders, SPO, POS, and OSP, which makes every combination of bound positions a prefix scan. Extra orderings change the **cost** of an answer, never the answer. How much? On LUBM(1), about 100,000 triples, SPO alone reads all 1,131 pages of its tree for `?x rdf:type C`; with POS that pattern reads 25. The other three orderings cost 80% more space and made no pattern cheaper, so OntoDB keeps three ([results](https://github.com/lamng3/OntoDB/blob/main/benchmarks/indexing/results.md)).
 
 ### A query is a join
 
