@@ -2,12 +2,12 @@
 layout: default
 title: Publications
 permalink: /publications/
-description: Papers, a thesis, and a book on ontologies, knowledge graphs, language models, and database systems, each with a TL;DR and a PDF to read on any device.
+description: Papers, a thesis, and a book on ontologies, knowledge graphs, language models, and database systems, each with a TL;DR and a PDF.
 ---
 
 <header>
   <h1>Publications</h1>
-  <p class="lede">Papers, a thesis, and a book, each with a TL;DR and a PDF you can read here, on a computer or a phone.</p>
+  <p class="lede">Papers, a thesis, and a book, each with a TL;DR and a PDF.</p>
 </header>
 
 <ol class="entries pubs pub-index">
