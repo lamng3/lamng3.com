@@ -38,13 +38,13 @@
   short: MOIRA
   title: "MOIRA: Memory-Augmented Ontology Integration with Cost-Bounded Reasoning Agents"
   authors: "L. Nguyen, E. Frakes, H. Ma, O. Dernek, R. H. French, and Y. Wu"
-  venue: "In submission"
+  venue: "Preprint"
   year: 2026
-  status: in-submission
+  status: preprint
   tldr: "A toolkit for integrating, matching, and refining ontologies, and for answering questions over them with language models, under a cost budget. Embeddings and answers are remembered across runs, so repeated or reworded questions are answered without calling the model again."
   abstract: "MOIRA is a Python toolkit for ontology integration, matching, refinement, and ontology-grounded language-model reasoning. It combines RDF/OWL parsing, graph and text embeddings, pluggable retrieval, validation, uncertainty quantification, and Ontology-of-Thought traces, with a tiered query cache that replays repeated and reworded questions."
   highlights:
-    - "The paper is in submission; results will be added here once it is published."
+    - "Results will be added here once the paper is published."
   pdf:
   links:
     - { label: Code, url: "https://github.com/lamng3/moira" }
