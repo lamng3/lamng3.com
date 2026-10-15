@@ -28,6 +28,8 @@ After every PLAN slice that starts passing (`scripts/status` in `../ontodb` show
 - The chapter's **Status** box (`\begin{status}`) for the slice. `chapters/a-map.tex` maps chapters to slices.
 - The preface's Status box (`chapters/00-preface.tex`) when a whole feature finishes.
 - Any `\begin{ontodb}` box whose claims the implementation changed (names, sizes, choices such as which permutations were kept).
+- Design decisions (`\begin{decision}{Title}`): every choice the slice made gets a box in the chapter that teaches the theory, with Choice, Alternatives, Why, and Cost (`\dpart{...}`). When a planned decision is built, drop `(planned)` from its title; if the code chose differently, rewrite the box. The list after the contents updates itself.
+- Questions: if the slice adds a concept a reader should be able to reason about, add a question to the chapter's `checkyourself` list and its answer to `chapters/b-answers.tex`.
 - Find stale text: `grep -n "plan <x.y>\|next item\|today\|not yet" chapters/*.tex`.
 - Build: `cd book && tectonic ontodb-book.tex` (or `make` if `pdflatex` is installed). Commit the `.tex` changes and `ontodb-book.pdf` together.
 - Note the page count: `pdfinfo ontodb-book.pdf | grep Pages`.
