@@ -34,3 +34,7 @@ toc:
 - Link between techniques with `/blog/<slug>/#<id>`, or `#<id>` within the same page.
 - Quote `title` and `description`. A `: ` inside an unquoted YAML value breaks the page.
 - `_redirects` maps the old dated post URLs (`/blog/2026/<slug>/`) to their sections. Keep it.
+
+## OntoDB
+
+The OntoDB book, manual, and code are kept in step with this site. `SYNC.md` lists what to update, where, and in what order.
