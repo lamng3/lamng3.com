@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Databases"
-description: "Ideas from competitive programming that show up inside database systems: keeping old versions around (persistence, MVCC, copy-on-write B-trees), laying sparse data out for fast scans (compressed sparse row), answering membership in little memory (filters and sketches), keeping a sorted table in memory (skip lists), summing over rectangles of a grid (quadtrees), and deciding what stays in a full cache (eviction)."
+description: "Ideas from competitive programming that show up inside database systems: keeping old versions around (persistence, MVCC, copy-on-write B-trees), laying sparse data out for fast scans (compressed sparse row), answering membership in little memory (filters and sketches), keeping a sorted table in memory (skip lists), summing over rectangles of a grid (quadtrees), deciding what stays in a full cache (eviction), and a lecture on a whole database engine, end to end."
 permalink: /blog/databases/
 last_updated: 2026-10-14
 author: Lam Nguyen
@@ -9,7 +9,7 @@ toc:
   sidebar: right
 ---
 
-Ideas from competitive programming that show up inside database systems: keeping old versions around (persistence, MVCC, copy-on-write B-trees), laying sparse data out for fast scans (compressed sparse row), answering membership in little memory (filters and sketches), keeping a sorted table in memory (skip lists), summing over rectangles of a grid (quadtrees), and deciding what stays in a full cache (eviction).
+Ideas from competitive programming that show up inside database systems: keeping old versions around (persistence, MVCC, copy-on-write B-trees), laying sparse data out for fast scans (compressed sparse row), answering membership in little memory (filters and sketches), keeping a sorted table in memory (skip lists), summing over rectangles of a grid (quadtrees), and deciding what stays in a full cache (eviction). The last section is a lecture that puts these pieces inside a whole database engine, from pages to crash recovery, with [OntoDB](#database-engine) as the example.
 
 <details markdown="1">
 <summary>C++ template used by every implementation on this page</summary>
@@ -796,6 +796,99 @@ A new page enters A1in. If it ages out without anyone caring, its key passes thr
 
 A database buffer pool makes this choice for disk pages. An agent with a bounded context makes it for facts, tool results, and past turns: what to keep, what to drop, and what to remember only by name, like A1out, so it can be fetched again if it turns out to matter.
 
+## A Database Engine, End to End {#database-engine}
+
+The sections above are pieces. This one is a lecture that puts them inside a whole engine, following one request from the disk up and back down again, and asking at each layer the question that forces the design. The example throughout is [OntoDB](https://github.com/lamng3/OntoDB), a database management system for ontologies that I am building: its data is RDF triples, and its query language is SPARQL.
+
+The companion book, [**OntoDB: Database Internals by Example**](https://github.com/lamng3/OntoDB/blob/main/book/ontodb-book.pdf) (PDF, 55 pages), develops every step below in full, with figures and a worked ARIES trace. The [OntoDB manual](https://lamng3.github.io/ontodb-docs/) shows how to run it.
+
+### Why data lives in pages
+
+The first instinct is to read exactly the record you need. But storage does not deal in records: a device reads and writes whole blocks, and one random read costs the same whether you wanted 8 bytes or 4,096. So the engine stops fighting the device and adopts its unit. Data lives in fixed-size **pages** (OntoDB uses 4 KiB), and page $$i$$ sits at byte offset $$i \cdot 4096$$, so a page id is all you need to find it. Variable-length records go in **slotted pages**: a directory at the front points at records packed from the back, so a record can move inside its page without changing its address.
+
+One detail in OntoDB is worth stealing: the first 8 bytes of every page are reserved for a **pageLSN** (the last log record applied to it) from the very first version, long before the log existed. When logging arrived, the file format did not have to change.
+
+### Which pages stay in memory
+
+The database is bigger than memory, so a **buffer pool** keeps some pages in frames and must pick a victim on every miss. That is [cache eviction](#cache-eviction) again, with one twist: a single table scan touches every page once, and plain LRU lets it flush the hot index pages. OntoDB uses **LRU-K** with $$K = 2$$: rank pages by the time since their *second*-most-recent access, so a page touched once has infinite distance and leaves first. It is the same instinct as 2Q's probation, expressed as a distance.
+
+The buffer pool also answers two questions that decide everything about recovery later:
+
+- **Steal**: may it write a page holding an *uncommitted* change, to free a frame? If yes, recovery may need to **undo**.
+- **Force**: must a commit write every page it changed? If no, recovery may need to **redo**.
+
+Fast engines answer steal and no force, and pay for it with a log that can do both. Hold that thought until the last two sections.
+
+### Finding a key in three reads
+
+A balanced binary search tree finds one of $$N$$ keys in $$\log_2 N$$ steps. If each step is a page read, a billion keys cost 30 reads. The fix is to make each node a whole page with fanout $$F$$ in the hundreds:
+
+$$
+\text{height} = \lceil \log_F N \rceil, \qquad \lceil \log_{500} 10^9 \rceil = 4 .
+$$
+
+That is the **B+ tree**: internal nodes hold only separator keys (so the fanout is as large as possible), all values live in leaves, and leaves link to their right sibling so a range scan descends once and then walks sideways. A full leaf **splits** and copies its first key up to the parent; when the root splits, the tree grows one level, so every leaf stays at the same depth. The top levels are tiny and hot, so in practice a lookup costs one or two real disk reads.
+
+### One table, three columns: indexing triples
+
+RDF is one table with three columns: subject, predicate, object. Two problems and two tricks:
+
+1. **Strings are long and repeated.** A **dictionary** maps each term to a dense 64-bit id once, so a triple becomes three integers, 24 bytes.
+2. **Byte order must be key order.** Comparing keys with `memcmp` needs the most significant byte first: in little-endian, the id 256 (`00 01 …`) would sort below 1 (`01 00 …`). Big-endian makes integer order and byte order the same.
+
+A pattern with its bound positions first is then a **prefix**, and a prefix is one contiguous key range. For subject 5, the range is $$[(5,0,0),\,(6,0,0))$$. But "which subjects have object `Material`?" binds only the *last* position, so no single ordering serves every pattern. OntoDB keeps the same triples in three orders, SPO, POS, and OSP, which makes every combination of bound positions a prefix scan. Extra orderings change the **cost** of an answer, never the answer.
+
+### A query is a join
+
+`?s a ub:Student . ?s ub:name ?name` is two scans joined on `?s`, and a $$k$$-pattern SPARQL query is a $$k$$-way self-join. The engine runs it as a tree of **iterators**, each with `Init` and `Next`, pulling one row at a time, so `LIMIT 10` stops the whole tree after ten rows. Which join to use is the real decision:
+
+- **Nested loop**: $$|R| \cdot |S|$$, always correct.
+- **Index nested loop**: substitute each outer row into the inner pattern and probe the index, $$|R|$$ probes. This is the common SPARQL case: one pattern finds the entities, every other pattern looks up an attribute of each.
+- **Hash join**: linear in $$|R| + |S|$$, plus memory for one side.
+
+To choose, the optimizer estimates sizes. The textbook estimate assumes positions are independent, $$\hat{c} = |p| \cdot |o| / |T|$$, and RDF breaks that assumption constantly (`rdf:type` only ever points at classes), so the error compounds up the plan. Running the plan and printing estimated next to actual rows is how you find the bad guess.
+
+### Many users at once
+
+Two transactions, each reading and writing, can interleave into a result neither would produce alone. **Two-phase locking** fixes that: acquire locks, then release them, never acquire after releasing; the order in which transactions finish acquiring is an equivalent serial order. The question that makes it practical: *when* may a write lock be released? Not before commit. If $$T_1$$ releases an exclusive lock early and $$T_2$$ reads the value, then $$T_1$$ aborts, $$T_2$$ has read something that never existed. So exclusive locks are held to the end at every isolation level, and the levels differ only in how long *shared* locks are held. A B+ tree also needs **latches**, short page-level mutexes held only during one tree operation, which protect structure rather than data.
+
+### Surviving a crash: the log
+
+Back to steal and no force. At the moment of a crash, the disk can hold uncommitted changes (stolen pages) and miss committed ones (not forced). Both are repairable if one rule holds, the **write-ahead rule**:
+
+1. A page goes to disk only after the log records describing it are durable.
+2. A commit is acknowledged only after its commit record is durable.
+
+Rule 1 guarantees undo information exists for anything stolen; rule 2 guarantees redo information exists for anything committed. Commits each need an `fsync`, so a **group commit** lets every commit that arrives during one flush share the next. And because a crash can tear the last record, every record carries its length and a checksum: OntoDB uses CRC-32C, like PostgreSQL, RocksDB, and InnoDB.
+
+### ARIES: repeat history, then undo
+
+ARIES recovers in three passes:
+
+1. **Analysis** reads from the last checkpoint and rebuilds which transactions were running (the losers) and which pages were dirty.
+2. **Redo** replays *every* logged change, winners and losers alike, skipping a change when the page's pageLSN shows it already landed. The database is now exactly as it was at the crash.
+3. **Undo** rolls back the losers, newest first, writing a **compensation record** for each step.
+
+The surprising part is redoing changes that are about to be undone. It makes undo start from a precise state, and the compensation records make recovery itself crash-safe: if the machine dies mid-undo, the next recovery redoes the compensations and skips straight past what was already undone. One more subtlety: a B+ tree split caused by a transaction that later aborts must *not* be undone, because other committed inserts may now live in the new page. ARIES logs the split as a **nested top action**, redone but never undone, and undoes only the logical insert.
+
+### Try it
+
+OntoDB's persistent databases run today. They make a simpler choice: the whole database is in memory and only committed state is ever written to the snapshot (no steal), commits append to a log (no force), so recovery is **redo-only**, one forward pass. Build it and watch a transaction survive a restart:
+
+```text
+./build/dev/ontodb mydb
+OntoDB> \load data/tiny.owl
+OntoDB> INSERT DATA { <http://example.org/materials#Ceramic> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://example.org/materials#Material> . }
+inserted 1 triple
+OntoDB> \log 3
+lsn 35 txn 2 term 18 <http://example.org/materials#Ceramic>
+lsn 36 txn 2 update insert (18 9 4)
+lsn 37 txn 2 commit
+OntoDB> \crash
+```
+
+Reopen `mydb` and Ceramic is there. `\checkpoint` writes a snapshot by atomic rename and empties the log, and `\verify` rebuilds the database from its files and compares it with the live one. The book's last chapter walks through why each of those steps is safe to crash after.
+
 ## From the Notebook {#notebook}
 
 Implementations from my [competitive programming notebook](https://github.com/lamng3/competitive-programming-notebook), tagged with their [USACO Guide](https://usaco.guide/) level where they have one.
@@ -840,6 +933,13 @@ All take an edge list and need real traversal over the adjacency — topological
 - [LeetCode 460 — LFU Cache](https://leetcode.com/problems/lfu-cache/)
 
 ## Further reading {#further-reading}
+
+**A Database Engine, End to End**
+
+- [OntoDB: Database Internals by Example](https://github.com/lamng3/OntoDB/blob/main/book/ontodb-book.pdf), the companion book to the lecture.
+- Alex Petrov, *Database Internals* (O'Reilly, 2019).
+- Mohan et al., [ARIES](https://dl.acm.org/doi/10.1145/128765.128770) (TODS, 1992).
+- O'Neil, O'Neil, and Weikum, [The LRU-K page replacement algorithm](https://dl.acm.org/doi/10.1145/170036.170081) (SIGMOD, 1993).
 
 **Compressed Sparse Row**
 
