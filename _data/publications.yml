@@ -132,7 +132,7 @@
   kind: book
   title: "OntoDB: Database Internals by Example"
   authors: "L. Nguyen"
-  venue: "Book, 76 pages"
+  venue: "Book, 78 pages"
   year: 2026
   status: living
   tldr: "How a database engine works, from pages and buffer pools to B+ trees, query plans, locking, the write-ahead log, and ARIES, taught with OntoDB, a database management system for ontologies, as the running example."
