@@ -19,7 +19,7 @@ After every PLAN slice that starts passing (`scripts/status` in `../ontodb` show
 
 - `scripts/check <slice>` passes, and the slice's tests no longer have the `DISABLED_` prefix.
 - `PLAN.md`: the "Building" table's notes (which slice is next, "x.y is done"), and "Runs now" if the shell gained a behavior.
-- `README.md`: the progress badge (`plan-N%2F53`), the Status table row (🚧 to ✅ when a whole feature is done), and the `N of 53 slices pass` line.
+- `README.md`: the feature bullets under "What it is" when a feature changes what OntoDB does. The README has no progress badge or status table now that every slice passes; add one back only if new unfinished work goes into `PLAN.md`.
 - `docs/architecture.md`: sentences that say a path is not built yet, and the Deviations list if the code differs from the plan.
 - Find stale text: `grep -rn "PLAN <x.y>\|plan <x.y>\|next item\|not built yet\|of 53" PLAN.md README.md docs`.
 
@@ -36,7 +36,7 @@ After every PLAN slice that starts passing (`scripts/status` in `../ontodb` show
 
 ## 3. Manual (`../ontodb-docs`)
 
-- `content/next.md`: the `lede` (`N of 53 slices are done` and what comes next) and the "Being built" list.
+- `content/next.md`: the `lede` (`N of 53 slices are done` and what comes next) and the "Next" list.
 - The internals page for the feature (`indexes.md`, `buffer-pool.md`, `b-plus-tree.md`, `dictionary.md`, `query-engine.md`, `optimizer.md`, `concurrency.md`, `recovery.md`, `durability.md`): "this is plan x.y", "throws PLAN x.y", "next item to build".
 - `content/config.md`: settings that answered `not built yet` and now work.
 - Find stale text: `grep -rn "PLAN <x.y>\|plan <x.y>\|of 53\|next item\|being built" content`.
