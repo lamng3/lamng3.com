@@ -55,7 +55,7 @@ mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 The sections after this one are pieces. This one is a lecture that puts them inside a whole engine, following one request from the disk up and back down again, and asking at each layer the question that forces the design. The example throughout is [OntoDB](https://github.com/lamng3/OntoDB), a database management system for ontologies that I am building: its data is RDF triples, and its query language is SPARQL.
 
-The companion book, [**OntoDB: Database Internals by Example**](https://github.com/lamng3/OntoDB/blob/main/book/ontodb-book.pdf) (PDF, 93 pages), develops every step below in full, with figures and a worked ARIES trace. The [OntoDB manual](https://lamng3.github.io/ontodb-docs/) shows how to run it.
+The companion book, [**OntoDB: Database Internals by Example**](https://github.com/lamng3/OntoDB/blob/main/book/ontodb-book.pdf) (PDF, 97 pages), develops every step below in full, with figures and a worked ARIES trace. The [OntoDB manual](https://lamng3.github.io/ontodb-docs/) shows how to run it.
 
 ### Why data lives in pages
 
@@ -126,9 +126,11 @@ ARIES recovers in three passes:
 
 The surprising part is redoing changes that are about to be undone. It makes undo start from a precise state, and the compensation records make recovery itself crash-safe: if the machine dies mid-undo, the next recovery redoes the compensations and skips straight past what was already undone. One more subtlety: a B+ tree split caused by a transaction that later aborts must *not* be undone, because other committed inserts may now live in the new page. ARIES logs the split as a **nested top action**, redone but never undone, and undoes only the logical insert.
 
+A split also raises a quieter problem. It writes three pages (the old leaf, the new leaf, the parent), and if the log reaches the disk with only the first two records, redo faithfully rebuilds a tree whose parent never heard of the new leaf: scans find every key and point lookups miss some. A multi-page change must reach the log whole or not at all. ARIES uses the nested top action again, InnoDB holds every latch until a *mini-transaction* commits, and PostgreSQL's B-link trees make a half split legal. OntoDB's page store logs a full image of each changed page and wraps every tree insert or delete in a **page group**: the log flushes nothing past the group's first record until it closes, and the buffer pool will not evict a page the group holds back. Its crash harness kills a real store inside splits and merges for 200 seeds; making the harness that thorough is what found the problem, and a second one: undo deleted a triple from one index, crashed, and the retry trusted that index and skipped the other two.
+
 ### Try it
 
-OntoDB's persistent databases run today. They make a simpler choice: the whole database is in memory and only committed state is ever written to the snapshot (no steal), commits append to a log (no force), so recovery is **redo-only**, one forward pass. Build it and watch a transaction survive a restart:
+The page store's recovery runs in OntoDB's tests and crash harness; the shell's persistent databases, which you can try now, make a simpler choice: the whole database is in memory and only committed state is ever written to the snapshot (no steal), commits append to a log (no force), so recovery is **redo-only**, one forward pass. Build it and watch a transaction survive a restart:
 
 ```text
 ./build/dev/ontodb mydb
