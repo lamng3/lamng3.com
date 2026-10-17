@@ -1,14 +1,14 @@
 # Newest first. Keep this to the notes you still want on the blog index.
 # Drop a line when it is no longer current.
-- date: 2026-10-17
+- date: "2026-10-17"
   title: DP on a DAG
   topic: Dynamic Programming
   url: /blog/dynamic-programming/#dp-on-a-dag
-- date: 2026-10-17
+- date: "2026-10-17"
   title: Persistent Trie
   topic: Strings
   url: /blog/strings/#persistent-trie
-- date: 2026-10-17
+- date: "2026-10-17"
   title: Lazy Propagation
   topic: Range Queries
   url: /blog/range-queries/#lazy-segment-tree

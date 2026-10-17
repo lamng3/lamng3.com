@@ -222,20 +222,43 @@ p {
 }
 
 .recent {
-  margin: 1.75rem 0 0;
+  margin: 0;
 }
 
 .recent h2 {
   margin-top: 0;
 }
 
-.post-list .meta {
-  color: var(--muted);
-  font-weight: 400;
+.recent-day {
+  margin: 0 0 0.35rem;
 }
 
-.post-list .meta::before {
-  content: "· ";
+.recent-day time {
+  display: block;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 0.15rem;
+}
+
+.recent-notes {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.85rem;
+}
+
+.recent-notes li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1.5rem;
+  padding: 0.18rem 0;
+}
+
+.recent-notes span {
+  color: var(--muted);
+  font-size: 0.92rem;
+  white-space: nowrap;
 }
 
 article.post header {
@@ -390,7 +413,8 @@ footer p {
     display: inline-block;
     margin-bottom: 0.25rem;
   }
-  .post-list li {
+  .post-list li,
+  .recent-notes li {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.15rem;

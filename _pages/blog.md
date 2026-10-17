@@ -20,14 +20,20 @@ description: Study notes on algorithms, data structures, and the systems built o
 
 <section class="recent">
   <h2>Recent</h2>
-  <ul class="post-list">
-    {% for item in site.data.recent %}
-      <li>
-        <a href="{{ item.url | relative_url }}">{{ item.title }} <span class="meta">{{ item.topic }}</span></a>
-        <time datetime="{{ item.date | date: '%Y-%m-%d' }}">{{ item.date | date: "%B %d, %Y" }}</time>
-      </li>
-    {% endfor %}
-  </ul>
+  {% assign days = site.data.recent | group_by: "date" | reverse %}
+  {% for day in days %}
+    <div class="recent-day">
+      <time datetime="{{ day.name }}">{{ day.name | date: "%B %d, %Y" }}</time>
+      <ul class="recent-notes">
+        {% for item in day.items %}
+          <li>
+            <a href="{{ item.url | relative_url }}">{{ item.title }}</a>
+            <span>{{ item.topic }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endfor %}
 </section>
 
 <h2>Topics</h2>
