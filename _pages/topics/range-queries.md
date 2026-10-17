@@ -1,15 +1,15 @@
 ---
 layout: post
 title: "Range Queries"
-description: "Answering questions about a range of an array while the array changes. A segment tree stores a summary per node, a walk descends it to find a position, and a Fenwick tree does prefix sums in less code once the values are compressed to ranks."
+description: "Answering questions about a range of an array while the array changes. A segment tree stores a summary per node, lazy propagation updates a whole range with one tag, a walk descends the tree to find a position, and a Fenwick tree does prefix sums in less code once the values are compressed to ranks."
 permalink: /blog/range-queries/
-last_updated: 2026-10-10
+last_updated: 2026-10-17
 author: Lam Nguyen
 toc:
   sidebar: right
 ---
 
-Answering questions about a range of an array while the array changes. A segment tree stores a summary per node, a walk descends it to find a position, and a Fenwick tree does prefix sums in less code once the values are compressed to ranks.
+Answering questions about a range of an array while the array changes. A segment tree stores a summary per node, [lazy propagation](#lazy-segment-tree) updates a whole range with one tag, a walk descends the tree to find a position, and a Fenwick tree does prefix sums in less code once the values are compressed to ranks.
 
 <details markdown="1">
 <summary>C++ template used by every implementation on this page</summary>
@@ -158,7 +158,7 @@ Most of that range is empty, though. If you only ever touch a few thousand posit
 
 Instead of `2*v+1` index arithmetic, each node stores explicit `left` and `right` child pointers (indices into a pool), initialized to `-1` for "doesn't exist yet." When a traversal needs a child that isn't there, we allocate it on the spot. The tree conceptually spans $$[0, 10^9]$$ but only ever materializes $$O(q \log C)$$ nodes for $$q$$ operations over a coordinate range of size $$C$$.
 
-[LeetCode 732 — My Calendar III](https://leetcode.com/problems/my-calendar-iii/) is the perfect showcase. You book half-open intervals `[start, end)` one at a time, and after each booking you report the maximum number of events that overlap at any single point (the "$$k$$-booking"). Model each booking as **+1 over the range** `[start, end-1]`, and the answer is the **global maximum** over the whole line. That's a range-add / range-max structure — which needs lazy propagation — over a range far too wide to build eagerly. Dynamic segment tree it is.
+[LeetCode 732 — My Calendar III](https://leetcode.com/problems/my-calendar-iii/) is the perfect showcase. You book half-open intervals `[start, end)` one at a time, and after each booking you report the maximum number of events that overlap at any single point (the "$$k$$-booking"). Model each booking as **+1 over the range** `[start, end-1]`, and the answer is the **global maximum** over the whole line. That's a range-add / range-max structure — which needs [lazy propagation](#lazy-segment-tree) — over a range far too wide to build eagerly. Dynamic segment tree it is.
 
 <details markdown="1">
 <summary>C++ implementation</summary>
@@ -280,7 +280,139 @@ The dynamic segment tree earns its keep when you _can't_ see everything in advan
 - A segment tree is a tree of nodes; each node is a **summary** of its range, built by a **merge** of its children.
 - To solve a new problem, decide **what a node stores** and **how children merge** — often that's the entire solution (the longest-repeating-run node).
 - When the index space is huge, go **dynamic/sparse**: replace index arithmetic with child pointers and create nodes lazily, so you pay only for the paths you actually touch.
-- **Lazy propagation** lets range updates stay $$O(\log)$$; coordinate compression is the offline alternative when you can see all queries ahead of time.
+- **Lazy propagation** lets a range update stay $$O(\log n)$$. The array version, and why the tag has to be pushed before you descend, is [Lazy Propagation](#lazy-segment-tree). Coordinate compression is the offline alternative when you can see all queries ahead of time.
+
+## Lazy Propagation {#lazy-segment-tree}
+
+A point update walks one root-to-leaf path and fixes $$O(\log n)$$ summaries on the way back up. A range update of $$[q_l, q_r]$$ can cover millions of leaves. The first instinct is to visit each of them. At $$n = 10^5$$ and $$10^5$$ such updates, that is the whole array, over and over.
+
+You also do not always need a tree. If every update is a range add and every query is a point, a difference array does it. If every update happens before every query, do the updates into the difference array and build one prefix sum. Lazy propagation is the tool for the remaining case: range updates and range queries **interleaved**, each answered before the next one arrives. [CSES — Range Updates and Sums](https://cses.fi/problemset/task/1735) is that case. [USACO Guide's range-update chapter](https://usaco.guide/plat/RURQ) is the longer treatment, and the code below is the add-and-sum core of it.
+
+### A node can absorb an update that covers it
+
+Recall the [segment tree](#segment-tree): node $$v$$ owns $$[t_l, t_r]$$ and stores a summary of it. Here the summary is the sum, in `st[v]`.
+
+Suppose the update adds $$x$$ to every index of $$[t_l, t_r]$$, the node's whole range. The new sum is the old sum plus $$x \cdot (t_r - t_l + 1)$$. That number is knowable **without looking at a single child**. Write it into `st[v]` and stop. The children are now stale, and that is allowed, as long as nobody reads them before they are told.
+
+The note you leave for them is the tag, `lazy[v] = x`. Its meaning is specific:
+
+> `st[v]` already includes this add. The children do not. Before anyone descends into a child, hand them the tag.
+
+`lazy[v] == 0` means there is nothing to hand down. Tags add: a second full-cover update of $$+y$$ does `st[v] += y * length` and `lazy[v] += y`. You still do not touch the children.
+
+### Push is the only way a child learns
+
+`push(v)` runs when an update or a query needs to look inside $$v$$, because the operation covers only part of $$[t_l, t_r]$$.
+
+For each child, add `lazy[v]` into the child's tag, and add `lazy[v]` times the child's length into the child's sum. Then clear `lazy[v]`. The child's sum is correct for everything pushed so far. Its own children may still be stale, and they will hear about it the next time someone pushes the child.
+
+The length is the part people drop. The tag means "add $$x$$ to **each** index." A node that stores a sum must scale by how many indexes it owns. A node that stores a minimum or a maximum adds $$x$$ once: the min of a range shifts by $$x$$, it does not scale. The tag is the same. The summary decides what `apply` does to `st`.
+
+Both `update` and `query` push before they split. Skipping it in `query` is the bug that survives samples. The tag is sitting on an ancestor, the query reads a child that never received it, and the child still holds the old sum.
+
+### One array, two updates, one query
+
+Take `a = [0, 0, 0, 0]` on indexes $$0..3$$. The root owns $$[0, 3]$$, its children own $$[0, 1]$$ and $$[2, 3]$$, and the four leaves own one index each. Every `st` and `lazy` starts at $$0$$.
+
+**Add $$3$$ on $$[0, 3]$$.** The root owns the whole update. `st[root] = 3 \cdot 4 = 12`, `lazy[root] = 3`. The children still store $$0$$. The real array is $$[3, 3, 3, 3]$$, and only the root knows it.
+
+**Add $$5$$ on $$[0, 1]$$.** The root does not own this update, so it pushes before splitting. Each child has length $$2$$, so each child's sum becomes $$3 \cdot 2 = 6$$ and each child's tag becomes $$3$$. The root's tag clears. Its sum is still $$12$$, now equal to $$6 + 6$$.
+
+The left child owns $$[0, 1]$$ completely, so it absorbs $$+5$$ itself: sum $$6 + 5 \cdot 2 = 16$$, tag $$3 + 5 = 8$$. The right child stays at sum $$6$$, tag $$3$$. The root recomputes $$16 + 6 = 22$$. The real array is $$[8, 8, 3, 3]$$.
+
+**Query the sum of $$[1, 2]$$.** The root's tag is already $$0$$. The left child owns $$[0, 1]$$, which is only partly inside the query, so push it. Its two leaves each receive $$+8$$ and become $$8$$ and $$8$$; the left tag clears. The query takes leaf $$1$$, which is $$8$$. The right child is partly inside too; after its push, leaf $$2$$ is $$3$$. The answer is $$8 + 3 = 11$$.
+
+Nothing in the algorithm is more complicated than this picture. Larger trees are the same three moves: absorb when the node is covered, push when you have to look inside, recompute the parent from the children on the way back.
+
+### Range assign is a second tag, and it wins
+
+Adding $$x$$ composes with itself by addition. Assigning every index in a range to a value $$s$$ does not. An assignment forgets the old values, so it also forgets any add that was waiting on those values.
+
+Keep two tags. The composition rules are short:
+
+- An add arrives while a set is pending. The indexes are already going to become the set value, so fold the add into it (`set += add`) and do not keep a separate add.
+- A set arrives while an add is pending. The set replaces the values, so write the set and clear the add.
+
+[CSES — Range Updates and Sums](https://cses.fi/problemset/task/1735) is exactly these two tags plus a range sum. The [USACO Guide chapter](https://usaco.guide/plat/RURQ) implements both. The code here is only the add, which is the one to have in your hands before the set tag is worth the extra state.
+
+The dynamic tree in [My Calendar III](#segment-tree) is this push, with one change: children are pointers allocated the first time `push` needs them, because the index space is $$10^9$$. The tag means the same thing there. It is applied to a maximum instead of a sum, so `apply` adds $$x$$ and does not multiply by the length.
+
+### Implementation
+
+Range add, range sum, inclusive bounds, $$0$$-indexed. `st` and `lazy` are 64-bit because a sum of $$10^5$$ updates of size $$10^9$$ does not fit in 32 bits. `push` refuses to run on a leaf: a leaf has no child to tell, and its `st` is already the value.
+
+<details markdown="1">
+<summary>C++ implementation</summary>
+
+```cpp
+struct LazySegmentTree {
+    int N;
+    vector<ll> st, lazy;
+
+    LazySegmentTree(const vector<ll>& a) {
+        N = sz(a);
+        st.assign(4 * max(N, 1), 0);
+        lazy.assign(4 * max(N, 1), 0);
+        if (N) build(a, 0, 0, N - 1);
+    }
+
+    void build(const vector<ll>& a, int v, int tl, int tr) {
+        if (tl == tr) { st[v] = a[tl]; return; }
+        int tm = tl + (tr - tl) / 2;
+        build(a, v * 2 + 1, tl, tm);
+        build(a, v * 2 + 2, tm + 1, tr);
+        st[v] = st[v * 2 + 1] + st[v * 2 + 2];
+    }
+
+    // st holds sums, so a pending add counts once per index of the child.
+    void push(int v, int tl, int tm, int tr) {
+        if (tl == tr || lazy[v] == 0) return;
+        apply(v * 2 + 1, tl, tm, lazy[v]);
+        apply(v * 2 + 2, tm + 1, tr, lazy[v]);
+        lazy[v] = 0;
+    }
+
+    void apply(int v, int tl, int tr, ll add) {
+        st[v] += add * (tr - tl + 1);
+        lazy[v] += add;
+    }
+
+    void update(int v, int tl, int tr, int ql, int qr, ll add) {
+        if (ql > qr) return;
+        if (ql == tl && tr == qr) { apply(v, tl, tr, add); return; }
+        int tm = tl + (tr - tl) / 2;
+        push(v, tl, tm, tr);
+        update(v * 2 + 1, tl, tm, ql, min(qr, tm), add);
+        update(v * 2 + 2, tm + 1, tr, max(ql, tm + 1), qr, add);
+        st[v] = st[v * 2 + 1] + st[v * 2 + 2];
+    }
+
+    ll query(int v, int tl, int tr, int ql, int qr) {
+        if (ql > qr) return 0;
+        if (ql == tl && tr == qr) return st[v];
+        int tm = tl + (tr - tl) / 2;
+        push(v, tl, tm, tr);
+        return query(v * 2 + 1, tl, tm, ql, min(qr, tm))
+             + query(v * 2 + 2, tm + 1, tr, max(ql, tm + 1), qr);
+    }
+
+    void update(int ql, int qr, ll add) { update(0, 0, N - 1, ql, qr, add); }
+    ll query(int ql, int qr) { return query(0, 0, N - 1, ql, qr); }
+};
+```
+
+</details>
+
+The walk above is this struct on `{0, 0, 0, 0}`: `update(0, 3, 3)`, `update(0, 1, 5)`, `query(1, 2) == 11`. [`LazySegmentTree.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/data_structures/rurq/LazySegmentTree.py) is the same add-and-sum tree in Python.
+
+### Complexity
+
+- Build: $$O(n)$$.
+- A range add or a range sum touches $$O(\log n)$$ nodes. Each node is either absorbed, pushed once, or recomputed from two children.
+- Memory: two arrays of $$4n$$ integers.
+- Over a coordinate range of size $$C$$ with only $$q$$ touched paths, the [dynamic tree](#segment-tree) stores $$O(q \log C)$$ nodes and the same bounds hold with $$n$$ replaced by $$C$$.
+
+> **The pattern worth naming.** A lazy tag is a postponed `apply` on a whole node. The summary at that node is already updated, and `push` is the promise that a child will be updated before it is read. Get `apply` right for the summary you store — scale a sum, shift a min — and the rest of the tree is the ordinary segment tree.
 
 ## Segment Tree Walk {#segment-tree-walk}
 
@@ -653,6 +785,13 @@ Implementations from my [competitive programming notebook](https://github.com/la
 - [LeetCode 715 — Range Module](https://leetcode.com/problems/range-module/)
 - [CSES — Range Updates and Sums](https://cses.fi/problemset/task/1735)
 
+**Lazy Propagation**
+
+- [CSES — Range Updates and Sums](https://cses.fi/problemset/task/1735) (range add, range assign, range sum)
+- [CSES — Range Update Queries](https://cses.fi/problemset/task/1651) (range add, point query: a difference array also solves it, which is why it is the warm-up)
+- [LeetCode 732 — My Calendar III](https://leetcode.com/problems/my-calendar-iii/) (the same tag on a dynamic tree, summarized by a maximum)
+- [Codeforces EDU — Segment Tree, Part 2](https://codeforces.com/edu/course/2/lesson/5) (range updates)
+
 **Segment Tree Walk**
 
 - [LeetCode 2286 — Booking Concert Tickets in Groups](https://leetcode.com/problems/booking-concert-tickets-in-groups/)
@@ -674,6 +813,12 @@ Implementations from my [competitive programming notebook](https://github.com/la
 - [CP-Algorithms — Segment Tree](https://cp-algorithms.com/data_structures/segment_tree.html): the definitive reference. Start here for the recursive formulation, then read the sections on storing more per node and on dynamic/implicit trees.
 - [USACO Guide — Segment Trees](https://usaco.guide/gold/segtree-ext?lang=cpp) and its [sparse segment tree](https://usaco.guide/plat/sparse-segtree?lang=cpp) page.
 - [Codeforces — Efficient and easy segment trees](https://codeforces.com/blog/entry/18051) (al.cash) for the iterative bottom-up variant once the recursive one clicks.
+
+**Lazy Propagation**
+
+- [USACO Guide — Range Update Range Query](https://usaco.guide/plat/RURQ): range add, range assign, and why a tag has to be pushed before the walk descends.
+- [CP-Algorithms — Segment Tree](https://cp-algorithms.com/data_structures/segment_tree.html): the sections on addition on segments and on assignment.
+- [Codeforces EDU — Segment Tree, Part 2](https://codeforces.com/edu/course/2/lesson/5).
 
 **Segment Tree Walk**
 

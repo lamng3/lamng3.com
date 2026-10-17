@@ -19,11 +19,15 @@
     title: Reachability DP
   - id: maximum-subarray
     title: Maximum Subarray from a Range Update
+  - id: dp-on-a-dag
+    title: DP on a DAG
 - slug: range-queries
   title: Range Queries
   sections:
   - id: segment-tree
     title: Segment Tree
+  - id: lazy-segment-tree
+    title: Lazy Propagation
   - id: segment-tree-walk
     title: Segment Tree Walk
   - id: fenwick-tree
@@ -47,6 +51,8 @@
   sections:
   - id: trie
     title: Trie
+  - id: persistent-trie
+    title: Persistent Trie
 - slug: graphs-and-trees
   title: Graphs and Trees
   sections:

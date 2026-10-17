@@ -158,7 +158,7 @@ The naive way to keep old versions is to copy the whole structure on every updat
 
 The real trick is **path copying**: when you change one element, you only copy the nodes on the path from the root to that element, and _reuse_ everything else. In a balanced tree of height $$O(\log n)$$, that's only $$O(\log n)$$ new nodes per update. Each version is just a different root pointing into a mostly-shared tree.
 
-That single idea — _share what didn't change, copy only what did_ — is the core of every persistent structure below.
+That single idea — _share what didn't change, copy only what did_ — is the core of every persistent structure below. A binary trie copies the same way; that version is a [persistent trie](/blog/strings/#persistent-trie).
 
 ### Snapshot Array
 
