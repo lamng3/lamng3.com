@@ -18,25 +18,18 @@ description: Study notes on algorithms, data structures, and the systems built o
   </button>
 </div>
 
-<section class="recent">
-  <h2>Recent</h2>
+<p class="recent">
   {% assign days = site.data.recent | group_by: "date" | reverse %}
   {% for day in days %}
-    <div class="recent-day">
-      <time datetime="{{ day.name }}">{{ day.name | date: "%B %d, %Y" }}</time>
-      <ul class="recent-notes">
-        {% for item in day.items %}
-          <li>
-            <a href="{{ item.url | relative_url }}">{{ item.title }}</a>
-            <span>{{ item.topic }}</span>
-          </li>
-        {% endfor %}
-      </ul>
-    </div>
+    <span class="recent-line">
+      <time datetime="{{ day.name }}">{{ day.name | date: "%b %-d" }}</time>
+      {% for item in day.items %}
+        <a href="{{ item.url | relative_url }}">{{ item.title }}</a>{% unless forloop.last %}<span class="sep">, </span>{% endunless %}
+      {% endfor %}
+    </span>
   {% endfor %}
-</section>
+</p>
 
-<h2>Topics</h2>
 <ul class="post-list">
   {% for topic in site.data.topics %}
     {% assign topic_url = '/blog/' | append: topic.slug | append: '/' %}
