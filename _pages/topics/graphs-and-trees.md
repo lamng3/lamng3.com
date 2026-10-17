@@ -367,7 +367,7 @@ Against the judge, `applySubstitutions` just feeds the pairs in and asks for the
 
 ### The takeaway
 
-The problem says "apply substitutions." The structure underneath says **topological order**, and once you see that, the interesting question stops being "what is the answer" and becomes "what state do I keep between insertions." Three choices did the work here: edges oriented dependency → dependent so progress flows forward; indegree counting only *pending* dependencies so it stays meaningful mid-stream; and unresolved placeholders preserved verbatim so partial output stays re-feedable. None of them are needed to pass the judge. All of them are what separates an answer from a component.
+The problem says "apply substitutions." The structure underneath says **topological order**, and once you see that, the interesting question stops being "what is the answer" and becomes "what state do I keep between insertions." Three choices did the work here: edges oriented dependency → dependent so progress flows forward; indegree counting only *pending* dependencies so it stays meaningful mid-stream; and unresolved placeholders preserved verbatim so partial output stays re-feedable. None of them are needed to pass the judge. All of them are what separates an answer from a component. When the graph is known up front and each node should be combined once, that same order is [DP on a DAG](/blog/dynamic-programming/#dp-on-a-dag).
 
 ## Counting on Trees: The Meeting Vertex {#meeting-vertex}
 

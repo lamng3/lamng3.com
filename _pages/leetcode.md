@@ -3,7 +3,7 @@ layout: post
 title: "Selected LeetCode Problems"
 description: "A running, hand-picked list of LeetCode problems I found interesting, each tagged with the topic or technique it exercises. A companion index to the technique write-ups on this blog."
 permalink: /blog/selected-leetcode-problems/
-last_updated: 2026-10-14
+last_updated: 2026-10-17
 author: Lam Nguyen
 toc:
   sidebar: right
@@ -17,7 +17,7 @@ A running list of LeetCode problems worth remembering, each labeled with the top
 | --- | --- |
 | [1520 — Maximum Number of Non-Overlapping Substrings](https://leetcode.com/problems/maximum-number-of-non-overlapping-substrings/) | Sorting and Greedy |
 | [2213 — Longest Substring of One Repeating Character](https://leetcode.com/problems/longest-substring-of-one-repeating-character/) | [Segment Tree](/blog/range-queries/#segment-tree) |
-| [732 — My Calendar III](https://leetcode.com/problems/my-calendar-iii/) | [Dynamic Segment Tree, Lazy Propagation](/blog/range-queries/#segment-tree) |
+| [732 — My Calendar III](https://leetcode.com/problems/my-calendar-iii/) | [Dynamic Segment Tree](/blog/range-queries/#segment-tree), [Lazy Propagation](/blog/range-queries/#lazy-segment-tree) |
 | [2286 — Booking Concert Tickets in Groups](https://leetcode.com/problems/booking-concert-tickets-in-groups/) | [Segment Tree Walk, Amortized Analysis](/blog/range-queries/#segment-tree-walk) |
 | [2827 — Number of Beautiful Integers in the Range](https://leetcode.com/problems/number-of-beautiful-integers-in-the-range/) | [Digit DP](/blog/dynamic-programming/#digit-dp) |
 | [679 — 24 Game](https://leetcode.com/problems/24-game/) | [Range DP, Backtracking](/blog/dynamic-programming/#range-dp) |
@@ -37,6 +37,7 @@ A running list of LeetCode problems worth remembering, each labeled with the top
 | [4053 — Minimum Operations to Make Every Element Palindromic](https://leetcode.com/problems/minimum-operations-to-make-every-element-palindromic/) | [Precompute, Binary Search](/blog/data-structure-design/#static-precompute) |
 | [3357 — Minimize the Maximum Adjacent Element Difference](https://leetcode.com/problems/minimize-the-maximum-adjacent-element-difference/) | [Binary Search on the Answer](/blog/binary-search/#search-d-not-x) |
 | [211 — Design Add and Search Words Data Structure](https://leetcode.com/problems/design-add-and-search-words-data-structure/) | [Trie, DFS](/blog/strings/#trie) |
+| [421 — Maximum XOR of Two Numbers in an Array](https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/) | [Binary Trie](/blog/strings/#persistent-trie) |
 | [588 — Design In-Memory File System](https://leetcode.com/problems/design-in-memory-file-system/) | [Trie over Path Names](/blog/strings/#trie-file-system) |
 | [308 — Range Sum Query 2D - Mutable](https://leetcode.com/problems/range-sum-query-2d-mutable/) | [Quadtree](/blog/databases/#quadtree-308) |
 | [427 — Construct Quad Tree](https://leetcode.com/problems/construct-quad-tree/) | [Region Quadtree](/blog/databases/#quadtree-427) |

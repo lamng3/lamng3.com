@@ -1,15 +1,15 @@
 ---
 layout: post
 title: "Dynamic Programming"
-description: "Most of dynamic programming is choosing what to remember. Each technique here is a different answer to that question: digits and a remainder, a split point, a set of reachable values, or a running best."
+description: "Most of dynamic programming is choosing what to remember. Each technique here is a different answer to that question: digits and a remainder, a split point, a set of reachable values, a running best, or a node processed only after everything it depends on."
 permalink: /blog/dynamic-programming/
-last_updated: 2026-10-10
+last_updated: 2026-10-17
 author: Lam Nguyen
 toc:
   sidebar: right
 ---
 
-Most of dynamic programming is choosing what to remember. Each technique here is a different answer to that question: digits and a remainder, a split point, a set of reachable values, or a running best.
+Most of dynamic programming is choosing what to remember. Each technique here is a different answer to that question: digits and a remainder, a split point, a set of reachable values, a running best, or a node processed only after everything it depends on.
 
 <details markdown="1">
 <summary>C++ template used by every implementation on this page</summary>
@@ -657,11 +657,175 @@ int main() {
 - That balance is a **maximum subarray**: answer $$= \text{tot} + \max_v \text{Kadane}(v)$$.
 - Only occurrences carry weight, so a **prefix count of $$c$$** collapses per-value Kadane onto the occurrence lists, giving $$O(n)$$ across all values.
 
+## DP on a DAG {#dp-on-a-dag}
+
+A loop like `for i in range(n)` is already a topological order. It is legal only because state $$i$$ depends on states before it, never on states after it. The subproblems of any DP, and the arrows "must be computed before," form a directed acyclic graph. On a chain the order is obvious, so nobody names it. The moment the dependencies are an actual graph, the order has to be computed, and that order _is_ the DP.
+
+This is usually called **DP on a DAG**, or topological-order DP. The topological order guarantees that when you process a node, every node it depends on is already final. Each state is written once. The whole pass is $$O(V + E)$$.
+
+### The order is the algorithm
+
+Take a directed edge $$u \to v$$ to mean "$$u$$ must be finished before $$v$$ can be updated from it." Two constructions produce a valid order:
+
+- **Kahn's algorithm.** Count indegrees. Repeatedly take a node whose indegree has fallen to $$0$$ (a BFS). Every predecessor has already been taken, because that is what drove the indegree to zero.
+- **Reverse DFS postorder.** Recurse through every child, then append the node. Reversing the finishing times puts sources first. A back edge to a node still on the stack is a cycle.
+
+If Kahn emits fewer than $$V$$ nodes, or the DFS sees a back edge, the graph is not a DAG. Stop. A cycle means some state depends on itself, so "compute it once, after its dependencies" is not a well-defined request. ([Topological order](/blog/graphs-and-trees/#topological-order) is the same sort, kept incrementally as edges arrive. Here the graph is known up front, so one batch sort is enough.)
+
+```python
+order = toposort(G)            # Kahn's (BFS indegree) or reverse DFS postorder
+dp = init()
+for u in order:
+    for v in G[u]:             # edge u -> v, so u is already final
+        dp[v] = combine(dp[v], dp[u], w(u, v))
+```
+
+`combine` is the whole problem. It is `max` for a longest path, `min` for a shortest path, and addition for a count. `init` has to match: unreachable nodes start at $$-\infty$$, $$+\infty$$, or $$0$$, and the source starts at the identity (length $$0$$, or $$1$$ way).
+
+The same loop read backwards is the pull form. Processing $$v$$, look at incoming edges and fold `dp[u]` in. Push and pull are the same recurrence. Push is the one the adjacency list already supports, so it is the one to write.
+
+### Longest path, which is easy only here
+
+Longest path is NP-hard on a general graph and linear on a DAG. There is no place to go in circles, so the first time you finish a node, its best incoming path is the best path.
+
+Let $$\mathrm{dp}[v]$$ be the number of cities on the longest route from city $$1$$ to $$v$$. Then
+
+$$
+\mathrm{dp}[v] = \max_{u \to v} \mathrm{dp}[u] + 1,
+$$
+
+with $$\mathrm{dp}[1] = 1$$, and $$-\infty$$ everywhere $$1$$ cannot reach. Process in topological order and the $$\mathrm{dp}[u]$$ on the right is done. Remember the argmax and walk parent pointers back from $$n$$ to print the route.
+
+That is [CSES — Longest Flight Route](https://cses.fi/problemset/task/1680). [USACO Guide's topological sort module](https://usaco.guide/gold/toposort) builds up to this problem, and CPH 16.2 is the one-page version of the same idea.
+
+### Counting paths, and shortest paths with negative weights
+
+Change `max` to a sum and the same loop counts paths. [CSES — Game Routes](https://cses.fi/problemset/task/1681) asks for the number of routes from $$1$$ to $$n$$ modulo $$10^9+7$$:
+
+$$
+\mathrm{dp}[v] = \sum_{u \to v} \mathrm{dp}[u], \qquad \mathrm{dp}[1] = 1.
+$$
+
+Change `max` to `min` and add a weight. One pass computes shortest paths from $$s$$, **negative weights included**, in $$O(V + E)$$. Bellman-Ford's extra $$V-1$$ rounds exist to wait for a longer and longer path to settle. On a DAG the topological order already waits for every shorter-in-edges path, so one relaxation per edge is the last one. Skip a node whose distance is still $$+\infty$$: it is not reachable, and relaxing out of it would poison everyone downstream. A negative cycle is exactly the case this refuses to handle, which is why the cycle check above is part of the algorithm and not a courtesy.
+
+### Critical path is the same recurrence with a clock
+
+Project scheduling asks for the earliest start of each task. Task $$v$$ cannot start until every predecessor $$u$$ has finished, so
+
+$$
+\mathrm{earliest}[v] = \max_{u \to v}\big(\mathrm{earliest}[u] + \mathrm{duration}[u]\big),
+$$
+
+and sources start at $$0$$. That is a longest path in disguise: the critical path is the one whose earliest time equals the project length. Latest start times are the same DP on the reversed edges, measured back from the project deadline. [USACO Gold — Timeline](http://www.usaco.org/index.php?page=viewproblem2&cpid=1017) is this recurrence with a lower bound per node: an edge $$a \to b$$ of weight $$x$$ means session $$b$$ starts at least $$x$$ days after $$a$$, so $$\mathrm{dp}[b] = \max(\mathrm{dp}[b], \mathrm{dp}[a] + x)$$ in topological order.
+
+### When the graph has cycles: condense, then do this
+
+If the problem allows cycles, do not run the loop and hope. Collapse each strongly connected component (Tarjan or Kosaraju) into one node. Edges that leave a component become edges of a new graph, the **condensation**, and the condensation of any directed graph is a DAG. Toposort that, and the DP above applies unchanged.
+
+[CSES — Coin Collector](https://cses.fi/problemset/task/1686) is the shape to remember. Teleporters form a directed graph, each city holds coins, and coins in a city are collected once. Inside one SCC you can tour every city, so the component is a single supernode whose value is the sum of its coins. You never need to re-enter a component you left, so the answer is a maximum-weight path in the condensation. "Max coins when you may revisit nodes inside a cycle" is this reduction, not a new DP.
+
+### Where the Euler tour fits
+
+The Euler tour technique is a cousin, not the same tool. It applies to **trees**. Run a DFS and record entry and exit times. The subtree of $$v$$ becomes a contiguous range of the flattened array, $$[\mathrm{tin}[v], \mathrm{tout}[v])$$.
+
+```python
+def dfs(u, p):
+    tin[u] = len(tour)
+    tour.append(u)
+    for v in g[u]:
+        if v != p:
+            dfs(v, u)
+    tout[u] = len(tour)   # subtree of u is tour[tin[u]:tout[u]]
+```
+
+A subtree add or a subtree sum is then a range update or a range query on that array, answered with a [segment tree](/blog/range-queries/#segment-tree) or a [Fenwick tree](/blog/range-queries/#fenwick-tree). A second, different flattening records the depth each time the DFS enters or returns to a node, and the LCA of two nodes is the minimum depth between their first visits. Both are called Euler tours. The one above is the subtree-range one; [CSES — Subtree Queries](https://cses.fi/problemset/task/1137) and [Path Queries](https://cses.fi/problemset/task/1138) are the practice, and the [USACO Guide page](https://usaco.guide/gold/tree-euler) walks the same flattening.
+
+The shared idea is "linearize the structure with DFS, then process the linear order":
+
+- Reverse DFS finishing order on a DAG is a topological order.
+- Tree DP is DAG DP whose edges point from child to parent, so the order is a postorder: children before the parent.
+- An Euler tour keeps the DFS order as an array of ranges, because the questions come back — many subtree or path queries — instead of one accumulation.
+
+If the problem is "the dependencies are fixed, then accumulate once," you want the loop at the top of this section. If it is "a tree, then many subtree or path queries," you want the tour.
+
+### Implementation
+
+Longest Flight Route, in the push form. `dp[v]` is the number of cities on the best route from $$1$$ to $$v$$. The counting variant is the same function with `max` replaced by a modular sum and `dp[1] = 1` as the only change of identity; both are in the file so the difference is visible.
+
+<details markdown="1">
+<summary>C++ implementation</summary>
+
+```cpp
+void solve() {
+    int n, m;
+    cin >> n >> m;
+    vii g(n + 1);
+    vi indeg(n + 1);
+    REP(i, m) {
+        int u, v;
+        cin >> u >> v;
+        g[u].pb(v);
+        indeg[v]++;
+    }
+
+    queue<int> q;
+    FOR(i, 1, n) if (!indeg[i]) q.push(i);
+    vi order;
+    while (!q.empty()) {
+        int u = q.front(); q.pop();
+        order.pb(u);
+        for (int v : g[u]) if (--indeg[v] == 0) q.push(v);
+    }
+    // order.size() < n means a cycle; this problem promises a DAG.
+
+    vi dp(n + 1, -1), parent(n + 1, -1);
+    dp[1] = 1;
+    for (int u : order) {
+        if (dp[u] < 0) continue;          // 1 never reached u
+        for (int v : g[u]) if (dp[u] + 1 > dp[v]) {
+            dp[v] = dp[u] + 1;
+            parent[v] = u;
+        }
+    }
+    if (dp[n] < 0) {
+        cout << "IMPOSSIBLE\n";
+        return;
+    }
+    vi path;
+    for (int v = n; v != -1; v = parent[v]) path.pb(v);
+    reverse(all(path));
+    cout << sz(path) << "\n";
+    for (int v : path) cout << v << " ";
+    cout << "\n";
+}
+
+// Game Routes: same graph, combine is a sum instead of a max.
+void count_routes() {
+    // ... build g and order as above, then:
+    // vi dp(n + 1);
+    // dp[1] = 1;
+    // for (int u : order) for (int v : g[u])
+    //     dp[v] = (dp[v] + dp[u]) % MOD;
+    // cout << dp[n] << "\n";
+}
+```
+
+</details>
+
+### Complexity
+
+- Topological sort: $$O(V + E)$$.
+- One combine per edge after that: $$O(V + E)$$, whatever `combine` is, as long as it is $$O(1)$$.
+- Recovering one path: $$O(V)$$.
+- SCC condensation, when you need it: the SCC algorithm is $$O(V + E)$$, and the DP on the condensation is linear in the condensed graph.
+
+> **The pattern worth naming.** Any DP is a DAG, and `for i in range(n)` is a topological order you were given for free. When the edges are part of the input, compute the order and run the same loop. Longest path, shortest path with negative weights, counting paths, and a critical path are one function with three different `combine`s. Cycles are not a reason to switch algorithms until you have condensed them into a DAG.
+
 ## From the Notebook {#notebook}
 
 Implementations from my [competitive programming notebook](https://github.com/lamng3/competitive-programming-notebook), tagged with their [USACO Guide](https://usaco.guide/) level where they have one.
 
-- **Dynamic programming** (gold). [`3418.cpp`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/examples/dynamic_programming/3418.cpp): One DP writeup. [`usaco/dp/`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/usaco/dp): DP solutions. [`dp_on_tree/`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/leetcode/solve/dp_on_tree): Tree DP solutions. [`lis/`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/leetcode/solve/lis): Longest increasing subsequence. [`DigitDP.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/dynamic_programming/digit_dp/DigitDP.py): A generic digit DP in Python: pass a start state, a `step`, and an `accept`.
+- **Dynamic programming** (gold). [`3418.cpp`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/examples/dynamic_programming/3418.cpp): One DP writeup. [`usaco/dp/`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/usaco/dp): DP solutions. [`dp_on_tree/`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/leetcode/solve/dp_on_tree): Tree DP solutions. [`lis/`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/leetcode/solve/lis): Longest increasing subsequence. [`DigitDP.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/dynamic_programming/digit_dp/DigitDP.py): A generic digit DP in Python: pass a start state, a `step`, and an `accept`. [`TopoSort.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/graphs/topological_sort/TopoSort.py): Kahn's algorithm, the order underneath [DP on a DAG](#dp-on-a-dag). [`EulerTour.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/trees/euler_tour/EulerTour.py): Entry and exit times, the tree cousin of that order.
 
 ## Practice {#practice}
 
@@ -693,6 +857,15 @@ Implementations from my [competitive programming notebook](https://github.com/la
 - [CSES — Maximum Subarray Sum](https://cses.fi/problemset/task/1643)
 - [LeetCode 1749 — Maximum Absolute Sum of Any Subarray](https://leetcode.com/problems/maximum-absolute-sum-of-any-subarray/)
 
+**DP on a DAG**
+
+- [CSES — Longest Flight Route](https://cses.fi/problemset/task/1680) (longest path, and recover it)
+- [CSES — Game Routes](https://cses.fi/problemset/task/1681) (count paths)
+- [CSES — Coin Collector](https://cses.fi/problemset/task/1686) (SCC condensation, then a path on the DAG)
+- [CSES — Course Schedule](https://cses.fi/problemset/task/1679) (the topological order by itself)
+- [USACO Gold 2020 February — Timeline](http://www.usaco.org/index.php?page=viewproblem2&cpid=1017) (earliest start times)
+- [CSES — Subtree Queries](https://cses.fi/problemset/task/1137) and [Path Queries](https://cses.fi/problemset/task/1138) (Euler tour, the tree cousin)
+
 ## Further reading {#further-reading}
 
 **Reachability DP**
@@ -700,3 +873,10 @@ Implementations from my [competitive programming notebook](https://github.com/la
 - [Competitive Programmer's Handbook](https://cses.fi/book/book.pdf), ch. 7 (DP) — the reachability/counting DP template in its plainest form.
 - [USACO Guide — Introduction to DP](https://usaco.guide/gold/intro-dp).
 - [Codeforces — Everything About Dynamic Programming](https://codeforces.com/blog/entry/43256).
+
+**DP on a DAG**
+
+- [USACO Guide — Topological Sort](https://usaco.guide/gold/toposort): the module whose second half is this DP. Longest Flight Route and Game Routes are the focus problems.
+- [CP-Algorithms — Topological Sort](https://cp-algorithms.com/graph/topological-sort.html), and [strongly connected components](https://cp-algorithms.com/graph/strongly-connected-components.html) for the condensation step.
+- [Competitive Programmer's Handbook](https://cses.fi/book/book.pdf), 16.2.
+- [USACO Guide — Euler Tour Technique](https://usaco.guide/gold/tree-euler), for the tree flattening this section only distinguishes.
