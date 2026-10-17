@@ -221,6 +221,23 @@ p {
   flex-shrink: 0;
 }
 
+.recent {
+  margin: 1.75rem 0 0;
+}
+
+.recent h2 {
+  margin-top: 0;
+}
+
+.post-list .meta {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.post-list .meta::before {
+  content: "· ";
+}
+
 article.post header {
   margin-bottom: 1.5rem;
 }
