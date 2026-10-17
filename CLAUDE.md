@@ -30,7 +30,7 @@ toc:
 
 - Each technique is one `## Title {#id}` section. Its subsections are `###`, so the table of contents lists techniques and their parts.
 - The `{#id}` is a public link target. Do not rename it. `_redirects` and `_pages/leetcode.md` point at these ids.
-- To add a technique: add a section to the topic page, bump `last_updated`, and add `{id, title}` under that topic in `_data/topics.yml`. A new topic needs a new page and a new entry in `_data/topics.yml`.
+- To add a technique: add a section to the topic page, bump `last_updated`, and add `{id, title}` under that topic in `_data/topics.yml`. A new topic needs a new page and a new entry in `_data/topics.yml`. Prepend a line to `_data/recent.yml` (date, title, topic, url) so it shows under Recent on the blog index. Keep that list short; drop lines that are no longer current.
 - Link between techniques with `/blog/<slug>/#<id>`, or `#<id>` within the same page.
 - Quote `title` and `description`. A `: ` inside an unquoted YAML value breaks the page.
 - `_redirects` maps the old dated post URLs (`/blog/2026/<slug>/`) to their sections. Keep it.

@@ -18,6 +18,19 @@ description: Study notes on algorithms, data structures, and the systems built o
   </button>
 </div>
 
+<section class="recent">
+  <h2>Recent</h2>
+  <ul class="post-list">
+    {% for item in site.data.recent %}
+      <li>
+        <a href="{{ item.url | relative_url }}">{{ item.title }} <span class="meta">{{ item.topic }}</span></a>
+        <time datetime="{{ item.date | date: '%Y-%m-%d' }}">{{ item.date | date: "%B %d, %Y" }}</time>
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+
+<h2>Topics</h2>
 <ul class="post-list">
   {% for topic in site.data.topics %}
     {% assign topic_url = '/blog/' | append: topic.slug | append: '/' %}
