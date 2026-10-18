@@ -157,11 +157,11 @@
   kind: book
   title: "OntoDB: Database Internals by Example"
   authors: "L. Nguyen"
-  venue: "Book, 97 pages"
+  venue: "Book, 119 pages"
   year: 2026
   status: living
-  tldr: "How a database engine works, from pages and buffer pools to B+ trees, query plans, locking, the write-ahead log, and ARIES, taught with OntoDB, a database management system for ontologies, as the running example."
-  abstract: "Each chapter explains the theory first, then shows how OntoDB applies it, and lays out its design decisions: the choice, the alternatives, why, and what it costs. A list of all of them follows the contents, and every chapter ends with questions, answered in an appendix. Five parts follow a request through the engine: foundations; storage (pages, the buffer pool, B+ trees, indexing RDF, and log-structured trees for contrast); query processing (plans, the iterator model, joins, and optimization); transactions (isolation and concurrency control); and recovery (the write-ahead rule, ARIES with a worked example, and how OntoDB's persistent databases work today). The book grows as OntoDB does."
+  tldr: "How a database engine works, from pages and buffer pools to B+ trees, query plans, inference, locking, the write-ahead log, and ARIES, taught with OntoDB, a database management system for ontologies, as the running example."
+  abstract: "Each chapter explains the theory first, then shows how OntoDB applies it, and lays out its design decisions: the choice, the alternatives, why, and what it costs. A list of all of them follows the contents, and every chapter ends with questions, answered in an appendix. Five parts follow a request through the engine: foundations; storage (pages, the buffer pool, B+ trees, indexing RDF, and log-structured trees for contrast); query processing (plans, the iterator model, joins, optimization, outer joins and aggregation, and materialized RDFS inference with semi-naive evaluation and delete-and-rederive); transactions (isolation and concurrency control); and recovery (the write-ahead rule, ARIES with a worked example, how OntoDB's persistent databases work today, moving the shell onto pages, and keeping the log small with truncation, full-page writes, and fuzzy checkpoints). Chapters for features not built yet say so. The book grows as OntoDB does."
   highlights: []
   pdf: /assets/papers/ontodb-book.pdf
   links:
