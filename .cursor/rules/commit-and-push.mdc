@@ -1,0 +1,12 @@
+---
+description: Commit and push finished work
+alwaysApply: true
+---
+
+# Commit and push when done
+
+When a task is finished and the working tree has changes from that work, commit those changes and push them to the remote. Do this without asking again.
+
+- Follow the repository's commit and push safety rules: no force push, no skipped hooks, no git config changes, and no empty commits.
+- Commit only the files that belong to the finished work.
+- Push the current branch after the commit succeeds.
