@@ -2,12 +2,12 @@
 layout: default
 title: Publications
 permalink: /publications/
-description: Papers, a thesis, and a book on ontologies, knowledge graphs, language models, and database systems, each with a TL;DR and a PDF.
+description: Papers, a thesis, and a book on ontologies, knowledge graphs, language models, and database systems, each with its own page and PDF.
 ---
 
 <header>
   <h1>Publications</h1>
-  <p class="lede">Papers, a thesis, and a book, each with a TL;DR and a PDF.</p>
+  <p class="lede">Papers, a thesis, and a book. Open one for its TL;DR and PDF.</p>
 </header>
 
 <ol class="entries pubs pub-index">
@@ -17,7 +17,6 @@ description: Papers, a thesis, and a book on ontologies, knowledge graphs, langu
         <a class="ptitle" href="{{ '/publications/' | append: pub.slug | append: '/' | relative_url }}">{{ pub.title }}</a>
         <span class="authors">{{ pub.authors }}.</span>
         <span class="venue">{{ pub.venue }}</span>, {{ pub.year }}.
-        <p class="tldr-line"><strong>TL;DR</strong> {{ pub.tldr }}</p>
       </li>
     {% endunless %}
   {% endfor %}
@@ -31,7 +30,6 @@ description: Papers, a thesis, and a book on ontologies, knowledge graphs, langu
       <li>
         <a class="ptitle" href="{{ '/publications/' | append: pub.slug | append: '/' | relative_url }}">{{ pub.title }}</a>
         <span class="venue">{{ pub.venue }}</span>.
-        <p class="tldr-line"><strong>TL;DR</strong> {{ pub.tldr }}</p>
       </li>
     {% endif %}
   {% endfor %}
