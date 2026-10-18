@@ -1183,29 +1183,15 @@ html.spotlight-open {
 }
 
 .interests {
-  list-style: none;
-  padding: 0;
+  list-style: disc;
+  padding-left: 1.25rem;
   margin: 0 0 1rem;
 }
 
 .interests > li {
-  margin-bottom: 0.7rem;
-}
-
-.interests .topic {
-  margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  column-gap: 0.6rem;
+  margin-bottom: 0.3rem;
 }
 
 .interests .projects {
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.interests .desc {
-  margin: 0.1rem 0 0;
-  color: var(--muted);
+  white-space: nowrap;
 }
