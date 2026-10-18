@@ -3,7 +3,7 @@ layout: default
 title: Lam Nguyen
 permalink: /
 description: >-
-  Lam Nguyen, researcher. AI for scientific discovery, semantic search, and database internals.
+  Lam Nguyen, researcher. AI for scientific discovery, agentic retrieval, tool use, and database internals.
 ---
 
 <header>
@@ -17,7 +17,7 @@ description: >-
 </header>
 
 <section id="about">
-  <p><strong>I play with semantic search and database internals.</strong></p>
+  <p><strong>I play with agentic retrieval, tool use, and database internals.</strong></p>
   <p>I am a researcher working on AI for scientific discovery. I build the semantic data layer for LLMs: ontologies and knowledge graphs that give agents the right context, from the right source, at a bounded cost. I design algorithms and systems through the lens of databases, so retrieval stays context-aware, cache-aware, and trustworthy as the knowledge underneath it evolves. I hold an M.S. in Computer Science from <a href="https://case.edu">Case Western Reserve University</a>, advised by <a href="https://yinghwu.github.io">Dr. Yinghui Wu</a>, with a <a href="https://etd.ohiolink.edu/acprod/odb_etd/ws/send_file/send?accession=case1751987504689716&amp;disposition=inline">thesis</a> on ontology matching with knowledge retrieval and efficient language models.</p>
   <p><strong>Research interests</strong></p>
   <ul class="interests">
