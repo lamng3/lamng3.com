@@ -47,8 +47,8 @@
   tldr: "Four memory-augmented agents integrate two ontologies: they match classes, extract missing relations, place unmatched classes, and repair conflicting matches. An orchestrator sends each decision to the cheapest tier that can settle it, from label evidence to a local or API model, within a budget."
   abstract: "The Agentic Ontologist orchestrates four agents over one shared blackboard: Kroma matches classes, an extraction agent proposes missing subClassOf and part_of edges, a reasoning agent places classes that have no match under the other ontology, and a validation agent removes matches that contradict each other. The orchestrator routes each question through evidence, a local model, and an API model in batches, within a budget, audits the local model's confident answers, and recalibrates how far it trusts the local model from where the two agree. Around the agents, it combines RDF/OWL parsing, graph and text embeddings, pluggable retrieval, validation, uncertainty quantification, and Ontology-of-Thought traces, with a tiered query cache that replays repeated and reworded questions."
   highlights:
-    - "On the OAEI Mouse-Human anatomy track, matching reaches 0.913 F1 with routing ($0.74 of API calls) against 0.924 with the API model alone ($0.80), 0.839 with evidence alone, and 0.823 with a local llama3.1 alone."
-    - "Audits show llama3.1 disagrees with the API model too often to be trusted, so the orchestrator stops trusting it: with this local model, routing saves little beyond the free evidence tier, which settles a third of the matching questions."
+    - "On the OAEI Mouse–Human anatomy track, matching reaches 0.913 F1 with routing ($0.74 of API calls) against 0.924 with the API model alone ($0.80), 0.839 with evidence alone, and 0.823 with a local Llama 3.1 alone."
+    - "Audits show Llama 3.1 disagrees with the API model too often to be trusted, so the orchestrator stops trusting it: with this local model, routing saves little beyond the free evidence tier, which settles a third of the matching questions."
   pdf:
   links:
     - { label: Code, url: "https://github.com/lamng3/agentic-ontologist" }

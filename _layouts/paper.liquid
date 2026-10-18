@@ -12,7 +12,7 @@ layout: default
     <p class="authors">{{ pub.authors }}</p>
   </header>
 
-  <section class="tldr" aria-label="TL;DR">
+  <section class="tldr no-math" aria-label="TL;DR">
     <p><strong>TL;DR</strong> {{ pub.tldr }}</p>
   </section>
 
@@ -37,13 +37,13 @@ layout: default
 
   {% if pub.highlights and pub.highlights.size > 0 %}
     <h2 id="highlights">Highlights</h2>
-    <ul>
+    <ul class="no-math">
       {% for h in pub.highlights %}<li>{{ h }}</li>{% endfor %}
     </ul>
   {% endif %}
 
   <h2 id="abstract">{{ pub.abstract_label | default: 'Abstract' }}</h2>
-  <p>{{ pub.abstract }}</p>
+  <p class="no-math">{{ pub.abstract }}</p>
 
   {% if pub.pdf %}
     <h2 id="read">Read</h2>
