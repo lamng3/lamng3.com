@@ -1,5 +1,9 @@
 # Newest first. Keep this to the notes you still want on the blog index.
 # Drop a line when it is no longer current.
+- date: "2026-10-18"
+  title: The Coloring Orients the Tree
+  topic: Graphs and Trees
+  url: /blog/graphs-and-trees/#colored-root
 - date: "2026-10-17"
   title: DP on a DAG
   topic: Dynamic Programming
