@@ -26,7 +26,7 @@ description: >-
     <li><strong>Natural Language Interfaces to Databases</strong>: text-to-SPARQL as typed, verified query planning <span class="projects">(<a href="https://github.com/lamng3/hermes">Hermes</a>)</span>.</li>
     <li><strong>Reliable &amp; Secure Retrieval</strong>: query-driven ontology assessment, and hardening ontology-grounded agents against tampering <span class="projects">(<a href="https://github.com/cwru-sdle/OntoCheck">OntoCheck</a>, <a href="https://github.com/lamng3/aegis">Aegis</a>)</span>.</li>
   </ul>
-  <p>Before this I trained competitive programming, reaching the top 1.26% in <a href="https://leetcode.com/u/lamng3/">LeetCode contests</a> with 1000+ problems solved, and I still find data structures and algorithms a useful lens for thinking about agentic memory.</p>
+  <p>I came up through competitive programming (top 1.26% in <a href="https://leetcode.com/u/lamng3/">LeetCode contests</a>), and data structures and algorithms still shape how I think about agentic memory.</p>
   <p>Reaching me is O(log log log n), practically a constant. Please feel free to reach out at lamng3.work [at] gmail [dot] com if you'd like to talk about any of the above.</p>
 </section>
 
