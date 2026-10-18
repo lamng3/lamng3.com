@@ -32,13 +32,10 @@ description: >-
 
 <section id="experiences">
   <h2>Experiences</h2>
-  <ul class="post-list">
-    <li><span><strong>Center for Materials Data Science</strong> · Researcher, AI for Scientific Discovery</span><time>2026</time></li>
-    <li><span><strong>Microsoft</strong> · Software Engineer, Agentic Security</span><time>2025</time></li>
-    <li><span><strong>Microsoft</strong> · Software Engineer Intern, Security Copilot</span><time>2024</time></li>
-    <li><span><strong>Amazon</strong> · Software Engineer Intern, Alexa Voice AI</span><time>2023</time></li>
-    <li><span><strong>Microsoft</strong> · Software Engineer Intern, Microsoft Security</span><time>2023</time></li>
-    <li><span><strong>Microsoft</strong> · Software Engineer Intern, Azure Data</span><time>2022</time></li>
+  <ul class="post-list xp">
+    <li><span><strong>Center for Materials Data Science</strong><span class="xp-role">Researcher, AI for Scientific Discovery</span></span><time>2024</time></li>
+    <li><span><strong>Microsoft</strong><span class="xp-role">Software Engineer, Agentic Security</span><span class="xp-sub">Intern: Security Copilot (2024) · Microsoft Security (2023) · Azure Data (2022)</span></span><time>2022</time></li>
+    <li><span><strong>Amazon</strong><span class="xp-role">Software Engineer Intern, Alexa Voice AI</span></span><time>2023</time></li>
   </ul>
 </section>
 
