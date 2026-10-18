@@ -28,3 +28,4 @@ http://lamng3.netlify.app/*  https://lamng3.com/:splat  301!
 /blog/2026/selected-leetcode-problems/  /blog/selected-leetcode-problems/  301
 /blog/counting/*  /blog/combinatorics/:splat  301
 /blog/heaps/*  /blog/priority-queues/:splat  301
+/publications/moira/  /publications/agentic-ontologist/  301
