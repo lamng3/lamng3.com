@@ -3,7 +3,7 @@ layout: default
 title: Lam Nguyen
 permalink: /
 description: >-
-  Lam Nguyen, researcher. AI for scientific discovery, agentic retrieval, tool use, and database internals.
+  Lam Nguyen, researcher. AI for scientific discovery, agentic retrieval, and database internals.
 ---
 
 <header>
@@ -17,11 +17,11 @@ description: >-
 </header>
 
 <section id="about">
-  <p><strong>I play with agentic retrieval, tool use, and database internals.</strong></p>
+  <p><strong>I play with agentic retrieval and database internals.</strong></p>
   <p>I am a researcher working on AI for scientific discovery. I build the semantic data layer for LLMs: ontologies and knowledge graphs that give agents the right context, from the right source, at a bounded cost. I design algorithms and systems through the lens of databases, so retrieval stays context-aware, cache-aware, and trustworthy as the knowledge underneath it evolves. I hold an M.S. in Computer Science from <a href="https://case.edu">Case Western Reserve University</a>, advised by <a href="https://yinghwu.github.io">Dr. Yinghui Wu</a>, with a <a href="https://etd.ohiolink.edu/acprod/odb_etd/ws/send_file/send?accession=case1751987504689716&amp;disposition=inline">thesis</a> on ontology matching with knowledge retrieval and efficient language models.</p>
   <p><strong>Research interests</strong></p>
   <ul class="interests">
-    <li><strong>Retrieval &amp; Context Engineering</strong>: vector retrieval, candidate reranking, model routing, and answer caching <span class="projects">(<a href="https://github.com/lamng3/agentic-ontologist">Agentic Ontologist</a>, <a href="https://arxiv.org/abs/2507.14032">Kroma</a>)</span>.</li>
+    <li><strong>Retrieval &amp; Context Engineering</strong>: vector retrieval, reranking, tool use, model routing, and caching <span class="projects">(<a href="https://github.com/lamng3/agentic-ontologist">Agentic Ontologist</a>, <a href="https://arxiv.org/abs/2507.14032">Kroma</a>)</span>.</li>
     <li><strong>Database Systems</strong>: indexing, query optimization, MVCC, recovery, and provenance <span class="projects">(<a href="https://github.com/lamng3/OntoDB">OntoDB</a>)</span>.</li>
     <li><strong>Natural Language Interfaces to Databases</strong>: text-to-SPARQL as planning over a typed query algebra <span class="projects">(<a href="https://github.com/lamng3/hermes">Hermes</a>)</span>.</li>
     <li><strong>Reliable &amp; Secure Retrieval</strong>: query-driven ontology assessment and adversarial robustness <span class="projects">(<a href="https://github.com/cwru-sdle/OntoCheck">OntoCheck</a>, <a href="https://github.com/lamng3/aegis">Aegis</a>)</span>.</li>
