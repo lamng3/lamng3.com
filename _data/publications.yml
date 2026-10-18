@@ -99,7 +99,6 @@
   highlights:
     - "At equal harm evaluations, the bandit search finds chains up to 64% more harmful than greedy and beam search on XRD, and reaches beam's best on MatProc and mouse anatomy with 200 evaluations and no spread across seeds."
     - "Best-response locking is never worse than locking the highest-impact triples, and leaves 0.133 residual harm where they leave 0.400; ten locks remove all of a two-action attacker's harm on four real ontologies."
-  pdf: /assets/papers/aegis.pdf
   links:
     - { label: Code, url: "https://github.com/lamng3/aegis" }
     - { label: Documentation, url: "https://lamng3.github.io/aegis-docs/" }
