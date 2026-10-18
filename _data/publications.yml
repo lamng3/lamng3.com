@@ -85,6 +85,31 @@
       url    = {https://github.com/lamng3/hermes}
     }
 
+- slug: aegis
+  short: Aegis
+  title: "Aegis: Searching for and Defending Against Harmful Ontology Edits in Ontology-Grounded Retrieval"
+  authors: "L. Nguyen, Y. Wu, R. H. French, R. Mehdi"
+  venue: "White paper"
+  year: 2026
+  status: preprint
+  tldr: "An ontology decides how an agent retrieves from a knowledge graph, so a few edited triples change its answers while every fact stays intact. Aegis searches for the most harmful chain of edits with a bandit at every node of the search tree, and chooses which triples to lock against the attacker's best response."
+  abstract: "Retrieval over a knowledge graph is shaped by its ontology: the ontology decides which nodes match a query, which edges may be followed, and what an answer means. An attacker who edits a few ontology triples, and no graph facts, can therefore change what an agent retrieves and answers. This white paper asks two adversarial questions. Attack: given a query workload, a library of edit operators, and a budget of k actions, which chain of edits does the most harm? Harm is not submodular in the edits, so greedy search carries no guarantee; Aegis searches the tree of chains with UCT, a bandit at every node. Protection: given a budget of M triples the defender may lock, which locks minimize the harm of the attacker's best response? Aegis locks triples one at a time against the attacker's current best chain, on a transactional ontology store that logs every edit with its undo, detects the first harmful commit, and rolls back."
+  highlights:
+    - "At equal harm evaluations, the bandit search finds chains up to 64% more harmful than greedy and beam search on XRD, and reaches beam's best on MatProc and mouse anatomy with 200 evaluations and no spread across seeds."
+    - "Best-response locking is never worse than locking the highest-impact triples, and leaves 0.133 residual harm where they leave 0.400; ten locks remove all of a two-action attacker's harm on four real ontologies."
+  pdf: /assets/papers/aegis.pdf
+  links:
+    - { label: Code, url: "https://github.com/lamng3/aegis" }
+    - { label: Documentation, url: "https://lamng3.github.io/aegis-docs/" }
+  bibtex: |
+    @misc{nguyen2026aegis,
+      title  = {Aegis: Searching for and Defending Against Harmful Ontology Edits in Ontology-Grounded Retrieval},
+      author = {Nguyen, Lam and Wu, Yinghui and French, Roger H. and Mehdi, Redad},
+      year   = {2026},
+      note   = {White paper},
+      url    = {https://github.com/lamng3/aegis}
+    }
+
 - slug: ontocheck
   abstract_label: Overview
   short: OntoCheck
