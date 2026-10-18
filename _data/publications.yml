@@ -11,7 +11,7 @@
   venue: "International Semantic Web Conference (ISWC)"
   year: 2025
   status: published
-  tldr: "An LLM decides whether two concepts from different ontologies mean the same thing, after retrieval gives it the concepts' structural, lexical, and definitional context. Pruning candidates with bisimilarity and refining the alignment as answers arrive keeps the number of LLM calls low."
+  tldr: "An LLM decides whether two concepts from different ontologies mean the same thing, given context retrieved from their structure, labels, and definitions. Bisimilarity pruning and incremental refinement keep the number of LLM calls low."
   abstract: "Ontology Matching (OM) is a cornerstone task of semantic interoperability, yet existing systems often rely on handcrafted rules or specialized models with limited adaptability. We present KROMA, a novel OM framework that harnesses Large Language Models (LLMs) within a Retrieval-Augmented Generation (RAG) pipeline to dynamically enrich the semantic context of OM tasks with structural, lexical, and definitional knowledge. To optimize both performance and efficiency, KROMA integrates a bisimilarity-based concept matching and a lightweight ontology refinement step, which prune candidate concepts and substantially reduce the communication overhead from invoking LLMs. Through experiments on multiple benchmark datasets, we show that integrating knowledge retrieval with context-augmented LLMs significantly enhances ontology matching, outperforming both classic OM systems and cutting-edge LLM-based approaches while keeping communication overhead comparable. Our study highlights the feasibility and benefit of the proposed optimization techniques (targeted knowledge retrieval, prompt enrichment, and ontology refinement) for ontology matching at scale."
   highlights:
     - "Highest F1 on all six OAEI-style tracks against MILA, OLaLa, and LLM4OM, for example 98.63 on NCIT–DOID and 94.94 on Mouse–Human."
@@ -44,7 +44,7 @@
   venue: "Preprint"
   year: 2026
   status: preprint
-  tldr: "An orchestrator and four memory-augmented agents integrate ontologies: Kroma matches classes, and other agents extract missing relations, place classes that have no match, and repair matches that contradict each other. Every question goes to the cheapest tier that can settle it: label-free evidence, a local model, or an API model, within a budget."
+  tldr: "Four memory-augmented agents integrate two ontologies: they match classes, extract missing relations, place unmatched classes, and repair conflicting matches. An orchestrator sends each decision to the cheapest tier that can settle it, from label evidence to a local or API model, within a budget."
   abstract: "The Agentic Ontologist orchestrates four agents over one shared blackboard: Kroma matches classes, an extraction agent proposes missing subClassOf and part_of edges, a reasoning agent places classes that have no match under the other ontology, and a validation agent removes matches that contradict each other. The orchestrator routes each question through evidence, a local model, and an API model in batches, within a budget, audits the local model's confident answers, and recalibrates how far it trusts the local model from where the two agree. Around the agents, it combines RDF/OWL parsing, graph and text embeddings, pluggable retrieval, validation, uncertainty quantification, and Ontology-of-Thought traces, with a tiered query cache that replays repeated and reworded questions."
   highlights:
     - "On the OAEI Mouse-Human anatomy track, matching reaches 0.913 F1 with routing ($0.74 of API calls) against 0.924 with the API model alone ($0.80), 0.839 with evidence alone, and 0.823 with a local llama3.1 alone."
@@ -69,7 +69,7 @@
   venue: "Preprint"
   year: 2026
   status: preprint
-  tldr: "Instead of writing a whole SPARQL query at once, a language agent builds it one algebra operator at a time. A verifier types every step against the RDF schema and rejects ill-typed steps before they run, and execution feedback after each step tells the agent what the step did."
+  tldr: "A language agent builds a SPARQL query one algebra operator at a time instead of all at once. A verifier type-checks each step against the RDF schema, and execution feedback tells the agent what the step did."
   abstract: "Translating natural-language questions into SPARQL lets users query knowledge graphs without learning their schema. Large language models now write plausible SPARQL, but they write the whole query at once: a query that fails to parse, joins values of incompatible types, or returns nothing is detected only after it is complete, and the repair is another guess. Hermes is a query-planning agent that builds a SPARQL query one operator of the SPARQL algebra at a time, over a typed formalization of the language. The RDF schema gives every query variable a type, and a verifier checks each step before it runs. A plan is accepted only when it is well typed and meets a goal stated from the question."
   highlights:
     - "On the Text2SPARQL 2026 corporate benchmark with Qwen3-14B, set F1 of 0.282, against 0.231 without the verifier, 0.197 for constraint-guided search, and 0.089 for one-shot generation."
@@ -94,7 +94,7 @@
   venue: "White paper"
   year: 2026
   status: preprint
-  tldr: "An ontology decides how an agent retrieves from a knowledge graph, so a few edited triples change its answers while every fact stays intact. Aegis searches for the most harmful chain of edits with a bandit at every node of the search tree, and chooses which triples to lock against the attacker's best response."
+  tldr: "A few edited ontology triples can change what an ontology-grounded agent retrieves and answers, without touching a single fact. Aegis finds the most harmful edits with bandit tree search and chooses which triples to lock against them."
   abstract: "Retrieval over a knowledge graph is shaped by its ontology: the ontology decides which nodes match a query, which edges may be followed, and what an answer means. An attacker who edits a few ontology triples, and no graph facts, can therefore change what an agent retrieves and answers. This white paper asks two adversarial questions. Attack: given a query workload, a library of edit operators, and a budget of k actions, which chain of edits does the most harm? Harm is not submodular in the edits, so greedy search carries no guarantee; Aegis searches the tree of chains with UCT, a bandit at every node. Protection: given a budget of M triples the defender may lock, which locks minimize the harm of the attacker's best response? Aegis locks triples one at a time against the attacker's current best chain, on a transactional ontology store that logs every edit with its undo, detects the first harmful commit, and rolls back."
   highlights:
     - "At equal harm evaluations, the bandit search finds chains up to 64% more harmful than greedy and beam search on XRD, and reaches beam's best on MatProc and mouse anatomy with 200 evaluations and no spread across seeds."
@@ -112,25 +112,6 @@
       url    = {https://github.com/lamng3/aegis}
     }
 
-- slug: ontocheck
-  abstract_label: Overview
-  short: OntoCheck
-  title: "OntoCheck: Query-Driven Ontology Assessments for Scientific Domain Applications"
-  authors: "R. Kundu, R. Mehdi, V. D. Tran, E. Frakes, A. Daundkar, M. Sumudumalie, V. S. Mandayam, J. A. Lample, M. Li, L. S. Bruckman, E. I. Barcelos, A. Sehirlioglu, R. H. French, and Y. Wu"
-  venue: "Supplementary material and open-source tool"
-  year: 2026
-  status: preprint
-  tldr: "Judge an ontology by the questions its users will actually ask. Domain competency questions are written as SPARQL, and the terms those queries need are compared against the ontology's vocabulary to measure coverage and utilization."
-  abstract: "As scientific fields adopt FAIR data principles, ontologies have become essential for encoding the semantics of scientific investigations, yet evaluating ontology quality remains a manual, technically demanding bottleneck. OntoCheck is an open-source Python tool that unifies domain-agnostic structural metrics with a query-driven assessment: by analyzing SPARQL queries derived from natural-language competency questions, it compares the required query terms against an ontology's full vocabulary to yield complementary metrics for vocabulary coverage and utilization density."
-  highlights:
-    - "Evaluated across six scientific domains, and on a materials-science competency-question benchmark comparing MDS-Onto, PMDCo, AM-Ontology, EMMO, and CHAMEO."
-  pdf: /assets/papers/ontocheck-supplementary.pdf
-  pdf_label: "Supplementary material"
-  links:
-    - { label: Project page, url: "https://cwru-sdle.github.io/OntoCheck/" }
-    - { label: Code, url: "https://github.com/cwru-sdle/OntoCheck" }
-    - { label: PyPI, url: "https://pypi.org/project/OntoCheck/" }
-
 - slug: thesis
   selected: true
   short: M.S. thesis
@@ -139,7 +120,7 @@
   venue: "M.S. thesis, Case Western Reserve University"
   year: 2025
   status: published
-  tldr: "A workflow that automates the stages of building and aligning ontologies with retrieval-augmented language models, from concept extraction and matching (Kroma) to relation extraction and evaluation, and runs the models on limited hardware through KV-cache quantization."
+  tldr: "Retrieval-augmented language models automate building and aligning ontologies, from concept extraction and matching to relation extraction and evaluation. KV-cache quantization lets the models run on limited hardware."
   abstract: "Ontologies are formal representations of a domain's concepts and their interrelations. Nonetheless, building rich, accurate ontologies remains a time-consuming, expertise-intensive task. This thesis outlines a comprehensive workflow that integrates retrieval-augmented Large Language Models (LLMs) with structural algorithms to automate the key stages of ontology matching, all while optimizing resource efficiency. First, this work tackles Entity Recognition by surveying contemporary methods for identifying candidate concepts and evaluating LLM performance on the concept extraction task. Next, this thesis introduces Ontology Matching through KROMA, which has the capability to align related concepts efficiently. Then, this addresses Relation Extraction, through detailing an original work that utilize few-shot LLM prompting and minimal fine-tuning to discover hierarchical relationships. After that, this work outlines Ontology Evaluation, drawing on recent studies to summarize key metrics and structural tests for assessing the quality of ontologies. Finally, this discusses how to Optimize LLM for Ontology Matching, focusing on KV cache quantization, so models can run effectively on limited hardware without sacrificing accuracy."
   highlights: []
   pdf: "https://etd.ohiolink.edu/acprod/odb_etd/ws/send_file/send?accession=case1751987504689716&disposition=inline"
@@ -162,7 +143,7 @@
   venue: "Book, 119 pages"
   year: 2026
   status: living
-  tldr: "How a database engine works, from pages and buffer pools to B+ trees, query plans, inference, locking, the write-ahead log, and ARIES, taught with OntoDB, a database management system for ontologies, as the running example."
+  tldr: "How a database engine works, from pages and B+ trees to query plans, inference, locking, logging, and ARIES recovery. OntoDB, a database management system for ontologies, is the running example."
   abstract: "Each chapter explains the theory first, then shows how OntoDB applies it, and lays out its design decisions: the choice, the alternatives, why, and what it costs. A list of all of them follows the contents, and every chapter ends with questions, answered in an appendix. Five parts follow a request through the engine: foundations; storage (pages, the buffer pool, B+ trees, indexing RDF, and log-structured trees for contrast); query processing (plans, the iterator model, joins, optimization, outer joins and aggregation, and materialized RDFS inference with semi-naive evaluation and delete-and-rederive); transactions (isolation and concurrency control); and recovery (the write-ahead rule, ARIES with a worked example, how OntoDB's persistent databases work today, moving the shell onto pages, and keeping the log small with truncation, full-page writes, and fuzzy checkpoints). Chapters for features not built yet say so. The book grows as OntoDB does."
   highlights: []
   pdf: /assets/papers/ontodb-book.pdf
