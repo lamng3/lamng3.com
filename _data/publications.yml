@@ -35,29 +35,31 @@
         doi={10.1007/978-3-032-09527-5_34},
     }
 
-- slug: moira
+- slug: agentic-ontologist
   selected: true
   abstract_label: Overview
-  short: MOIRA
-  title: "MOIRA: Memory-Augmented Ontology Integration with Cost-Bounded Reasoning Agents"
+  short: Agentic Ontologist
+  title: "The Agentic Ontologist: Orchestrating Memory-Augmented Agents for Ontology Engineering"
   authors: "L. Nguyen, E. Frakes, H. Ma, O. Dernek, R. H. French, and Y. Wu"
   venue: "Preprint"
   year: 2026
   status: preprint
-  tldr: "A toolkit for integrating, matching, and refining ontologies, and for answering questions over them with language models, under a cost budget. Embeddings and answers are remembered across runs, so repeated or reworded questions are answered without calling the model again."
-  abstract: "MOIRA is a Python toolkit for ontology integration, matching, refinement, and ontology-grounded language-model reasoning. It combines RDF/OWL parsing, graph and text embeddings, pluggable retrieval, validation, uncertainty quantification, and Ontology-of-Thought traces, with a tiered query cache that replays repeated and reworded questions."
+  tldr: "An orchestrator and four memory-augmented agents integrate ontologies: KROMA matches classes, and other agents extract missing relations, place classes that have no match, and repair matches that contradict each other. Every question goes to the cheapest tier that can settle it: label-free evidence, a local model, or an API model, within a budget."
+  abstract: "The Agentic Ontologist orchestrates four agents over one shared blackboard: KROMA matches classes, an extraction agent proposes missing subClassOf and part_of edges, a reasoning agent places classes that have no match under the other ontology, and a validation agent removes matches that contradict each other. The orchestrator routes each question through evidence, a local model, and an API model in batches, within a budget, audits the local model's confident answers, and recalibrates how far it trusts the local model from where the two agree. Around the agents, it combines RDF/OWL parsing, graph and text embeddings, pluggable retrieval, validation, uncertainty quantification, and Ontology-of-Thought traces, with a tiered query cache that replays repeated and reworded questions."
   highlights:
-    - "Results will be added here once the paper is published."
+    - "On the OAEI Mouse-Human anatomy track, matching reaches 0.913 F1 with routing ($0.74 of API calls) against 0.924 with the API model alone ($0.80), 0.839 with evidence alone, and 0.823 with a local llama3.1 alone."
+    - "Audits show llama3.1 disagrees with the API model too often to be trusted, so the orchestrator stops trusting it: with this local model, routing saves little beyond the free evidence tier, which settles a third of the matching questions."
   pdf:
   links:
-    - { label: Code, url: "https://github.com/lamng3/moira" }
-    - { label: Documentation, url: "https://lamng3.github.io/moira-docs/" }
+    - { label: Code, url: "https://github.com/lamng3/agentic-ontologist" }
+    - { label: Documentation, url: "https://lamng3.github.io/agentic-ontologist-docs/" }
+    - { label: Showcase, url: "https://lamng3.github.io/agentic-ontologist/" }
   bibtex: |
-    @misc{nguyen_2026_moira,
-        title={MOIRA: Memory-Augmented Ontology Integration with Cost-Bounded Reasoning Agents},
+    @misc{nguyen_2026_agentic_ontologist,
+        title={The Agentic Ontologist: Orchestrating Memory-Augmented Agents for Ontology Engineering},
         author={Lam Nguyen and Ethan Frakes and Hanchao Ma and Ozan Dernek and Roger H. French and Yinghui Wu},
         year={2026},
-        url={https://github.com/lamng3/moira},
+        url={https://github.com/lamng3/agentic-ontologist},
     }
 
 - slug: hermes
@@ -88,7 +90,7 @@
 - slug: aegis
   short: Aegis
   title: "Aegis: Searching for and Defending Against Harmful Ontology Edits in Ontology-Grounded Retrieval"
-  authors: "L. Nguyen, Y. Wu, R. H. French, R. Mehdi"
+  authors: "L. Nguyen, R. Mehdi, R. H. French, Y. Wu"
   venue: "White paper"
   year: 2026
   status: preprint
@@ -104,7 +106,7 @@
   bibtex: |
     @misc{nguyen2026aegis,
       title  = {Aegis: Searching for and Defending Against Harmful Ontology Edits in Ontology-Grounded Retrieval},
-      author = {Nguyen, Lam and Wu, Yinghui and French, Roger H. and Mehdi, Redad},
+      author = {Nguyen, Lam and Mehdi, Redad and French, Roger H. and Wu, Yinghui},
       year   = {2026},
       note   = {White paper},
       url    = {https://github.com/lamng3/aegis}
