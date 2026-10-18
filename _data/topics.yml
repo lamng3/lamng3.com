@@ -60,6 +60,8 @@
     title: Topological Order, One Entry at a Time
   - id: meeting-vertex
     title: 'Counting on Trees: The Meeting Vertex'
+  - id: colored-root
+    title: The Coloring Orients the Tree
 - slug: combinatorics
   title: Combinatorics
   sections:

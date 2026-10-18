@@ -1,15 +1,15 @@
 ---
 layout: post
 title: "Graphs and Trees"
-description: "Dependency graphs and trees. Kahn's algorithm kept as a live invariant resolves definitions as they arrive, and on a tree, counting by the vertex where three paths meet turns a triple loop into one pass."
+description: "Dependency graphs and trees. Kahn's algorithm kept as a live invariant resolves definitions as they arrive, and on a tree, counting by the vertex where three paths meet turns a triple loop into one pass. A colored tree orients its own edges."
 permalink: /blog/graphs-and-trees/
-last_updated: 2026-10-10
+last_updated: 2026-10-18
 author: Lam Nguyen
 toc:
   sidebar: right
 ---
 
-Dependency graphs and trees. Kahn's algorithm kept as a live invariant resolves definitions as they arrive, and on a tree, counting by the vertex where three paths meet turns a triple loop into one pass.
+Dependency graphs and trees. Kahn's algorithm kept as a live invariant resolves definitions as they arrive, and on a tree, counting by the vertex where three paths meet turns a triple loop into one pass. A colored tree orients its own edges.
 
 <details markdown="1">
 <summary>C++ template used by every implementation on this page</summary>
@@ -552,6 +552,127 @@ int main() {
 
 One implementation note: `int x = sqrt(A[u])` can land one off from floating error, so re-check `x*x == A[u]` (and, to be safe on the boundary, you may test `x+1` too). Everything is 64-bit for the products — with $$n$$ up to $$2\cdot10^5$$, a single vertex's $$e_3$$ already overflows 32-bit.
 
+## The Coloring Orients the Tree {#colored-root}
+
+[LeetCode 4085 — Find Root of a Colored Tree](https://leetcode.com/problems/find-root-of-a-colored-tree/) hands you an undirected tree and a color in $$\{\mathrm{R}, \mathrm{B}, \mathrm{W}\}$$ on every node. Pick a root. Orient every edge away from it. Two things must hold.
+
+- No node has more than two children.
+- Nodes at the same depth share a color, and the colors down the levels follow one of
+  $$\mathrm{R}\to\mathrm{B}\to\mathrm{W}\to\mathrm{R}\to\cdots$$,
+  $$\mathrm{B}\to\mathrm{W}\to\mathrm{R}\to\mathrm{B}\to\cdots$$,
+  $$\mathrm{W}\to\mathrm{R}\to\mathrm{B}\to\mathrm{W}\to\cdots$$.
+
+Return any such root, or $$-1$$.
+
+### Try every root, then try not to
+
+The condition is a statement about depth. Root the tree at an arbitrary $$u$$, set $$\mathrm{depth}(u) = 0$$, and paint each level by $$\mathrm{depth} \bmod 3$$. Checking one root is a BFS, $$O(n)$$. The expensive part is choosing $$u$$: there are $$n$$ candidates.
+
+Rerooting looks like a way out. Depths from $$u$$ are already known, and the depth of $$z$$ once $$v$$ is the root is a distance:
+
+$$
+d(v, z) = d(u, v) + d(u, z) - 2\,d(u, \mathrm{lca}(v, z)).
+$$
+
+With binary lifting that is $$O(\log n)$$ per pair, so you can move the root without a fresh BFS. It does not answer the question that matters, which is how many roots can possibly work. You still have to test candidates, and nothing yet says the answer is unique. The formula saves the rebuild. It does not save the search.
+
+### Three sequences, one cycle
+
+Look at what a parent and a child are allowed to be. Depth increases by exactly one along every edge that leaves the root, and each of the three sequences is the same cycle started at a different letter. The next color is a function:
+
+$$
+\mathrm{next}(\mathrm{R}) = \mathrm{B}, \qquad \mathrm{next}(\mathrm{B}) = \mathrm{W}, \qquad \mathrm{next}(\mathrm{W}) = \mathrm{R}.
+$$
+
+If $$u$$ is the parent of $$v$$, then the color of $$v$$ is $$\mathrm{next}$$ of the color of $$u$$. The legal ordered pairs are only $$(\mathrm{R},\mathrm{B})$$, $$(\mathrm{B},\mathrm{W})$$, and $$(\mathrm{W},\mathrm{R})$$.
+
+Now forget the root and look at one undirected edge $$\{u, v\}$$.
+
+- The two colors are one step apart on the cycle. Exactly one order is legal, so the edge has exactly one direction. $$\mathrm{R}-\mathrm{B}$$ must point $$\mathrm{R}\to\mathrm{B}$$. $$\mathrm{W}-\mathrm{R}$$ must point $$\mathrm{W}\to\mathrm{R}$$, because the other way would need $$\mathrm{next}(\mathrm{R}) = \mathrm{W}$$.
+- The two colors are the same. Neither order is legal. No root can orient this edge, and the answer is $$-1$$.
+
+The undirected tree has become a directed one, and the directions did not depend on which node you hoped was the root. That is the whole deduction. The three patterns were never a choice you make per candidate. They are one rule, applied to every edge locally.
+
+A small tree:
+
+```
+0 —— 1 —— 2
+R    B    W
+```
+
+$$0\to 1$$ because $$\mathrm{R}\to\mathrm{B}$$, and $$1\to 2$$ because $$\mathrm{B}\to\mathrm{W}$$. Node $$0$$ is the only one with no parent. Its depths are $$0, 1, 2$$ and the colors are exactly the cycle. Node $$2$$ cannot be a root: the edge into it already points the other way.
+
+### One source, or a node with two parents
+
+In that directed graph a parent points at its child. The root of a valid orientation is a node of indegree $$0$$, and every other node has indegree $$1$$. There are $$n - 1$$ edges, so the indegrees sum to $$n - 1$$.
+
+- Exactly one indegree is $$0$$. Then every other indegree is $$1$$. Following parent pointers ends at that source, the underlying graph is a tree, and the orientation is the tree rooted there.
+- Two or more indegrees are $$0$$. The same sum forces some other node to have indegree at least $$2$$. That node has two parents. Two parents means two edges argued, from their colors, that they point inward, so those two neighbors both want to sit above it. No single root produces that picture.
+
+```
+  0       2
+  R       R
+   \     /
+    \   /
+      1
+      B
+```
+
+$$0\to 1$$ and $$2\to 1$$. Nodes $$0$$ and $$2$$ are both sources, and $$1$$ has two parents. Neither source works as a root: the far leaf sits at depth $$2$$, where the cycle wants $$\mathrm{W}$$, and the leaf is $$\mathrm{R}$$.
+
+Zero sources cannot happen on a tree. Every indegree at least $$1$$ would sum to at least $$n$$, and there are only $$n - 1$$ edges. So the test is exactly: after orienting, is there one source? The BFS in the code walks from that source and counts how many nodes it reaches. On a promised tree it always reaches all $$n$$ once the source is unique. The walk is the same fact written out, and it is what you keep if you do not want the argument to lean on the promise.
+
+The binary constraint is the out-degree of this same orientation. A node may have three neighbors in the undirected tree and still be fine, if one of them is its parent. Three children is the failure, and it shows up as three outgoing edges from one node.
+
+### Implementation
+
+Orient each edge or reject it. Reject a third child. The answer is the unique indegree-$$0$$ node, if the walk from it covers the tree.
+
+```python
+from collections import deque
+
+class Solution:
+    def findColoredRoot(self, edges: list[list[int]], colors: str) -> int:
+        n = len(colors)
+        if n == 1:
+            return 0
+
+        valid = {("R", "B"), ("B", "W"), ("W", "R")}
+        adj = [[] for _ in range(n)]
+        indeg = [0] * n
+
+        for u, v in edges:
+            if (colors[u], colors[v]) in valid:
+                parent, child = u, v
+            elif (colors[v], colors[u]) in valid:
+                parent, child = v, u
+            else:
+                return -1
+            adj[parent].append(child)
+            indeg[child] += 1
+            if len(adj[parent]) > 2:
+                return -1
+
+        roots = [i for i, d in enumerate(indeg) if d == 0]
+        if len(roots) != 1:
+            return -1
+
+        seen = 0
+        queue = deque(roots)
+        while queue:
+            node = queue.popleft()
+            seen += 1
+            queue.extend(adj[node])
+        return roots[0] if seen == n else -1
+```
+
+### Complexity
+
+- Orienting the $$n - 1$$ edges, and the walk: $$O(n)$$.
+- No LCA and no second BFS. The direction of an edge is a lookup in a three-element set.
+
+> **The pattern worth naming.** When a global order (depth, time, ancestry) forces a local constraint on every edge, stop searching for the root and read the direction off the edge. The undirected graph becomes a directed one. The root is whoever has indegree $$0$$, and a second source is a node that grew a second parent.
+
 ## From the Notebook {#notebook}
 
 Implementations from my [competitive programming notebook](https://github.com/lamng3/competitive-programming-notebook), tagged with their [USACO Guide](https://usaco.guide/) level where they have one.
@@ -581,6 +702,10 @@ Implementations from my [competitive programming notebook](https://github.com/la
 - [Codeforces 2241E](https://codeforces.com/contest/2241/problem/E)
 - [Codeforces 161D — Distance in Tree](https://codeforces.com/problemset/problem/161/D)
 - [LeetCode 3067 — Count Pairs of Connectable Servers in a Weighted Tree Network](https://leetcode.com/problems/count-pairs-of-connectable-servers-in-a-weighted-tree-network/)
+
+**The Coloring Orients the Tree**
+
+- [LeetCode 4085 — Find Root of a Colored Tree](https://leetcode.com/problems/find-root-of-a-colored-tree/)
 
 ## Further reading {#further-reading}
 

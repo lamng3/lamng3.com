@@ -3,7 +3,7 @@ layout: post
 title: "Selected LeetCode Problems"
 description: "A running, hand-picked list of LeetCode problems I found interesting, each tagged with the topic or technique it exercises. A companion index to the technique write-ups on this blog."
 permalink: /blog/selected-leetcode-problems/
-last_updated: 2026-10-17
+last_updated: 2026-10-18
 author: Lam Nguyen
 toc:
   sidebar: right
@@ -29,6 +29,7 @@ A running list of LeetCode problems worth remembering, each labeled with the top
 | [Count Subarrays with Distant Sums](https://leetcode.com/problems/count-subarrays-with-distant-sums/) | [Fenwick Tree, Coordinate Compression](/blog/range-queries/#fenwick-tree) |
 | [1971 — Find if Path Exists in Graph](https://leetcode.com/problems/find-if-path-exists-in-graph/) | [Graphs, Adjacency (CSR)](/blog/databases/#compressed-sparse-row) |
 | [3067 — Count Pairs of Connectable Servers in a Weighted Tree Network](https://leetcode.com/problems/count-pairs-of-connectable-servers-in-a-weighted-tree-network/) | [Trees](/blog/graphs-and-trees/#meeting-vertex) |
+| [4085 — Find Root of a Colored Tree](https://leetcode.com/problems/find-root-of-a-colored-tree/) | [Orienting a Tree](/blog/graphs-and-trees/#colored-root) |
 | [1641 — Count Sorted Vowel Strings](https://leetcode.com/problems/count-sorted-vowel-strings/) | [Combinatorics, Stars and Bars](/blog/combinatorics/#stars-and-bars) |
 | [1621 — Number of Sets of K Non-Overlapping Line Segments](https://leetcode.com/problems/number-of-sets-of-k-non-overlapping-line-segments/) | [Combinatorics, Stars and Bars](/blog/combinatorics/#stars-and-bars) |
 | [1146 — Snapshot Array](https://leetcode.com/problems/snapshot-array/) | [Persistent Data Structures](/blog/databases/#persistence) |
