@@ -1181,3 +1181,23 @@ html.spotlight-open {
   font-size: 0.8rem;
   overflow-x: auto;
 }
+
+.interests {
+  list-style: disc;
+  padding-left: 1.25rem;
+  margin: 0 0 0.75rem;
+}
+
+.interests > li {
+  margin-bottom: 0.35rem;
+}
+
+.interests .projects {
+  color: var(--muted);
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.interests .projects::before {
+  content: "→ ";
+}
