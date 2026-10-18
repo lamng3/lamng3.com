@@ -5,7 +5,7 @@
 
 - slug: kroma
   selected: true
-  short: KROMA
+  short: Kroma
   title: "KROMA: Ontology Matching with Knowledge Retrieval and Large Language Models"
   authors: "L. Nguyen, E. Barcelos, R. French, and Y. Wu"
   venue: "International Semantic Web Conference (ISWC)"
@@ -44,8 +44,8 @@
   venue: "Preprint"
   year: 2026
   status: preprint
-  tldr: "An orchestrator and four memory-augmented agents integrate ontologies: KROMA matches classes, and other agents extract missing relations, place classes that have no match, and repair matches that contradict each other. Every question goes to the cheapest tier that can settle it: label-free evidence, a local model, or an API model, within a budget."
-  abstract: "The Agentic Ontologist orchestrates four agents over one shared blackboard: KROMA matches classes, an extraction agent proposes missing subClassOf and part_of edges, a reasoning agent places classes that have no match under the other ontology, and a validation agent removes matches that contradict each other. The orchestrator routes each question through evidence, a local model, and an API model in batches, within a budget, audits the local model's confident answers, and recalibrates how far it trusts the local model from where the two agree. Around the agents, it combines RDF/OWL parsing, graph and text embeddings, pluggable retrieval, validation, uncertainty quantification, and Ontology-of-Thought traces, with a tiered query cache that replays repeated and reworded questions."
+  tldr: "An orchestrator and four memory-augmented agents integrate ontologies: Kroma matches classes, and other agents extract missing relations, place classes that have no match, and repair matches that contradict each other. Every question goes to the cheapest tier that can settle it: label-free evidence, a local model, or an API model, within a budget."
+  abstract: "The Agentic Ontologist orchestrates four agents over one shared blackboard: Kroma matches classes, an extraction agent proposes missing subClassOf and part_of edges, a reasoning agent places classes that have no match under the other ontology, and a validation agent removes matches that contradict each other. The orchestrator routes each question through evidence, a local model, and an API model in batches, within a budget, audits the local model's confident answers, and recalibrates how far it trusts the local model from where the two agree. Around the agents, it combines RDF/OWL parsing, graph and text embeddings, pluggable retrieval, validation, uncertainty quantification, and Ontology-of-Thought traces, with a tiered query cache that replays repeated and reworded questions."
   highlights:
     - "On the OAEI Mouse-Human anatomy track, matching reaches 0.913 F1 with routing ($0.74 of API calls) against 0.924 with the API model alone ($0.80), 0.839 with evidence alone, and 0.823 with a local llama3.1 alone."
     - "Audits show llama3.1 disagrees with the API model too often to be trusted, so the orchestrator stops trusting it: with this local model, routing saves little beyond the free evidence tier, which settles a third of the matching questions."
@@ -139,7 +139,7 @@
   venue: "M.S. thesis, Case Western Reserve University"
   year: 2025
   status: published
-  tldr: "A workflow that automates the stages of building and aligning ontologies with retrieval-augmented language models, from concept extraction and matching (KROMA) to relation extraction and evaluation, and runs the models on limited hardware through KV-cache quantization."
+  tldr: "A workflow that automates the stages of building and aligning ontologies with retrieval-augmented language models, from concept extraction and matching (Kroma) to relation extraction and evaluation, and runs the models on limited hardware through KV-cache quantization."
   abstract: "Ontologies are formal representations of a domain's concepts and their interrelations. Nonetheless, building rich, accurate ontologies remains a time-consuming, expertise-intensive task. This thesis outlines a comprehensive workflow that integrates retrieval-augmented Large Language Models (LLMs) with structural algorithms to automate the key stages of ontology matching, all while optimizing resource efficiency. First, this work tackles Entity Recognition by surveying contemporary methods for identifying candidate concepts and evaluating LLM performance on the concept extraction task. Next, this thesis introduces Ontology Matching through KROMA, which has the capability to align related concepts efficiently. Then, this addresses Relation Extraction, through detailing an original work that utilize few-shot LLM prompting and minimal fine-tuning to discover hierarchical relationships. After that, this work outlines Ontology Evaluation, drawing on recent studies to summarize key metrics and structural tests for assessing the quality of ontologies. Finally, this discusses how to Optimize LLM for Ontology Matching, focusing on KV cache quantization, so models can run effectively on limited hardware without sacrificing accuracy."
   highlights: []
   pdf: "https://etd.ohiolink.edu/acprod/odb_etd/ws/send_file/send?accession=case1751987504689716&disposition=inline"
