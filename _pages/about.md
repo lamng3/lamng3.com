@@ -23,7 +23,7 @@ description: >-
   <ul class="interests">
     <li><strong>Retrieval &amp; Context Engineering</strong>: vector retrieval, candidate reranking, model routing, and answer caching <span class="projects">(<a href="https://github.com/lamng3/agentic-ontologist">Agentic Ontologist</a>, <a href="https://arxiv.org/abs/2507.14032">Kroma</a>)</span>.</li>
     <li><strong>Database Systems</strong>: indexing, query optimization, MVCC, recovery, and provenance <span class="projects">(<a href="https://github.com/lamng3/OntoDB">OntoDB</a>)</span>.</li>
-    <li><strong>Natural Language Interfaces to Databases</strong>: text-to-SPARQL as step-by-step planning over a typed query algebra <span class="projects">(<a href="https://github.com/lamng3/hermes">Hermes</a>)</span>.</li>
+    <li><strong>Natural Language Interfaces to Databases</strong>: text-to-SPARQL as query planning over a typed query algebra <span class="projects">(<a href="https://github.com/lamng3/hermes">Hermes</a>)</span>.</li>
     <li><strong>Reliable &amp; Secure Retrieval</strong>: query-driven ontology assessment and adversarial robustness <span class="projects">(<a href="https://github.com/cwru-sdle/OntoCheck">OntoCheck</a>, <a href="https://github.com/lamng3/aegis">Aegis</a>)</span>.</li>
   </ul>
   <p>Before this I trained competitive programming, reaching the top 1.26% in <a href="https://leetcode.com/u/lamng3/">LeetCode contests</a>, and I still find data structures and algorithms a useful lens for thinking about agentic memory.</p>
