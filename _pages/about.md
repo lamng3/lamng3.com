@@ -18,7 +18,8 @@ description: >-
 
 <section id="about">
   <p><strong>I play with agentic retrieval and database internals.</strong></p>
-  <p>I am a researcher working on AI for scientific discovery. I build the semantic data layer for LLMs: ontologies and knowledge graphs that give agents the right context, from the right source, at a bounded cost. I design algorithms and systems through the lens of databases, so retrieval stays context-aware, cache-aware, and trustworthy as the knowledge underneath it evolves. I hold an M.S. in Computer Science from <a href="https://case.edu">Case Western Reserve University</a>, advised by <a href="https://yinghwu.github.io">Dr. Yinghui Wu</a>, with a <a href="https://etd.ohiolink.edu/acprod/odb_etd/ws/send_file/send?accession=case1751987504689716&amp;disposition=inline">thesis</a> on ontology matching with knowledge retrieval and efficient language models.</p>
+  <p>I am a researcher working on AI for scientific discovery. I build the semantic data layer for LLMs: ontologies and knowledge graphs that give agents the right context, from the right source, at a bounded cost. I design algorithms and systems through the lens of databases, so retrieval stays context-aware, cache-aware, and trustworthy as the knowledge underneath it evolves.</p>
+  <p>I hold an M.S. in Computer Science from <a href="https://case.edu">Case Western Reserve University</a>, advised by <a href="https://yinghwu.github.io">Dr. Yinghui Wu</a>, with a <a href="https://etd.ohiolink.edu/acprod/odb_etd/ws/send_file/send?accession=case1751987504689716&amp;disposition=inline">thesis</a> on ontology matching with knowledge retrieval and efficient language models.</p>
   <p><strong>Research interests</strong></p>
   <ul class="interests">
     <li><strong>Retrieval &amp; Context Engineering</strong>: vector retrieval, reranking, tool use, model routing, and caching <span class="projects">(<a href="https://github.com/lamng3/agentic-ontologist">Agentic Ontologist</a>, <a href="https://arxiv.org/abs/2507.14032">Kroma</a>)</span>.</li>
@@ -27,7 +28,7 @@ description: >-
     <li><strong>Reliable &amp; Secure Retrieval</strong>: query-driven ontology assessment and adversarial robustness <span class="projects">(<a href="https://github.com/cwru-sdle/OntoCheck">OntoCheck</a>, <a href="https://github.com/lamng3/aegis">Aegis</a>)</span>.</li>
   </ul>
   <p>Before this I trained competitive programming, reaching the top 1% in <a href="https://leetcode.com/u/lamng3/">LeetCode contests</a>, and I still find data structures and algorithms a useful lens for thinking about agentic memory.</p>
-  <p>Prior to that, I trained competitive math, earning gold and silver medals at the Hanoi Mathematical Olympiad and the Singapore Mathematical Olympiad. I later founded <a href="https://lamng3.github.io/leetmath/">LeetMath</a>, a platform for AI-guided math training and automated grading.</p>
+  <p>Prior to that, I trained competitive math, earning gold and silver medals at the Hanoi Mathematical Olympiad and the Singapore Mathematical Olympiad. I founded <a href="https://lamng3.github.io/leetmath/">LeetMath</a>, a platform for AI-guided math training and automated grading.</p>
   <p>Reaching me is O(log log log n), practically a constant. Please feel free to reach out at lamng3.work [at] gmail [dot] com if you'd like to talk about any of the above.</p>
 </section>
 
