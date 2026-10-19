@@ -28,7 +28,8 @@ description: >-
     <li><strong>Reliable &amp; Secure Retrieval</strong>: query-driven ontology assessment and adversarial robustness <span class="projects">(<a href="https://github.com/cwru-sdle/OntoCheck">OntoCheck</a>, <a href="https://github.com/lamng3/aegis">Aegis</a>)</span>.</li>
   </ul>
   <p>Before this I trained competitive programming, reaching the top 1% in <a href="https://leetcode.com/u/lamng3/">LeetCode contests</a>, and I still find data structures and algorithms a useful lens for thinking about agentic memory.</p>
-  <p>Prior to that, I trained competitive math, earning gold and silver medals at the Hanoi Mathematical Olympiad and the Singapore Mathematical Olympiad. I founded <a href="https://lamng3.github.io/leetmath/">LeetMath</a>, a platform for AI-guided math training and automated grading.</p>
+  <p>Prior to that, I trained competitive math, earning gold and silver medals at the Hanoi Mathematical Olympiad and the Singapore Mathematical Olympiad.</p>
+  <p>I founded <a href="https://lamng3.github.io/leetmath/">LeetMath</a>, a platform for AI-guided math training and automated grading.</p>
   <p>Reaching me is O(log log log n), practically a constant. Please feel free to reach out at lamng3.work [at] gmail [dot] com if you'd like to talk about any of the above.</p>
 </section>
 
