@@ -3,7 +3,7 @@ https://lamng3.netlify.app/*  https://lamng3.com/:splat  301!
 http://lamng3.netlify.app/*  https://lamng3.com/:splat  301!
 
 # LeetMath is hosted on Firebase Hosting and served here under /leetmath/ (proxy: the URL stays on lamng3.com).
-/leetmath  /leetmath/  301
+# No separate /leetmath -> /leetmath/ rule: Netlify ignores trailing slashes, so it would loop.
 /leetmath/*  https://leetmath-app.web.app/:splat  200!
 
 /blog/2026/segment-tree-nodes-dynamic-sparse/  /blog/range-queries/#segment-tree  301
