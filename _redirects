@@ -6,6 +6,10 @@ http://lamng3.netlify.app/*  https://lamng3.com/:splat  301!
 # No separate /leetmath -> /leetmath/ rule: Netlify ignores trailing slashes, so it would loop.
 /leetmath/*  https://leetmath-app.web.app/:splat  200!
 
+# keras-js is hosted on GitHub Pages (lamng3/keras-js) and served here under /keras-js/ (proxy).
+# Same trailing-slash caveat as /leetmath/: no /keras-js -> /keras-js/ rule.
+/keras-js/*  https://lamng3.github.io/keras-js/:splat  200!
+
 /blog/2026/segment-tree-nodes-dynamic-sparse/  /blog/range-queries/#segment-tree  301
 /blog/2026/segment-tree-walk-amortized-allocation/  /blog/range-queries/#segment-tree-walk  301
 /blog/2026/coordinate-compression-fenwick-ranks/  /blog/range-queries/#fenwick-tree  301
