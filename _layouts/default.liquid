@@ -35,8 +35,7 @@
           {%- endif -%}
         </div>
         <nav class="sitenav" aria-label="Site">
-          <a href="{{ '/projects/' | relative_url }}" {% if section == 'projects' %}aria-current="page"{% endif %}>projects</a>
-          <a href="{{ '/library/' | relative_url }}" {% if section == 'library' %}aria-current="page"{% endif %}>library</a>
+          <a href="{{ '/projects/' | relative_url }}" {% if section == 'projects' or section == 'library' %}aria-current="page"{% endif %}>projects</a>
           <a href="{{ '/blog/' | relative_url }}" {% if section == 'blog' %}aria-current="page"{% endif %}>blog</a>
           <a href="{{ '/publications/' | relative_url }}" {% if section == 'publications' %}aria-current="page"{% endif %}>publications</a>
           <a href="{{ '/resume/' | relative_url }}" {% if section == 'resume' %}aria-current="page"{% endif %}>resume</a>

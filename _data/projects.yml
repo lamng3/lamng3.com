@@ -165,6 +165,21 @@
     - { label: Docs, url: "https://lamng3.github.io/toolbox/" }
     - { label: GitHub, url: "https://github.com/lamng3/toolbox" }
 
+- slug: library
+  title: Algorithm and Data Structure Library
+  date: 2026-04-03
+  repo: lamng3/competitive-programming-notebook
+  stars: 0
+  languages: [C++, Python]
+  category: Algorithms
+  image: library.jpg
+  lead: C++ and Python implementations of the algorithms and data structures I use for competitive programming and interviews, with contest templates.
+  body:
+    - "44 entries, from segment trees and Fenwick trees to rolling hashes, graph algorithms, caches and probabilistic sketches. Each comes from my notebook, where it has unit tests, and has its own page with the code and a copy button. The [blog](/blog/) explains many of the ideas behind them."
+  links:
+    - { label: Library, url: "/library/" }
+    - { label: GitHub, url: "https://github.com/lamng3/competitive-programming-notebook" }
+
 - slug: hermitpy
   title: hermitpy
   date: 2026-09-27
