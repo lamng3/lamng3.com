@@ -12,7 +12,7 @@ description: Lam Nguyen's work, education, coursework, and awards.
     <h3>Researcher at the Center for Materials Data Science</h3>
     <p class="resume-meta">2026 – Current</p>
     <ul>
-      <li>AI for scientific discovery: ontologies and knowledge graphs as the semantic data layer for language agents, with <a href="https://yinghwu.github.io">Yinghui&nbsp;Wu</a>.</li>
+      <li>AI for scientific discovery: semantic data layers for language agents.</li>
     </ul>
   </div>
 
@@ -36,7 +36,7 @@ description: Lam Nguyen's work, education, coursework, and awards.
     <h3>Software Engineer Intern at Amazon</h3>
     <p class="resume-meta">2023</p>
     <ul>
-      <li>Alexa Voice AI: recommendations for voice shopping, and data pipelines for RLHF.</li>
+      <li>Alexa Voice AI: voice shopping recommendations and RLHF data pipelines.</li>
     </ul>
   </div>
 
@@ -44,7 +44,7 @@ description: Lam Nguyen's work, education, coursework, and awards.
     <h3>Software Engineer Intern at Microsoft</h3>
     <p class="resume-meta">2023</p>
     <ul>
-      <li>Microsoft Security: log compaction for agent telemetry, keeping critical signals in hot storage.</li>
+      <li>Microsoft Security: log compaction that keeps critical agent signals hot.</li>
     </ul>
   </div>
 
@@ -73,7 +73,7 @@ description: Lam Nguyen's work, education, coursework, and awards.
 
   <h4>Teaching:</h4>
   <ul>
-    <li>TA for CSDS 340 (Introduction to Machine Learning), Spring 2025</li>
+    <li>TA for CSDS 340 (Machine Learning), Spring 2025</li>
     <li>TA for CSDS 310 (Algorithms), Fall 2022</li>
   </ul>
 
@@ -82,7 +82,7 @@ description: Lam Nguyen's work, education, coursework, and awards.
     <li>Large Language Models (CSDS 600)</li>
     <li>High Performance Data and Computing (CSDS 438)</li>
     <li>Data Mining (CSDS 435)</li>
-    <li>Database Systems (CSDS 433)</li>
+    <li>Advanced Database Systems (CSDS 433)</li>
     <li>Applied Data Science Research (DSCI 452)</li>
     <li>Data Science Models and Prediction (DSCI 453)</li>
   </ul>
@@ -90,14 +90,14 @@ description: Lam Nguyen's work, education, coursework, and awards.
   <h4>Undergraduate technical coursework:</h4>
   <ul>
     <li>Algorithms (CSDS 310)</li>
-    <li>Introduction to Machine Learning (CSDS 340)</li>
-    <li>Introduction to Artificial Intelligence (CSDS 391)</li>
-    <li>Introduction to Database Systems (CSDS 341)</li>
-    <li>Introduction to Data Science Systems (CSDS 312)</li>
-    <li>Introduction to Data Engineering (CSDS 351)</li>
+    <li>Machine Learning (CSDS 340)</li>
+    <li>Artificial Intelligence (CSDS 391)</li>
+    <li>Database Systems (CSDS 341)</li>
+    <li>Data Science Systems (CSDS 312)</li>
+    <li>Data Engineering (CSDS 351)</li>
     <li>Structured and Unstructured Data (CSDS 234)</li>
     <li>Data Privacy (CSDS 356)</li>
-    <li>Introduction to Operating Systems (CSDS 338)</li>
+    <li>Operating Systems (CSDS 338)</li>
     <li>Computer Networks I (CSDS 325)</li>
     <li>Logic Design and Computer Organization (CSDS 281)</li>
     <li>Software Engineering (CSDS 393)</li>
@@ -109,7 +109,7 @@ description: Lam Nguyen's work, education, coursework, and awards.
     <li>Elementary Number Theory (MATH 303)</li>
     <li>Linear Algebra (MATH 307)</li>
     <li>Discrete Mathematics (MATH 304)</li>
-    <li>Introduction to Probability (MATH 380)</li>
+    <li>Probability (MATH 380)</li>
     <li>Theoretical Statistics I (STAT 345)</li>
     <li>Calculus for Science and Engineering III (MATH 223)</li>
     <li>Computational Economics (ECON 380)</li>
@@ -128,7 +128,6 @@ description: Lam Nguyen's work, education, coursework, and awards.
     <li><strong>Hanoi Open Mathematics Competition:</strong> Gold Medal, Senior Division</li>
     <li><strong>Singapore Mathematical Olympiad:</strong> Silver Medal</li>
     <li><strong>Mathematical Young Talent Search:</strong> Silver Medal</li>
-    <li><strong>Hanoi Mathematical Modeling Challenge:</strong> Honorable Mention</li>
   </ul>
   <h4>Other:</h4>
   <ul>
