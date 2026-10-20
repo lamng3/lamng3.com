@@ -1,0 +1,22 @@
+---
+layout: default
+---
+{%- assign t = site.data.library | where: 'slug', page.slug | first -%}
+<article class="tpl">
+  <p class="tpl-crumb"><a href="{{ '/library/' | relative_url }}">Library</a> · {{ t.category }}{% if t.topic != '' %} · {{ t.topic }}{% endif %}</p>
+  <h1>{{ t.title }}</h1>
+  <div class="tpl-bar">
+    <div class="tpl-tabs" role="tablist">
+      {% for f in t.files %}
+        <button type="button" role="tab" data-lang="{{ f.label }}" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">{{ f.name }}</button>
+      {% endfor %}
+    </div>
+    <div class="tpl-actions">
+      <button type="button" class="tpl-copy">Copy</button>
+      {% for f in t.files %}
+        <a class="tpl-source" data-lang="{{ f.label }}" href="{{ f.url }}" {% unless forloop.first %}hidden{% endunless %}>GitHub ↗</a>
+      {% endfor %}
+    </div>
+  </div>
+  {{ content }}
+</article>

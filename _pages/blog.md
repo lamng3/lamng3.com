@@ -5,10 +5,10 @@ title: Blog
 description: Study notes on algorithms, data structures, and the systems built on them, and where they turn up again in agentic memory.
 ---
 
-<header>
-  <h1>Blog</h1>
-  <p class="lede">Study notes on algorithms, data structures, and the systems built on them, and where they turn up again in agentic memory.</p>
-</header>
+<section class="library-intro">
+  <h2>Study notes</h2>
+  <p>Notes on algorithms, data structures, and the systems built on them, and where they turn up again in agentic memory. One page per topic, written derivation-first. The code lives in the <a href="{{ '/library/' | relative_url }}">library</a>.</p>
+</section>
 
 <div class="search-wrap">
   <button class="search-field" type="button" data-search-open aria-label="Search the blog">
@@ -30,13 +30,17 @@ description: Study notes on algorithms, data structures, and the systems built o
   {% endfor %}
 </p>
 
-<ul class="post-list">
+<ul class="library-grid topic-grid">
   {% for topic in site.data.topics %}
     {% assign topic_url = '/blog/' | append: topic.slug | append: '/' %}
     {% assign topic_page = site.pages | where: 'url', topic_url | first %}
-    <li>
-      <a href="{{ topic_url | relative_url }}">{{ topic.title }}</a>
-      <time datetime="{{ topic_page.last_updated | date: '%Y-%m-%d' }}">{{ topic_page.last_updated | date: "%B %d, %Y" }}</time>
+    <li class="tpl-card">
+      <a href="{{ topic_url | relative_url }}">
+        <span class="tpl-cat">{% assign n = topic.sections | size %}{% if n == 0 %}problem list{% else %}{{ n }} technique{% if n != 1 %}s{% endif %}{% endif %} · <time datetime="{{ topic_page.last_updated | date: '%Y-%m-%d' }}">{{ topic_page.last_updated | date: "%b %-d, %Y" }}</time></span>
+        <span class="tpl-title">{{ topic.title }}</span>
+        <span class="tpl-files"><code>{{ topic.slug }}</code></span>
+        <span class="tpl-view">Read</span>
+      </a>
     </li>
   {% endfor %}
 </ul>
