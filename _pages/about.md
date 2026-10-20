@@ -23,7 +23,7 @@ description: >-
     <li><strong>Natural language interfaces to databases</strong>: text-to-SPARQL as planning over a typed query algebra&nbsp;<span class="projects">(<a href="https://github.com/lamng3/hermes">Hermes</a>)</span>.</li>
     <li><strong>Reliable and secure retrieval</strong>: query-driven ontology assessment and adversarial robustness&nbsp;<span class="projects">(<a href="https://github.com/cwru-sdle/OntoCheck">OntoCheck</a>, Aegis)</span>.</li>
   </ul>
-  <p>Lately, I have been exploring GPU-accelerated vector search for recommender systems, especially fused ANN kernels that filter and score candidates in a single pass. If you work on these, I would love to chat.</p>
+  <p>Lately, I have been exploring GPU-accelerated vector search for recsys, specifically fused ANN kernels. If you work on these, I would love to chat.</p>
 </section>
 
 <section id="work">
