@@ -13,7 +13,7 @@
   category: Agents
   image: agentic-ontologist.jpg
   notable: true
-  blurb: memory-augmented agents that merge two ontologies into one
+  blurb: orchestrating memory-augmented agents for ontology engineering
   lead: Turn two ontologies into one. Agents match, extract, reason, and repair, and every decision goes to the cheapest model that can settle it.
   body:
     - "The Agentic Ontologist orchestrates memory-augmented agents for ontology engineering. Each decision is routed by cost: cheap retrieval and small models settle most of them, and only the hard ones reach a large model."
@@ -32,7 +32,7 @@
   image: ontodb.jpg
   notable: true
   blurb: a database management system for ontologies
-  stat: with a manual and a book that walks through the engine
+  stat: SPARQL over B+ trees, strict 2PL, and ARIES recovery
   lead: A database management system for ontologies. Data is RDF and the query language is SPARQL.
   body:
     - "The shell answers a SPARQL subset over B+ tree indexes with a cost-based optimizer, runs statements under strict two-phase locking, and recovers pages with ARIES after a crash, from a checksummed write-ahead log."
