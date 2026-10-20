@@ -17,45 +17,48 @@
   </head>
   <body>
     <main>
-      <nav class="sitenav" aria-label="Site">
-        <a
-          href="{{ '/' | relative_url }}"
-          {% if page.url == '/' %}
-            aria-current="page"
+      {%- assign section = '' -%}
+      {%- if page.url contains '/projects/' -%}{%- assign section = 'projects' -%}
+      {%- elsif page.url contains '/library/' -%}{%- assign section = 'library' -%}
+      {%- elsif page.url contains '/blog/' -%}{%- assign section = 'blog' -%}
+      {%- elsif page.url contains '/publications/' -%}{%- assign section = 'publications' -%}
+      {%- endif -%}
+      <header class="masthead">
+        <div>
+          <a class="name" href="{{ '/' | relative_url }}">Lam Nguyen</a>
+          {%- if section != '' -%}
+            <a class="page-name" href="{{ '/' | append: section | append: '/' | relative_url }}">{{ section | capitalize }}</a>
+          {%- endif -%}
+        </div>
+        <nav class="sitenav" aria-label="Site">
+          <a href="{{ '/projects/' | relative_url }}" {% if section == 'projects' %}aria-current="page"{% endif %}>projects</a>
+          <a href="{{ '/library/' | relative_url }}" {% if section == 'library' %}aria-current="page"{% endif %}>library</a>
+          <a href="{{ '/blog/' | relative_url }}" {% if section == 'blog' %}aria-current="page"{% endif %}>blog</a>
+          <a href="{{ '/publications/' | relative_url }}" {% if section == 'publications' %}aria-current="page"{% endif %}>publications</a>
+          {% if page.url contains '/blog/' and page.url != '/blog/' %}
+            <button class="nav-search" type="button" data-search-open aria-label="Search the blog">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5 21 21" />
+              </svg>
+              <span>Search</span>
+              <kbd class="search-shortcut">⌘K</kbd>
+            </button>
           {% endif %}
-          >Home</a
-        >
-        <a
-          href="{{ '/blog/' | relative_url }}"
-          {% if page.url contains '/blog/' %}
-            aria-current="page"
-          {% endif %}
-          >Blog</a
-        >
-        <a
-          href="{{ '/publications/' | relative_url }}"
-          {% if page.url contains '/publications/' %}
-            aria-current="page"
-          {% endif %}
-          >Publications</a
-        >
-        {% if page.url contains '/blog/' and page.url != '/blog/' %}
-          <button class="nav-search" type="button" data-search-open aria-label="Search the blog">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5 21 21" />
-            </svg>
-            <span>Search</span>
-            <kbd class="search-shortcut">⌘K</kbd>
-          </button>
-        {% endif %}
-      </nav>
+        </nav>
+      </header>
       {{ content }}
-      <footer>
-        <p>© {{ site.time | date: '%Y' }} Lam Nguyen</p>
+      <footer class="contact">
+        <div><span>GitHub</span><a href="https://github.com/lamng3">@lamng3</a></div>
+        <div><span>Scholar</span><a href="https://scholar.google.com/citations?user=ws80Q0IAAAAJ">Lam Nguyen</a></div>
+        <div><span>LeetCode</span><a href="https://leetcode.com/u/lamng3/">@lamng3</a></div>
+        <div><span>Email</span><a href="mailto:lamng3.work@gmail.com">lamng3.work@gmail.com</a></div>
       </footer>
     </main>
     {% if page.url contains '/blog/' %}
       {% include search.liquid %}
+    {% endif %}
+    {% if page.layout == 'template' or page.url == '/library/' or page.url == '/projects/' %}
+      <script defer src="{{ '/assets/js/pages.js' | relative_url }}"></script>
     {% endif %}
     {% if page.toc %}
       <script defer src="{{ '/assets/js/toc.js' | relative_url }}"></script>

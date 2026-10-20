@@ -1,11 +1,14 @@
 # Working notes
 
-Lam Nguyen's site, hosted on Netlify. A one-page profile plus a blog. There is no profile photo.
+Lam Nguyen's site, hosted on Netlify. A profile, projects, a code library, and a blog, in a white, minimal style modeled on ekzhang.com. There is no profile photo.
 
 ## Pages
 
-- `_pages/about.md` is the homepage (`permalink: /`).
-- `_pages/blog.md` is the blog index: one flat list of topics with their last-updated dates, in the order of `_data/topics.yml`. Topic names stay generic, like cp-algorithms or the USACO Guide (Binary Search, Range Queries, Hashing), so each one can hold many techniques.
+- `_pages/about.md` is the homepage (`permalink: /`). Its "Notable work" list comes from projects with `notable: true` in `_data/projects.yml`.
+- `_pages/projects.md` is /projects/, built from `_data/projects.yml` (newest first; sortable by stars). Screenshots live in `assets/img/projects/` (960px JPEG). Refresh star counts with `scripts/update-stars.sh`.
+- `_pages/library.md` is /library/, the code library. `scripts/sync-library.py` generates `_data/library.yml` and `_pages/library/*.md` from `../competitive-programming` (lamng3/competitive-programming-notebook); do not edit those by hand, rerun the script.
+- `_layouts/default.liquid` holds the masthead (name, section name, lowercase nav) and the contact footer. `assets/js/pages.js` sorts projects, filters the library, and switches template tabs.
+- `_pages/blog.md` is the blog index: a card grid of topics with their last-updated dates, in the order of `_data/topics.yml`. Topic names stay generic, like cp-algorithms or the USACO Guide (Binary Search, Range Queries, Hashing), so each one can hold many techniques.
 - `_pages/leetcode.md` is Selected LeetCode Problems. Each row's topic links into a topic page.
 - Topic pages use `layout: post`. With no `date`, the layout shows "Updated" and `last_updated`.
 

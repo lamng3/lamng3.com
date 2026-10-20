@@ -5,10 +5,10 @@ permalink: /publications/
 description: Papers, a thesis, and a book on ontologies, knowledge graphs, language models, and database systems, each with its own page and PDF.
 ---
 
-<header>
-  <h1>Publications</h1>
-  <p class="lede">Papers, a thesis, and a book. Open one for its TL;DR and PDF.</p>
-</header>
+<section class="library-intro">
+  <h2>Papers</h2>
+  <p>Papers, a thesis, and a book. Open one for its TL;DR and PDF.</p>
+</section>
 
 <ol class="entries pubs pub-index">
   {% for pub in site.data.publications %}
