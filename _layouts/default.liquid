@@ -22,6 +22,7 @@
       {%- elsif page.url contains '/library/' -%}{%- assign section = 'library' -%}
       {%- elsif page.url contains '/blog/' -%}{%- assign section = 'blog' -%}
       {%- elsif page.url contains '/publications/' -%}{%- assign section = 'publications' -%}
+      {%- elsif page.url contains '/resume/' -%}{%- assign section = 'resume' -%}
       {%- endif -%}
       <header class="masthead">
         <div>
@@ -35,6 +36,7 @@
           <a href="{{ '/library/' | relative_url }}" {% if section == 'library' %}aria-current="page"{% endif %}>library</a>
           <a href="{{ '/blog/' | relative_url }}" {% if section == 'blog' %}aria-current="page"{% endif %}>blog</a>
           <a href="{{ '/publications/' | relative_url }}" {% if section == 'publications' %}aria-current="page"{% endif %}>publications</a>
+          <a href="{{ '/resume/' | relative_url }}" {% if section == 'resume' %}aria-current="page"{% endif %}>resume</a>
           {% if page.url contains '/blog/' and page.url != '/blog/' %}
             <button class="nav-search" type="button" data-search-open aria-label="Search the blog">
               <svg viewBox="0 0 24 24" aria-hidden="true">
