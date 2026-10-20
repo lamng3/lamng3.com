@@ -1,15 +1,16 @@
 // Small behaviors for /projects/ (sort), /library/ (filter) and template pages (tabs, copy).
 (function () {
-  // Projects: sort by date or by stars.
+  // Projects: the listed order, or sorted by date or by stars.
   var list = document.getElementById('project-list');
   if (list) {
     var buttons = document.querySelectorAll('.sortbar [data-sort]');
+    var featured = Array.prototype.slice.call(list.children);
     buttons.forEach(function (btn) {
       btn.addEventListener('click', function () {
         var key = btn.dataset.sort;
         buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
-        var items = Array.prototype.slice.call(list.children);
-        items.sort(function (a, b) {
+        var items = featured.slice();
+        if (key !== 'featured') items.sort(function (a, b) {
           if (key === 'stars') {
             var d = Number(b.dataset.stars) - Number(a.dataset.stars);
             if (d) return d;

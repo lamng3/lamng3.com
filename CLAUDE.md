@@ -5,7 +5,9 @@ Lam Nguyen's site, hosted on Netlify. A profile, projects, a code library, and a
 ## Pages
 
 - `_pages/about.md` is the homepage (`permalink: /`). Its "Notable work" list comes from projects with `notable: true` in `_data/projects.yml`.
-- `_pages/projects.md` is /projects/, built from `_data/projects.yml` (newest first; sortable by stars). Screenshots live in `assets/img/projects/` (960px JPEG). Refresh star counts with `scripts/update-stars.sh`.
+- `_pages/projects.md` is /projects/, built from `_data/projects.yml` in the order listed there (research first, then tools; the page can also sort by date or stars). A project with no `links` (Aegis, still private) shows no links or screenshot. Screenshots live in `assets/img/projects/` (960px JPEG). Refresh star counts with `scripts/update-stars.sh`.
+- `_pages/resume.md` is /resume/: work, education with graduate and undergraduate coursework (course names from the CWRU transcript; never grades, GPA or IDs), awards, service.
+- The homepage text follows Lam's original wording. Keep edits to it small.
 - `_pages/library.md` is /library/, the code library. `scripts/sync-library.py` generates `_data/library.yml` and `_pages/library/*.md` from `../competitive-programming` (lamng3/competitive-programming-notebook); do not edit those by hand, rerun the script.
 - `_layouts/default.liquid` holds the masthead (name, section name, lowercase nav) and the contact footer. `assets/js/pages.js` sorts projects, filters the library, and switches template tabs.
 - `_pages/blog.md` is the blog index: a card grid of topics with their last-updated dates, in the order of `_data/topics.yml`. Topic names stay generic, like cp-algorithms or the USACO Guide (Binary Search, Range Queries, Hashing), so each one can hold many techniques.

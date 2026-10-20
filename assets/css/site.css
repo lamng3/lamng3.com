@@ -450,6 +450,10 @@ footer p {
     display: inline-block;
     margin-bottom: 0.25rem;
   }
+  .sitenav {
+    gap: 0.4rem 1rem;
+    font-size: 0.95rem;
+  }
   .post-list li {
     flex-direction: column;
     align-items: flex-start;
@@ -1268,6 +1272,38 @@ html.spotlight-open {
 
 .tagline .joiner {
   color: var(--faint);
+}
+
+/* Wrap between the three terms, never inside one. */
+.tagline > span:not(.joiner) {
+  white-space: nowrap;
+}
+
+/* ---------- resume ---------- */
+
+.resume h3 {
+  margin: 1.75rem 0 0.15rem;
+}
+
+.resume h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 1.75rem 0 0.5rem;
+}
+
+.resume .resume-meta {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem;
+}
+
+.resume ul {
+  margin: 0.25rem 0 0.75rem;
+}
+
+.resume .courses li {
+  margin: 0.1rem 0;
 }
 
 .intro p {

@@ -1,43 +1,26 @@
 # Projects for /projects/ and the home page's "Notable work" list.
-# Newest first (the page can also sort by stars). `date` is when the project
-# started; `stars` is a snapshot, refreshed by scripts/update-stars.sh.
-# `notable` puts a project on the home page, with `blurb` and an optional `stat`.
+# Listed in the order shown (the page can also sort by date or stars). `date`
+# is when the project started; `stars` is a snapshot, refreshed by
+# scripts/update-stars.sh. `notable` puts a project on the home page, with
+# `blurb` and an optional `stat`. A project with no `links` is not public yet.
 
-- slug: keras-js
-  title: keras-js
-  date: 2026-10-19
-  repo: lamng3/keras-js
+- slug: agentic-ontologist
+  title: The Agentic Ontologist
+  date: 2026-09-25
+  repo: lamng3/agentic-ontologist
   stars: 0
-  languages: [TypeScript]
-  category: Machine Learning
-  image: keras-js.jpg
+  languages: [Python]
+  category: Agents
+  image: agentic-ontologist.jpg
   notable: true
-  blurb: the Keras 3 API in the browser, on WebGPU
-  stat: matches Python Keras to 1e-4; .keras files move both ways
-  lead: The Keras 3 API for JavaScript. Build, train and fine-tune neural networks in the browser, on WebGPU and WebAssembly.
+  blurb: memory-augmented agents that merge two ontologies into one
+  lead: Turn two ontologies into one. Agents match, extract, reason, and repair, and every decision goes to the cheapest model that can settle it.
   body:
-    - "keras-js is Keras 3 written in TypeScript on top of [jax-js](https://github.com/ekzhang/jax-js), the way Keras 3 runs on JAX in Python: a model is a pure function of its weights, and every training step is differentiated with `grad` and compiled with `jit` into WebGPU or Wasm kernels. It has the same layers, `compile()` and `fit()`, masking, recurrent states, sample weights and optimizer checkpoints."
-    - "It reads and writes real `.keras` files, so a model trained in Python can be fine-tuned in a browser tab and sent back. A parity suite checks predictions and optimizer steps against Keras 3.15, and five examples from keras.io run unchanged in the page."
+    - "The Agentic Ontologist orchestrates memory-augmented agents for ontology engineering. Each decision is routed by cost: cheap retrieval and small models settle most of them, and only the hard ones reach a large model."
   links:
-    - { label: Website, url: "https://lamng3.com/keras-js/" }
-    - { label: Examples, url: "https://lamng3.com/keras-js/examples.html" }
-    - { label: GitHub, url: "https://github.com/lamng3/keras-js" }
-
-- slug: leetmath
-  title: LeetMath
-  date: 2026-10-18
-  languages: [JavaScript]
-  category: Education
-  image: leetmath.jpg
-  notable: true
-  blurb: LeetCode-style practice for competition math proofs
-  stat: 199 problems, from AIME to early Putnam
-  lead: Open a problem, write a proof in Markdown and LaTeX, and get a 0–7 grade against that problem's rubric.
-  body:
-    - "LeetMath is practice for proofs the way LeetCode is practice for code, from AIME through USA(J)MO to early Putnam. Each problem has its own 7-point rubric in the style of USAMO grading."
-    - "The site is static and has no grading server. Proofs are graded by a model you choose, with your own key, in your own browser, or for free by a model that runs on your GPU inside the tab."
-  links:
-    - { label: Website, url: "https://lamng3.com/leetmath/" }
+    - { label: Showcase, url: "https://lamng3.github.io/agentic-ontologist/" }
+    - { label: Paper, url: "/publications/agentic-ontologist/" }
+    - { label: GitHub, url: "https://github.com/lamng3/agentic-ontologist" }
 
 - slug: ontodb
   title: OntoDB
@@ -59,99 +42,6 @@
     - { label: Book, url: "/publications/ontodb-book/" }
     - { label: GitHub, url: "https://github.com/lamng3/OntoDB" }
 
-- slug: toolbox
-  title: toolbox
-  date: 2026-10-11
-  repo: lamng3/toolbox
-  stars: 0
-  languages: [Python]
-  category: Machine Learning
-  image: toolbox.jpg
-  lead: An extensible toolbox for machine learning research.
-  body:
-    - "Every model, layer, loss, reward and training loop is a component you select by name, so trying an idea is a config change and comparisons stay fair. Standard libraries (Hugging Face, TRL, PyTorch Geometric, SGLang, vLLM) plug in as backends instead of being rewritten."
-  links:
-    - { label: Docs, url: "https://lamng3.github.io/toolbox/" }
-    - { label: GitHub, url: "https://github.com/lamng3/toolbox" }
-
-- slug: hermes
-  title: Hermes
-  date: 2026-09-28
-  repo: lamng3/hermes
-  stars: 0
-  languages: [Python]
-  category: Databases
-  image: hermes.jpg
-  notable: true
-  blurb: text-to-SPARQL as verified planning over the query algebra
-  lead: Verified query planning over the SPARQL algebra with language agents.
-  body:
-    - "Hermes treats a natural-language question as a planning problem over a typed SPARQL algebra: agents build the query from operators that are checked as they are composed, instead of writing query text and hoping it parses."
-    - "It answers questions against a local ontology, an in-memory graph, or a live endpoint such as DBpedia, and reports results on public text-to-SPARQL benchmarks."
-  links:
-    - { label: Docs, url: "https://lamng3.github.io/hermes-docs/" }
-    - { label: Paper, url: "https://github.com/lamng3/hermes/blob/master/paper/hermes.pdf" }
-    - { label: GitHub, url: "https://github.com/lamng3/hermes" }
-
-- slug: hermitpy
-  title: hermitpy
-  date: 2026-09-27
-  repo: lamng3/hermitpy
-  stars: 0
-  languages: [Python]
-  category: Knowledge Graphs
-  image: hermitpy.jpg
-  lead: A Python OWL reasoner, with no JVM.
-  body:
-    - "hermitpy checks whether an ontology is consistent and builds its class hierarchy for a documented fragment of OWL, using the hypertableau calculus of Motik, Shearer and Horrocks. Constructs outside the fragment raise an error instead of being dropped silently."
-  links:
-    - { label: Docs, url: "https://lamng3.github.io/hermit-docs/" }
-    - { label: GitHub, url: "https://github.com/lamng3/hermitpy" }
-
-- slug: agentic-ontologist
-  title: The Agentic Ontologist
-  date: 2026-09-25
-  repo: lamng3/agentic-ontologist
-  stars: 0
-  languages: [Python]
-  category: Agents
-  image: agentic-ontologist.jpg
-  notable: true
-  blurb: memory-augmented agents that merge two ontologies into one
-  lead: Turn two ontologies into one. Agents match, extract, reason, and repair, and every decision goes to the cheapest model that can settle it.
-  body:
-    - "The Agentic Ontologist orchestrates memory-augmented agents for ontology engineering. Each decision is routed by cost: cheap retrieval and small models settle most of them, and only the hard ones reach a large model."
-  links:
-    - { label: Showcase, url: "https://lamng3.github.io/agentic-ontologist/" }
-    - { label: Paper, url: "/publications/agentic-ontologist/" }
-    - { label: GitHub, url: "https://github.com/lamng3/agentic-ontologist" }
-
-- slug: revu
-  title: revu
-  date: 2026-04-17
-  repo: lamng3/revu
-  stars: 0
-  languages: [Rust]
-  category: Developer Tools
-  lead: Read your code changes before you ship them.
-  body:
-    - "revu is a small terminal diff reader for reviewing a branch, drafting inline comments, and publishing them to a GitHub pull request."
-  links:
-    - { label: GitHub, url: "https://github.com/lamng3/revu" }
-
-- slug: ontocheck
-  title: OntoCheck
-  date: 2025-09-22
-  repo: cwru-sdle/OntoCheck
-  stars: 4
-  languages: [Python]
-  category: Knowledge Graphs
-  lead: Query-driven ontology assessment for scientific domain applications.
-  body:
-    - "OntoCheck asks whether an ontology can answer the questions its users need answered, and scores it on those queries. I contributed to it at the Center for Materials Data Science."
-  links:
-    - { label: GitHub, url: "https://github.com/cwru-sdle/OntoCheck" }
-
 - slug: kroma
   title: KROMA
   date: 2025-05-05
@@ -171,3 +61,121 @@
     - { label: Paper, url: "https://arxiv.org/abs/2507.14032" }
     - { label: Docs, url: "https://lamng3.github.io/kroma-docs/" }
     - { label: GitHub, url: "https://github.com/lamng3/kroma" }
+
+- slug: ontocheck
+  title: OntoCheck
+  date: 2025-09-22
+  repo: cwru-sdle/OntoCheck
+  stars: 4
+  languages: [Python]
+  category: Knowledge Graphs
+  lead: Query-driven ontology assessment for scientific domain applications.
+  body:
+    - "OntoCheck asks whether an ontology can answer the questions its users need answered, and scores it on those queries. I contributed to it at the Center for Materials Data Science."
+  links:
+    - { label: GitHub, url: "https://github.com/cwru-sdle/OntoCheck" }
+
+- slug: hermes
+  title: Hermes
+  date: 2026-09-28
+  repo: lamng3/hermes
+  stars: 0
+  languages: [Python]
+  category: Databases
+  image: hermes.jpg
+  blurb: text-to-SPARQL as verified planning over the query algebra
+  lead: Verified query planning over the SPARQL algebra with language agents.
+  body:
+    - "Hermes treats a natural-language question as a planning problem over a typed SPARQL algebra: agents build the query from operators that are checked as they are composed, instead of writing query text and hoping it parses."
+    - "It answers questions against a local ontology, an in-memory graph, or a live endpoint such as DBpedia, and reports results on public text-to-SPARQL benchmarks."
+  links:
+    - { label: Docs, url: "https://lamng3.github.io/hermes-docs/" }
+    - { label: Paper, url: "https://github.com/lamng3/hermes/blob/master/paper/hermes.pdf" }
+    - { label: GitHub, url: "https://github.com/lamng3/hermes" }
+
+- slug: aegis
+  title: Aegis
+  date: 2026-10-14
+  languages: [Python]
+  category: Security
+  lead: Transactional defense of ontology-grounded agents against counterfactual attacks.
+  body:
+    - "Agents that answer questions over a knowledge graph lean on its ontology, and on a few of its concepts far more than the rest. An attacker who edits those few can make answers wrong without touching the graph. Aegis defends the ontology the way a database defends its data: every edit is a logged transaction, health checks run on each commit, forensics measure the damage over a query workload, and recovery rolls back to the last healthy state while keeping honest edits."
+    - "Work in progress; the code will be public soon."
+
+- slug: leetmath
+  title: LeetMath
+  date: 2026-10-18
+  languages: [JavaScript]
+  category: Education
+  image: leetmath.jpg
+  blurb: LeetCode-style practice for competition math proofs
+  stat: 199 problems, from AIME to early Putnam
+  lead: Open a problem, write a proof in Markdown and LaTeX, and get a 0–7 grade against that problem's rubric.
+  body:
+    - "LeetMath is practice for proofs the way LeetCode is practice for code, from AIME through USA(J)MO to early Putnam. Each problem has its own 7-point rubric in the style of USAMO grading."
+    - "The site is static and has no grading server. Proofs are graded by a model you choose, with your own key, in your own browser, or for free by a model that runs on your GPU inside the tab."
+  links:
+    - { label: Website, url: "https://lamng3.com/leetmath/" }
+
+- slug: keras-js
+  title: keras-js
+  date: 2026-10-19
+  repo: lamng3/keras-js
+  stars: 0
+  languages: [TypeScript]
+  category: Machine Learning
+  image: keras-js.jpg
+  blurb: the Keras 3 API in the browser, on WebGPU
+  stat: matches Python Keras to 1e-4; .keras files move both ways
+  lead: The Keras 3 API for JavaScript. Build, train and fine-tune neural networks in the browser, on WebGPU and WebAssembly.
+  body:
+    - "keras-js is Keras 3 written in TypeScript on top of [jax-js](https://github.com/ekzhang/jax-js), the way Keras 3 runs on JAX in Python: a model is a pure function of its weights, and every training step is differentiated with `grad` and compiled with `jit` into WebGPU or Wasm kernels. It has the same layers, `compile()` and `fit()`, masking, recurrent states, sample weights and optimizer checkpoints."
+    - "It reads and writes real `.keras` files, so a model trained in Python can be fine-tuned in a browser tab and sent back. A parity suite checks predictions and optimizer steps against Keras 3.15, and five examples from keras.io run unchanged in the page."
+  links:
+    - { label: Website, url: "https://lamng3.com/keras-js/" }
+    - { label: Examples, url: "https://lamng3.com/keras-js/examples.html" }
+    - { label: GitHub, url: "https://github.com/lamng3/keras-js" }
+
+- slug: revu
+  title: revu
+  date: 2026-04-17
+  repo: lamng3/revu
+  stars: 0
+  languages: [Rust]
+  category: Developer Tools
+  lead: Read your code changes before you ship them.
+  body:
+    - "revu is a small terminal diff reader for reviewing a branch, drafting inline comments, and publishing them to a GitHub pull request."
+  links:
+    - { label: GitHub, url: "https://github.com/lamng3/revu" }
+
+- slug: toolbox
+  title: toolbox
+  date: 2026-10-11
+  repo: lamng3/toolbox
+  stars: 0
+  languages: [Python]
+  category: Machine Learning
+  image: toolbox.jpg
+  lead: An extensible toolbox for machine learning research.
+  body:
+    - "Every model, layer, loss, reward and training loop is a component you select by name, so trying an idea is a config change and comparisons stay fair. Standard libraries (Hugging Face, TRL, PyTorch Geometric, SGLang, vLLM) plug in as backends instead of being rewritten."
+  links:
+    - { label: Docs, url: "https://lamng3.github.io/toolbox/" }
+    - { label: GitHub, url: "https://github.com/lamng3/toolbox" }
+
+- slug: hermitpy
+  title: hermitpy
+  date: 2026-09-27
+  repo: lamng3/hermitpy
+  stars: 0
+  languages: [Python]
+  category: Knowledge Graphs
+  image: hermitpy.jpg
+  lead: A Python OWL reasoner, with no JVM.
+  body:
+    - "hermitpy checks whether an ontology is consistent and builds its class hierarchy for a documented fragment of OWL, using the hypertableau calculus of Motik, Shearer and Horrocks. Constructs outside the fragment raise an error instead of being dropped silently."
+  links:
+    - { label: Docs, url: "https://lamng3.github.io/hermit-docs/" }
+    - { label: GitHub, url: "https://github.com/lamng3/hermitpy" }

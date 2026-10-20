@@ -15,8 +15,7 @@ description: Open-source projects by Lam Nguyen, from database engines and ontol
   <div class="band-inner">
     <h2>Table of contents</h2>
     <ol class="toc-columns">
-      {% assign by_title = site.data.projects | sort_natural: 'title' %}
-      {% for p in by_title %}
+      {% for p in site.data.projects %}
         <li><a href="#{{ p.slug }}">{{ p.title }}</a></li>
       {% endfor %}
     </ol>
@@ -24,7 +23,10 @@ description: Open-source projects by Lam Nguyen, from database engines and ontol
 </div>
 
 <div class="sortbar" role="group" aria-label="Sort projects">
-  <button type="button" data-sort="date" aria-pressed="true">
+  <button type="button" data-sort="featured" aria-pressed="true">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10" /></svg>featured
+  </button>
+  <button type="button" data-sort="date" aria-pressed="false">
     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2" /><path d="M3.5 10h17M8 3v4M16 3v4" /></svg>by date
   </button>
   <button type="button" data-sort="stars" aria-pressed="false">
@@ -46,6 +48,7 @@ description: Open-source projects by Lam Nguyen, from database engines and ontol
         {% for para in p.body %}
           {{ para | markdownify }}
         {% endfor %}
+        {% if p.links %}
         <p class="project-links">
           <strong>Links:</strong>
           {% for link in p.links %}
@@ -54,8 +57,9 @@ description: Open-source projects by Lam Nguyen, from database engines and ontol
             <a href="{{ href }}">{{ link.label }}</a>{% unless forloop.last %}, {% endunless %}
           {% endfor %}
         </p>
+        {% endif %}
       </div>
-      {% if p.image %}
+      {% if p.image and p.links %}
         <a class="project-image" href="{{ p.links[0].url | relative_url }}" tabindex="-1" aria-hidden="true">
           <img src="{{ '/assets/img/projects/' | append: p.image | relative_url }}" alt="" loading="lazy" width="960" height="600" />
         </a>
