@@ -8,62 +8,77 @@ description: Lam Nguyen's work, education, coursework, and awards.
 <section id="work" class="resume">
   <h2>Professional work</h2>
 
-  <h3>Researcher, AI for Scientific Discovery, at the Center for Materials Data Science</h3>
-  <p class="resume-meta">2026 – Current • Case Western Reserve University</p>
-  <ul>
-    <li>The semantic data layer for scientific discovery: ontologies and knowledge graphs as context for language agents, advised by <a href="https://yinghwu.github.io">Yinghui Wu</a>.</li>
-  </ul>
+  <div class="job">
+    <h3>Researcher at the Center for Materials Data Science</h3>
+    <p class="resume-meta">2026 – Current</p>
+    <ul>
+      <li>AI for scientific discovery: ontologies and knowledge graphs as the semantic data layer for language agents, with <a href="https://yinghwu.github.io">Yinghui&nbsp;Wu</a>.</li>
+    </ul>
+  </div>
 
-  <h3>Software Engineer, Agentic Security, at <a href="https://www.microsoft.com">Microsoft</a></h3>
-  <p class="resume-meta">2025 – Current</p>
-  <ul>
-    <li>Schema-constrained retrieval for natural language to KQL.</li>
-  </ul>
+  <div class="job">
+    <h3>Software Engineer at <a href="https://www.microsoft.com">Microsoft</a></h3>
+    <p class="resume-meta">2025 – Current</p>
+    <ul>
+      <li>Agentic security: schema-constrained retrieval for natural language to KQL.</li>
+    </ul>
+  </div>
 
-  <h3>Software Engineer Intern, Security Copilot, at Microsoft</h3>
-  <p class="resume-meta">2024</p>
-  <ul>
-    <li>Agentic pipelines for classification and redaction.</li>
-  </ul>
+  <div class="job">
+    <h3>Software Engineer Intern at Microsoft</h3>
+    <p class="resume-meta">2024</p>
+    <ul>
+      <li>Security Copilot: agentic pipelines for classification and redaction.</li>
+    </ul>
+  </div>
 
-  <h3>Software Engineer Intern, Alexa Voice AI, at Amazon</h3>
-  <p class="resume-meta">2023</p>
-  <ul>
-    <li>Recommendations for Alexa voice shopping, and data pipelines for RLHF.</li>
-  </ul>
+  <div class="job">
+    <h3>Software Engineer Intern at Amazon</h3>
+    <p class="resume-meta">2023</p>
+    <ul>
+      <li>Alexa Voice AI: recommendations for voice shopping, and data pipelines for RLHF.</li>
+    </ul>
+  </div>
 
-  <h3>Software Engineer Intern, Microsoft Security, at Microsoft</h3>
-  <p class="resume-meta">2023</p>
-  <ul>
-    <li>Log compaction for agent telemetry, keeping critical signals in hot storage.</li>
-  </ul>
+  <div class="job">
+    <h3>Software Engineer Intern at Microsoft</h3>
+    <p class="resume-meta">2023</p>
+    <ul>
+      <li>Microsoft Security: log compaction for agent telemetry, keeping critical signals in hot storage.</li>
+    </ul>
+  </div>
 
-  <h3>Software Engineer Intern, Azure Data, at Microsoft</h3>
-  <p class="resume-meta">2022</p>
-  <ul>
-    <li>Data partitioning and dynamic VM scaling for log processing.</li>
-  </ul>
+  <div class="job">
+    <h3>Software Engineer Intern at Microsoft</h3>
+    <p class="resume-meta">2022</p>
+    <ul>
+      <li>Azure Data: data partitioning and dynamic VM scaling for log processing.</li>
+    </ul>
+  </div>
 </section>
 
 <section id="education" class="resume">
   <h2>Education</h2>
 
-  <h3><a href="https://case.edu">Case Western Reserve University</a></h3>
-  <p class="resume-meta">2024 – 2025</p>
-  <p>M.S. in Computer Science, in the integrated B.S./M.S. program. Advised by <a href="https://yinghwu.github.io">Yinghui Wu</a>. Thesis: <a href="https://etd.ohiolink.edu/acprod/odb_etd/ws/send_file/send?accession=case1751987504689716&amp;disposition=inline">Ontology Matching with Knowledge Retrieval and Efficient Large Language Models</a>.</p>
+  <div class="degree">
+    <div class="degree-head"><h3>Case Western Reserve University</h3><span>2024 — 2025</span></div>
+    <p class="byline">M.S. in Computer Science</p>
+  </div>
+  <div class="degree">
+    <div class="degree-head"><h3>Case Western Reserve University</h3><span>2020 — 2024</span></div>
+    <p class="byline">B.S. in Computer Science</p>
+  </div>
 
-  <h3><a href="https://case.edu">Case Western Reserve University</a></h3>
-  <p class="resume-meta">2020 – 2024</p>
-  <p>B.S. in Computer Science, cum laude. Dean's High Honors in every semester.</p>
+  <p>Graduated cum laude, with Dean's High Honors every semester. Advised by <a href="https://yinghwu.github.io">Yinghui&nbsp;Wu</a>; master's <a href="https://etd.ohiolink.edu/acprod/odb_etd/ws/send_file/send?accession=case1751987504689716&amp;disposition=inline">thesis</a> on ontology matching with knowledge retrieval and efficient language models.</p>
 
   <h4>Teaching:</h4>
   <ul>
-    <li>Teaching Assistant, Introduction to Machine Learning (CSDS 340), Spring 2025</li>
-    <li>Teaching Assistant, Introduction to Algorithms (CSDS 310), Fall 2022</li>
+    <li>TA for CSDS 340 (Introduction to Machine Learning), Spring 2025</li>
+    <li>TA for CSDS 310 (Algorithms), Fall 2022</li>
   </ul>
 
   <h4>Graduate-level technical coursework:</h4>
-  <ul class="courses">
+  <ul>
     <li>Large Language Models (CSDS 600)</li>
     <li>High Performance Data and Computing (CSDS 438)</li>
     <li>Data Mining (CSDS 435)</li>
@@ -73,7 +88,7 @@ description: Lam Nguyen's work, education, coursework, and awards.
   </ul>
 
   <h4>Undergraduate technical coursework:</h4>
-  <ul class="courses">
+  <ul>
     <li>Algorithms (CSDS 310)</li>
     <li>Introduction to Machine Learning (CSDS 340)</li>
     <li>Introduction to Artificial Intelligence (CSDS 391)</li>
@@ -103,15 +118,21 @@ description: Lam Nguyen's work, education, coursework, and awards.
 
 <section id="awards" class="resume">
   <h2>Awards and honors</h2>
-  <p><strong>Computer science:</strong></p>
+  <h4>Computer science:</h4>
   <ul>
     <li><strong><a href="https://icpc.global/ICPCID/6R4PCMCBJSSW">ICPC East Central North America</a>:</strong> Honorable Mention (2020–2023)</li>
-    <li><strong><a href="https://leetcode.com/u/lamng3/">LeetCode</a>:</strong> top 1.26% of contestants in weekly contests; 1,000+ problems solved</li>
+    <li><strong><a href="https://leetcode.com/u/lamng3/">LeetCode</a>:</strong> top 1% in weekly contests, 1,000+ problems solved</li>
   </ul>
-  <p><strong>Mathematics:</strong></p>
+  <h4>Mathematics:</h4>
   <ul>
     <li><strong>Hanoi Open Mathematics Competition:</strong> Gold Medal, Senior Division</li>
     <li><strong>Singapore Mathematical Olympiad:</strong> Silver Medal</li>
+    <li><strong>Mathematical Young Talent Search:</strong> Silver Medal</li>
+    <li><strong>Hanoi Mathematical Modeling Challenge:</strong> Honorable Mention</li>
+  </ul>
+  <h4>Other:</h4>
+  <ul>
+    <li><strong>Vietnam's Brainiest Kid:</strong> 6th place</li>
   </ul>
 </section>
 
