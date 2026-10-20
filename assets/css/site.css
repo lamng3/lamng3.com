@@ -1353,6 +1353,17 @@ html.spotlight-open {
   white-space: nowrap;
 }
 
+.resume .degree-note {
+  margin: 0.35rem 0 0;
+}
+
+/* Short lines (bullets, blurbs) split evenly, so no line ends with a stray word or two. */
+.resume li,
+.resume .degree-note,
+.notable-blurb {
+  text-wrap: balance;
+}
+
 .resume .byline {
   font-family: var(--serif);
   font-style: italic;
