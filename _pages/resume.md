@@ -63,13 +63,13 @@ description: Lam Nguyen's work, education, coursework, and awards.
   <div class="degree">
     <div class="degree-head"><h3>Case Western Reserve University</h3><span>2024 — 2025</span></div>
     <p class="byline">M.S. in Computer Science</p>
+    <p class="degree-note">Thesis: <a href="https://etd.ohiolink.edu/acprod/odb_etd/ws/send_file/send?accession=case1751987504689716&amp;disposition=inline">Ontology Matching with Knowledge Retrieval and Efficient Large Language Models</a>, advised by <a href="https://yinghwu.github.io">Yinghui&nbsp;Wu</a>.</p>
   </div>
   <div class="degree">
     <div class="degree-head"><h3>Case Western Reserve University</h3><span>2020 — 2024</span></div>
     <p class="byline">B.S. in Computer Science</p>
+    <p class="degree-note">Graduated cum laude, with Dean's High Honors every semester.</p>
   </div>
-
-  <p>Graduated cum laude, with Dean's High Honors every semester. Advised by <a href="https://yinghwu.github.io">Yinghui&nbsp;Wu</a>; master's <a href="https://etd.ohiolink.edu/acprod/odb_etd/ws/send_file/send?accession=case1751987504689716&amp;disposition=inline">thesis</a> on ontology matching with knowledge retrieval and efficient language models.</p>
 
   <h4>Teaching:</h4>
   <ul>
