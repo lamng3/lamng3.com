@@ -14,7 +14,7 @@ description: >-
 
 <section id="about" class="intro">
   <p><strong>I play with agentic retrieval and database internals.</strong></p>
-  <p>I work on AI for scientific discovery at the Center for Materials Data Science, and on agentic security at <a href="https://www.microsoft.com">Microsoft</a>.</p>
+  <p>I work on AI for scientific discovery at the Center for Materials Data Science, and on agentic security at <a href="https://www.microsoft.com">Microsoft</a>. On the side, I am building <a href="https://lamng3.com/leetmath/">LeetMath</a>, a platform for AI&#8209;guided math training and automated grading.</p>
   <p>I build the <em>semantic data layer</em> for LLMs: ontologies and knowledge graphs that give agents the right context, from the right source, at a bounded cost. I design algorithms and systems through the lens of <em>databases</em>, so retrieval stays context-aware, cache-aware, and trustworthy as the knowledge underneath it evolves.</p>
   <p><strong>Research interests</strong></p>
   <ul class="interests">
@@ -46,7 +46,7 @@ description: >-
 </section>
 
 <section id="background" class="intro">
-  <p>Previously, I interned at Microsoft and Amazon. Before that, I trained competitive programming, with honorable mentions at the <a href="https://icpc.global/ICPCID/6R4PCMCBJSSW">ICPC East Central North America</a> regional and a place in the top 1% of <a href="https://leetcode.com/u/lamng3/">LeetCode contests</a>, and I still find data structures a useful lens for thinking about agentic memory. Growing up, I trained competitive math, earning gold at the Hanoi Open Mathematics Competition and silver at the Singapore Mathematical Olympiad. Later, I founded <a href="https://lamng3.com/leetmath/">LeetMath</a>, a platform for AI-guided math training and automated grading.</p>
+  <p>Previously, I interned at Microsoft and Amazon. Before that, I trained competitive programming, with honorable mentions at the <a href="https://icpc.global/ICPCID/6R4PCMCBJSSW">ICPC East Central North America</a> regional and a place in the top 1% of <a href="https://leetcode.com/u/lamng3/">LeetCode contests</a>, and I still find data structures a useful lens for thinking about agentic memory. Growing up, I trained competitive math, earning gold at the Hanoi Open Mathematics Competition and silver at the Singapore Mathematical Olympiad.</p>
   <p>I hold a B.S. and an M.S. in Computer Science from <a href="https://case.edu">Case Western Reserve University</a>, where I was advised by <a href="https://yinghwu.github.io">Yinghui&nbsp;Wu</a> and wrote my <a href="https://etd.ohiolink.edu/acprod/odb_etd/ws/send_file/send?accession=case1751987504689716&amp;disposition=inline">thesis</a> on ontology matching with knowledge retrieval and efficient language models.</p>
   <p>Reaching me is O(log log log n), practically a constant. Please feel free to reach out at lamng3.work [at] gmail [dot] com if you'd like to talk about any of the above.</p>
 </section>
