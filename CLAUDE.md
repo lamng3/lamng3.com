@@ -40,6 +40,8 @@ toc:
 - Quote `title` and `description`. A `: ` inside an unquoted YAML value breaks the page.
 - `_redirects` maps the old dated post URLs (`/blog/2026/<slug>/`) to their sections. Keep it.
 
-## OntoDB
+## OntoDB and MemCommit
 
-The OntoDB book, manual, and code are kept in step with this site. `SYNC.md` lists what to update, where, and in what order.
+The OntoDB book, manual, and code, and the MemCommit paper, manual, code, and the projects that use it, are kept in step with this site. `SYNC.md` lists what to update, where, and in what order, for each.
+
+MemCommit's repos are still private, so its project entry links only the paper; add its code and manual links when they are public (see `SYNC.md`, section 5).

@@ -133,6 +133,28 @@
       year   = {2025}
     }
 
+- slug: memcommit
+  abstract_label: Overview
+  short: MemCommit
+  title: "MemCommit: A Transactional Memory Layer for Agents"
+  authors: "L. Nguyen"
+  venue: "Preprint"
+  year: 2026
+  status: preprint
+  tldr: "Agent memory as a database problem: an append-only log of immutable memories with provenance, so when a premise goes bad everything built on it goes stale in one transaction. Two tiers, the full record of sessions and derived notes, are joined by an offline pass that consolidates one into the other."
+  abstract: "Agents that remember need the full record of what happened and short notes of what matters, yet most agent-memory systems keep one or the other in a store with no transactions, no record of where a memory came from, and no way to take a bad one back. MemCommit treats agent memory as a database problem. Memories are immutable and content-addressed; status and tier are a fold over an append-only log; every memory records what it was derived from, so invalidation and rollback follow. On this base it builds episodic sessions, derived notes at paths with a generated index and five agent tools, an offline consolidation pass that extracts what agents did not think to save and can be previewed and undone, and a declared memory structure that a commit guard enforces. A deterministic synthetic benchmark separates retrieval from reading and the extractor from the rest of the pipeline, and the paper states where it favours the library."
+  highlights:
+    - "Search over the record answers 96% of questions from 20 words of context where the full history needs up to 1,358, but fails on facts that change."
+    - "Notes from the offline pass reach 100% with a perfect extractor and about 49% with the built-in rule-based one: extraction quality, not the pipeline, is the limit."
+  pdf: /assets/papers/memcommit.pdf
+  links: []
+  bibtex: |
+    @misc{nguyen_2026_memcommit,
+        title={MemCommit: A Transactional Memory Layer for Agents},
+        author={Lam Nguyen},
+        year={2026},
+    }
+
 - slug: ontodb-book
   abstract_label: Overview
   short: OntoDB book
