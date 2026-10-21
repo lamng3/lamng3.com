@@ -147,7 +147,9 @@
     - "Search over the record answers 96% of questions from 20 words of context where the full history needs up to 1,358, but fails on facts that change."
     - "Notes from the offline pass reach 100% with a perfect extractor and about 49% with the built-in rule-based one: extraction quality, not the pipeline, is the limit."
   pdf: /assets/papers/memcommit.pdf
-  links: []
+  links:
+    - { label: Code, url: "https://github.com/lamng3/memcommit" }
+    - { label: Manual, url: "https://lamng3.github.io/memcommit-docs/" }
   bibtex: |
     @misc{nguyen_2026_memcommit,
         title={MemCommit: A Transactional Memory Layer for Agents},
