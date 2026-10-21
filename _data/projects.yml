@@ -42,6 +42,18 @@
     - { label: Book, url: "/publications/ontodb-book/" }
     - { label: GitHub, url: "https://github.com/lamng3/OntoDB" }
 
+- slug: memcommit
+  title: MemCommit
+  date: 2026-10-15
+  languages: [Python]
+  category: Agents
+  lead: A transactional memory layer for agents. Memories live in an append-only log with provenance, so what was built on a bad premise goes stale together.
+  body:
+    - "Agents that remember need the full record of what happened and short notes of what matters. MemCommit keeps both in one log: sessions as they happen, and notes at paths with an index an agent reads first and five tools it can call. An offline pass finds what the agent did not think to save, and every edit is a transaction that can be previewed, audited, or undone."
+    - "I built it to treat agent memory the way a database treats data, with transactions, a log, and rollback. The code and manual will be public soon."
+  links:
+    - { label: Paper, url: "/publications/memcommit/" }
+
 - slug: kroma
   title: KROMA
   date: 2025-05-05
