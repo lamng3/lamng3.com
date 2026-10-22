@@ -19,7 +19,7 @@ description: >-
   <p><strong>Research interests</strong></p>
   <ul class="interests">
     <li><strong>Retrieval and context engineering</strong>: vector retrieval, reranking, tool use, model routing, and caching&nbsp;<span class="projects">(<a href="https://github.com/lamng3/agentic-ontologist">Agentic Ontologist</a>, <a href="https://arxiv.org/abs/2507.14032">KROMA</a>)</span>.</li>
-    <li><strong>Database systems</strong>: indexing, query optimization, MVCC, recovery, provenance, and agent memory&nbsp;<span class="projects">(<a href="https://github.com/lamng3/OntoDB">OntoDB</a>, <a href="/publications/memcommit/">MemCommit</a>)</span>.</li>
+    <li><strong>Database systems</strong>: indexing, query optimization, MVCC, recovery, provenance, and agent memory&nbsp;<span class="projects">(<a href="/publications/ontodb-book/">OntoDB</a>, <a href="/publications/memcommit/">MemCommit</a>)</span>.</li>
     <li><strong>Natural language interfaces to databases</strong>: text-to-SPARQL as planning over a typed query algebra&nbsp;<span class="projects">(<a href="https://github.com/lamng3/hermes">Hermes</a>)</span>.</li>
     <li><strong>Reliable and secure retrieval</strong>: query-driven ontology assessment and adversarial robustness&nbsp;<span class="projects">(<a href="https://github.com/cwru-sdle/OntoCheck">OntoCheck</a>, Aegis)</span>.</li>
   </ul>
