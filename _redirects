@@ -10,6 +10,10 @@ http://lamng3.netlify.app/*  https://lamng3.com/:splat  301!
 # Same trailing-slash caveat as /leetmath/: no /keras-js -> /keras-js/ rule.
 /keras-js/*  https://lamng3.github.io/keras-js/:splat  200!
 
+# art-viz (ART insert/search stepper) is hosted on GitHub Pages (lamng3/art-visualization) and served here under /art-visualization/ (proxy).
+# Same trailing-slash caveat as /leetmath/: no /art-visualization -> /art-visualization/ rule.
+/art-visualization/*  https://lamng3.github.io/art-visualization/:splat  200!
+
 # The project manuals are hosted on GitHub Pages (lamng3/<name>-docs) and served here under /<name>/ (proxy).
 # Same trailing-slash caveat as /leetmath/: no /<name> -> /<name>/ rules.
 /memcommit/*  https://lamng3.github.io/memcommit-docs/:splat  200!
