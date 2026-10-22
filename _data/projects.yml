@@ -78,7 +78,7 @@
     - "It was published in the Research Track of ISWC 2025, and grew out of my M.S. thesis."
   links:
     - { label: Paper, url: "https://arxiv.org/abs/2507.14032" }
-    - { label: Docs, url: "https://lamng3.com/kroma/" }
+    - { label: Manual, url: "https://lamng3.com/kroma/" }
     - { label: GitHub, url: "https://github.com/lamng3/kroma" }
 
 - slug: ontocheck
@@ -108,7 +108,7 @@
     - "Hermes treats a natural-language question as a planning problem over a typed SPARQL algebra: agents build the query from operators that are checked as they are composed, instead of writing query text and hoping it parses."
     - "It answers questions against a local ontology, an in-memory graph, or a live endpoint such as DBpedia, and reports results on public text-to-SPARQL benchmarks."
   links:
-    - { label: Docs, url: "https://lamng3.com/hermes/" }
+    - { label: Manual, url: "https://lamng3.com/hermes/" }
     - { label: Paper, url: "/publications/hermes/" }
     - { label: GitHub, url: "https://github.com/lamng3/hermes" }
 

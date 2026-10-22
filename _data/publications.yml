@@ -22,7 +22,7 @@
     - { label: arXiv PDF, url: "https://arxiv.org/pdf/2507.14032" }
     - { label: Paper (Springer), url: "https://doi.org/10.1007/978-3-032-09527-5_34" }
     - { label: Code, url: "https://github.com/lamng3/kroma" }
-    - { label: Documentation, url: "https://lamng3.com/kroma/" }
+    - { label: Manual, url: "https://lamng3.com/kroma/" }
   bibtex: |
     @inproceedings{nguyen_2025_kroma,
         title={KROMA: Ontology Matching with Knowledge Retrieval and Large Language Models},
@@ -52,7 +52,7 @@
   pdf:
   links:
     - { label: Code, url: "https://github.com/lamng3/agentic-ontologist" }
-    - { label: Documentation, url: "https://lamng3.com/agentic-ontologist/" }
+    - { label: Manual, url: "https://lamng3.com/agentic-ontologist/" }
     - { label: Showcase, url: "https://lamng3.com/agentic-ontologist/showcase/" }
   bibtex: |
     @misc{nguyen_2026_agentic_ontologist,
@@ -77,7 +77,7 @@
   pdf: /assets/papers/hermes.pdf
   links:
     - { label: Code, url: "https://github.com/lamng3/hermes" }
-    - { label: Documentation, url: "https://lamng3.com/hermes/" }
+    - { label: Manual, url: "https://lamng3.com/hermes/" }
     - { label: Leaderboard, url: "https://github.com/lamng3/hermes/blob/master/results/LEADERBOARD.md" }
   bibtex: |
     @misc{nguyen2026hermes,
@@ -101,7 +101,7 @@
     - "Best-response locking is never worse than locking the highest-impact triples, and leaves 0.133 residual harm where they leave 0.400; ten locks remove all of a two-action attacker's harm on four real ontologies."
   links:
     - { label: Code, url: "https://github.com/lamng3/aegis" }
-    - { label: Documentation, url: "https://lamng3.com/aegis/" }
+    - { label: Manual, url: "https://lamng3.com/aegis/" }
   bibtex: |
     @misc{nguyen2026aegis,
       title  = {Aegis: Searching for and Defending Against Harmful Ontology Edits in Ontology-Grounded Retrieval},
