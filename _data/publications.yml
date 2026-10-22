@@ -78,7 +78,7 @@
   links:
     - { label: Code, url: "https://github.com/lamng3/hermes" }
     - { label: Manual, url: "https://lamng3.com/hermes/" }
-    - { label: Leaderboard, url: "https://github.com/lamng3/hermes/blob/master/results/LEADERBOARD.md" }
+    - { label: Leaderboard, url: "https://lamng3.com/hermes/leaderboard.html" }
   bibtex: |
     @misc{nguyen2026hermes,
       title  = {Hermes: Verified Query Planning over the SPARQL Algebra with Language Agents},
