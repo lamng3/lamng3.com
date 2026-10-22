@@ -181,7 +181,7 @@
   body:
     - "Every model, layer, loss, reward and training loop is a component you select by name, so trying an idea is a config change and comparisons stay fair. Standard libraries (Hugging Face, TRL, PyTorch Geometric, SGLang, vLLM) plug in as backends instead of being rewritten."
   links:
-    - { label: Docs, url: "https://lamng3.github.io/toolbox/" }
+    - { label: Manual, url: "https://lamng3.github.io/toolbox/" }
     - { label: GitHub, url: "https://github.com/lamng3/toolbox" }
 
 - slug: library
@@ -211,5 +211,5 @@
   body:
     - "hermitpy checks whether an ontology is consistent and builds its class hierarchy for a documented fragment of OWL, using the hypertableau calculus of Motik, Shearer and Horrocks. Constructs outside the fragment raise an error instead of being dropped silently."
   links:
-    - { label: Docs, url: "https://lamng3.github.io/hermit-docs/" }
+    - { label: Manual, url: "https://lamng3.github.io/hermit-docs/" }
     - { label: GitHub, url: "https://github.com/lamng3/hermitpy" }

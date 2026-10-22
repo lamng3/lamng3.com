@@ -173,4 +173,4 @@
   links:
     - { label: OntoDB, url: "https://github.com/lamng3/OntoDB" }
     - { label: Manual, url: "https://lamng3.com/ontodb/" }
-    - { label: Walkthrough, url: "/blog/databases/#database-engine" }
+    - { label: Lecture, url: "/blog/databases/#database-engine" }
