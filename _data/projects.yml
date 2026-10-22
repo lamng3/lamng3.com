@@ -166,6 +166,24 @@
     - { label: Examples, url: "https://lamng3.com/keras-js/examples.html" }
     - { label: Code, url: "https://github.com/lamng3/keras-js" }
 
+- slug: art-viz
+  title: art-viz
+  date: 2026-10-22
+  repo: lamng3/art-visualization
+  stars: 0
+  languages: [JavaScript]
+  category: Education
+  image: art-viz.jpg
+  blurb: the Adaptive Radix Tree, one executed line at a time
+  stat: insert and search, with the tree redrawn after every line
+  lead: Step through insert and search in an Adaptive Radix Tree and watch the code, the key bytes, the tree and the locals change line by line.
+  body:
+    - "An Adaptive Radix Tree stores keys in a trie whose nodes grow from 4 to 256 children, skips shared prefixes with path compression, and keeps a long unique tail in a single leaf (lazy expansion). The Python source is shown with the current line highlighted and its result written inline, the way a debugger does."
+    - "Each slide shows the key bytes with the `depth` pointer, the tree with every node's type and slots, nodes that are built but not yet linked, the locals and the call stack. Presets cover node growth, prefix keys and duplicates, and you can type your own words."
+  links:
+    - { label: Website, url: "https://lamng3.com/art-visualization/" }
+    - { label: Code, url: "https://github.com/lamng3/art-visualization" }
+
 - slug: revu
   title: revu
   date: 2026-04-17
