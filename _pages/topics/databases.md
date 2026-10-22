@@ -55,7 +55,7 @@ mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 The sections after this one are pieces. This one is a lecture that puts them inside a whole engine, following one request from the disk up and back down again, and asking at each layer the question that forces the design. The example throughout is [OntoDB](https://github.com/lamng3/OntoDB), a database management system for ontologies that I am building: its data is RDF triples, and its query language is SPARQL.
 
-The companion book, [**OntoDB: Database Internals by Example**](https://github.com/lamng3/OntoDB/blob/main/book/ontodb-book.pdf) (PDF, 119 pages), develops every step below in full, with figures and a worked ARIES trace. The [OntoDB manual](https://lamng3.com/ontodb/) shows how to run it.
+The companion book, [**OntoDB: Database Internals by Example**](/publications/ontodb-book/) (PDF, 119 pages), develops every step below in full, with figures and a worked ARIES trace. The [OntoDB manual](https://lamng3.com/ontodb/) shows how to run it.
 
 ### Why data lives in pages
 
@@ -938,7 +938,7 @@ All take an edge list and need real traversal over the adjacency — topological
 
 **A Database Engine, End to End**
 
-- [OntoDB: Database Internals by Example](https://github.com/lamng3/OntoDB/blob/main/book/ontodb-book.pdf), the companion book to the lecture.
+- [OntoDB: Database Internals by Example](/publications/ontodb-book/), the companion book to the lecture.
 - Alex Petrov, *Database Internals* (O'Reilly, 2019).
 - Mohan et al., [ARIES](https://dl.acm.org/doi/10.1145/128765.128770) (TODS, 1992).
 - O'Neil, O'Neil, and Weikum, [The LRU-K page replacement algorithm](https://dl.acm.org/doi/10.1145/170036.170081) (SIGMOD, 1993).

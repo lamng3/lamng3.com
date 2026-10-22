@@ -18,10 +18,10 @@ description: >-
   <p>I build the <em>semantic data layer</em> for LLMs: ontologies and knowledge graphs that give agents the right context, from the right source, at a bounded cost. I design algorithms and systems through the lens of <em>databases</em>, so retrieval stays context-aware, cache-aware, and trustworthy as the knowledge underneath it evolves.</p>
   <p><strong>Research interests</strong></p>
   <ul class="interests">
-    <li><strong>Retrieval and context engineering</strong>: vector retrieval, reranking, tool use, model routing, and caching&nbsp;<span class="projects">(<a href="https://github.com/lamng3/agentic-ontologist">Agentic Ontologist</a>, <a href="https://arxiv.org/abs/2507.14032">KROMA</a>)</span>.</li>
+    <li><strong>Retrieval and context engineering</strong>: vector retrieval, reranking, tool use, model routing, and caching&nbsp;<span class="projects">(<a href="/publications/agentic-ontologist/">Agentic Ontologist</a>, <a href="/publications/kroma/">KROMA</a>)</span>.</li>
     <li><strong>Database systems</strong>: indexing, query optimization, MVCC, recovery, provenance, and agent memory&nbsp;<span class="projects">(<a href="/publications/ontodb-book/">OntoDB</a>, <a href="/publications/memcommit/">MemCommit</a>)</span>.</li>
-    <li><strong>Natural language interfaces to databases</strong>: text-to-SPARQL as planning over a typed query algebra&nbsp;<span class="projects">(<a href="https://github.com/lamng3/hermes">Hermes</a>)</span>.</li>
-    <li><strong>Reliable and secure retrieval</strong>: query-driven ontology assessment and adversarial robustness&nbsp;<span class="projects">(<a href="https://github.com/cwru-sdle/OntoCheck">OntoCheck</a>, Aegis)</span>.</li>
+    <li><strong>Natural language interfaces to databases</strong>: text-to-SPARQL as planning over a typed query algebra&nbsp;<span class="projects">(<a href="/publications/hermes/">Hermes</a>)</span>.</li>
+    <li><strong>Reliable and secure retrieval</strong>: query-driven ontology assessment and adversarial robustness&nbsp;<span class="projects">(<a href="https://github.com/cwru-sdle/OntoCheck">OntoCheck</a>, <a href="/publications/aegis/">Aegis</a>)</span>.</li>
   </ul>
   <p>Lately, I have been exploring GPU-accelerated vector search for recsys, specifically fused ANN kernels. If you work on these, I would love to chat.</p>
 </section>
