@@ -164,3 +164,7 @@ Six manuals share one design (`memcommit-docs/restyle.py` applies it; `memcommit
 Two projects also have a showcase, a single page built from the recorded runs with `showcase/build.py`: `/agentic-ontologist/showcase/` and the Aegis one (served from the `aegis` repo's Pages site, so add `/aegis/showcase/* -> https://lamng3.github.io/aegis/` ahead of `/aegis/*` in `_redirects` once that repo is public). Both inline `showcase/base.css` and `base.js`, copies of `memcommit-docs/showcase`.
 
 After a deploy, test the live sites: crawl every page for dead links, anchors, console errors, and overflow at 390px, and click through each demo.
+
+## Wording
+
+Call each project's guide a **Manual**, never "documentation" or "docs": in link labels (`Manual`), page titles (`Page — Name Manual`), sidebar headings, footers, and README badges. The repos keep the `-docs` suffix and the sidebar-less home page is the exception to the title format.
