@@ -142,3 +142,7 @@ Each project manual is built and hosted by its own `<name>-docs` repo on GitHub 
 Link to the lamng3.com address, never to `lamng3.github.io/...`, in `_data`, READMEs, and the manuals. The manuals use relative links, so they work under the prefix. A new manual needs a Pages site, a rule here, and no `<name> -> <name>/` redirect (Netlify ignores trailing slashes, so it would loop).
 
 The home page of each manual has a live demo that replays real output; `demo_data.py` in each `-docs` repo regenerates it. See the decision "Manuals share one design" in `memcommit/docs/decisions.md`.
+
+## Linking to projects
+
+In prose (the homepage, topic pages, project text) link a project to its publications page (`/publications/<slug>/`) and/or its manual (`https://lamng3.com/<name>/`), not to GitHub, arXiv, or a PDF in a repo. The publication page carries the overview, the PDF, and the code and manual links. Explicit `Code` or `GitHub` entries in `_data/*.yml`, and links to source files, are fine.
