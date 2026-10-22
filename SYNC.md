@@ -170,3 +170,17 @@ After a deploy, test the live sites: crawl every page for dead links, anchors, c
 Label the link to a repository `Code` (not `GitHub`, `OntoDB`, or the repo name), in `projects.yml` and `publications.yml` alike.
 
 Call each project's guide a **Manual**, never "documentation" or "docs": in link labels (`Manual`), page titles (`Page — Name Manual`), sidebar headings, footers, and README badges, including the Toolbox and Hermit entries. A link to a blog lecture is labelled `Lecture`, not `Walkthrough`. The repos keep the `-docs` suffix and the sidebar-less home page is the exception to the title format.
+
+## Leaderboards
+
+Five manuals have a **Leaderboard** page drawn by `arena.js` (source in `memcommit-docs/arena`, copied into each manual; its CSS is appended to each `style.css`). Each `-docs` repo has a `leaderboard_data.py` that reads the project's recorded results into `leaderboard-data.json`, so rerun it when results change, then rebuild:
+
+| Manual | Boards | Reads |
+| --- | --- | --- |
+| `/hermes/leaderboard.html` | ck26 and db26, Hermes runs beside the official systems | `hermes/results/LEADERBOARD.md` |
+| `/memcommit/leaderboard.html` | memory configurations by sessions per user | `memcommit/results/memory/` |
+| `/aegis/leaderboard.html` | attack strategies, and defenses, per ontology | `aegis/results/attack_defense/` |
+| `/kroma/leaderboard.html` | F1 per track against baselines and ablations | `kroma/README.md` (the paper's Table 3) |
+| `/agentic-ontologist/leaderboard.html` | routing policies per agent | `agentic-ontologist/results/agentic_workflow/` |
+
+OntoDB has none: its benchmarks are timing tables that do not rank. Link a project's leaderboard from its publication entry (`Leaderboard`), never to a results file in the repo.
