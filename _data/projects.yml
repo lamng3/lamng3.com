@@ -18,7 +18,7 @@
   body:
     - "The Agentic Ontologist orchestrates memory-augmented agents for ontology engineering. Each decision is routed by cost: cheap retrieval and small models settle most of them, and only the hard ones reach a large model."
   links:
-    - { label: Showcase, url: "https://lamng3.github.io/agentic-ontologist/" }
+    - { label: Showcase, url: "https://lamng3.com/agentic-ontologist/showcase/" }
     - { label: Paper, url: "/publications/agentic-ontologist/" }
     - { label: GitHub, url: "https://github.com/lamng3/agentic-ontologist" }
 
@@ -38,7 +38,7 @@
     - "The shell answers a SPARQL subset over B+ tree indexes with a cost-based optimizer, runs statements under strict two-phase locking, and recovers pages with ARIES after a crash, from a checksummed write-ahead log."
     - "I wrote it to learn database internals end to end, and the [book](/publications/ontodb-book/) explains each layer as it is built."
   links:
-    - { label: Manual, url: "https://lamng3.github.io/ontodb-docs/" }
+    - { label: Manual, url: "https://lamng3.com/ontodb/" }
     - { label: Book, url: "/publications/ontodb-book/" }
     - { label: GitHub, url: "https://github.com/lamng3/OntoDB" }
 
@@ -54,7 +54,7 @@
     - "I built it to treat agent memory the way a database treats data, with transactions, a log, and rollback. The code, manual, and paper are public."
   links:
     - { label: GitHub, url: "https://github.com/lamng3/memcommit" }
-    - { label: Manual, url: "https://lamng3.github.io/memcommit-docs/" }
+    - { label: Manual, url: "https://lamng3.com/memcommit/" }
     - { label: Paper, url: "/publications/memcommit/" }
 
 - slug: kroma
@@ -74,7 +74,7 @@
     - "It was published in the Research Track of ISWC 2025, and grew out of my M.S. thesis."
   links:
     - { label: Paper, url: "https://arxiv.org/abs/2507.14032" }
-    - { label: Docs, url: "https://lamng3.github.io/kroma-docs/" }
+    - { label: Docs, url: "https://lamng3.com/kroma/" }
     - { label: GitHub, url: "https://github.com/lamng3/kroma" }
 
 - slug: ontocheck

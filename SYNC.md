@@ -10,7 +10,7 @@ OntoDB lives in four places that must agree. When one changes, walk this list.
 | --- | --- | --- |
 | Code | `../ontodb` | The engine, `PLAN.md`, `README.md`, `docs/architecture.md` |
 | Book | `../ontodb/book` | *OntoDB: Database Internals by Example* (LaTeX, PDF committed) |
-| Manual | `../ontodb-docs` | <https://lamng3.github.io/ontodb-docs/>, built from `content/` |
+| Manual | `../ontodb-docs` | <https://lamng3.com/ontodb/>, built from `content/` |
 | Site | this repo | The hosted book PDF, the publication entry, the Databases lecture, the homepage |
 
 All four repos sit side by side in the same parent directory.
@@ -73,7 +73,7 @@ MemCommit lives in six places that must agree. When one changes, walk this list.
 | --- | --- | --- |
 | Code | `../memcommit` | The library, `PLAN.md`, `README.md`, `docs/design.md`, `docs/decisions.md`, `results/` |
 | Paper | `../memcommit/paper` | *MemCommit: A Transactional Memory Layer for Agents* (LaTeX, PDF committed) |
-| Manual | `../memcommit-docs` | <https://lamng3.github.io/memcommit-docs/>, built from `content/` |
+| Manual | `../memcommit-docs` | <https://lamng3.com/memcommit/>, built from `content/` |
 | Users | `../agentic-ontologist`, `../agentic-ontologist-docs`, `../kroma`, `../aegis`, `../ontodb` | Code that imports `memcommit`, and the docs and showcase that describe the shared memory |
 | Site | this repo | The hosted paper PDF, the publication entry, the project entry, the homepage |
 
@@ -125,3 +125,20 @@ After every change to what MemCommit does, and after every rerun of a benchmark.
 ### 6. Commits
 
 One commit per repo per round, pushed to the default branch (`main`; `master` in `agentic-ontologist`). Messages are one plain sentence ending in a period, for example `Add offline dreaming: extract learnings from finished sessions, resolve conflicts, merge duplicates, and split oversized notes, with preview and undo.`
+
+## Where the manuals are served
+
+Each project manual is built and hosted by its own `<name>-docs` repo on GitHub Pages, and this site proxies it so the URL stays on lamng3.com, as for `/keras-js/`. The rules are in `_redirects`:
+
+| URL on this site | Repo behind it |
+| --- | --- |
+| `/memcommit/` | `lamng3/memcommit-docs` |
+| `/ontodb/` | `lamng3/ontodb-docs` |
+| `/kroma/` | `lamng3/kroma-docs` |
+| `/aegis/` | `lamng3/aegis-docs` |
+| `/agentic-ontologist/` | `lamng3/agentic-ontologist-docs` |
+| `/agentic-ontologist/showcase/` | `lamng3/agentic-ontologist` (its Pages site; this rule comes first) |
+
+Link to the lamng3.com address, never to `lamng3.github.io/...`, in `_data`, READMEs, and the manuals. The manuals use relative links, so they work under the prefix. A new manual needs a Pages site, a rule here, and no `<name> -> <name>/` redirect (Netlify ignores trailing slashes, so it would loop).
+
+The home page of each manual has a live demo that replays real output; `demo_data.py` in each `-docs` repo regenerates it. See the decision "Manuals share one design" in `memcommit/docs/decisions.md`.
