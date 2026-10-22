@@ -39,6 +39,7 @@
   body:
     - "The shell answers a SPARQL subset over B+ tree indexes with a cost-based optimizer, runs statements under strict two-phase locking, and recovers pages with ARIES after a crash, from a checksummed write-ahead log."
     - "I wrote it to learn database internals end to end, and the [book](/publications/ontodb-book/) explains each layer as it is built."
+    - "The engine also compiles to WebAssembly, so the [playground](https://lamng3.com/ontodb/playground.html) runs OntoDB itself in the page: SPARQL, its query plans, the B+ tree indexes and the semantic search, on a Gene Ontology slice."
     - "It also finds terms close in meaning: the class hierarchy is stored as intervals a B+ tree can range-scan, and vector indexes search one embedding per term, with the search limited to the terms under a class. The [paper](/publications/ontodb-semantic/) measures it on the Gene Ontology."
   links:
     - { label: Manual, url: "https://lamng3.com/ontodb/" }
