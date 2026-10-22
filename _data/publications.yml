@@ -157,17 +157,43 @@
         year={2026},
     }
 
+- slug: ontodb-semantic
+  short: Beyond the Sort Order
+  title: "Beyond the Sort Order: Hierarchy Intervals and Vector Indexes in a B+ Tree Ontology Store"
+  authors: "L. Nguyen"
+  venue: "Preprint"
+  year: 2026
+  status: preprint
+  tldr: "A sorted index cannot say what is close in meaning, and a bandwidth argument proves no order can. A class hierarchy, though, is a set of integer intervals, kept in the engine's own B+ tree; vector indexes handle similarity; and a class filter combines them."
+  abstract: "An ontology store is asked two kinds of question. Structural ones, such as which instances have a type at or below class C, have an exact answer in the data. Semantic ones, such as which terms are closest in meaning to t, need a similarity measure. We show that a sorted index cannot serve the second: no linear order of points in two or more dimensions keeps all neighbors within a short scan, and on the Gene Ontology with sentence embeddings the best order we tried, the postorder of the class hierarchy, finds only 38% of a term's ten nearest neighbors within 100 positions. We then use the order for what it can do. A postorder numbering of the class DAG with an interval set per class, kept in a B+ tree, turns everything under C into a few range scans. For similarity we add vector indexes inside the same engine: exact search, IVF with posting lists stored as B+ tree key ranges, product quantization, and HNSW. We compare four ways of filtering a nearest-neighbor search by a class and show that the filter is correlated with the vectors, which breaks the independence assumption behind the usual cost estimate. Everything is implemented in OntoDB, and every number regenerates from one script."
+  highlights:
+    - "Against materializing the RDFS closure, the interval index stores 8.1 times fewer triples and a 4.2 times smaller file on 200,000 synthetic entities over the Gene Ontology, and answers within 1.8 times of its page reads; against rewriting the query it reads 48 times fewer pages for large classes."
+    - "The Gene Ontology's 38,092 classes need 2.01 intervals each on average (at most 741), within the bound of one interval plus the non-tree edges below a class."
+    - "Resolving the class's members and scoring them exactly is the fastest exact strategy up to about 1,000 members, 10^2 to 10^4 times faster than any index strategy; a masked HNSW search wins above 5,000."
+  pdf: /assets/papers/ontodb-semantic.pdf
+  links:
+    - { label: Code, url: "https://github.com/lamng3/OntoDB" }
+    - { label: Manual, url: "https://lamng3.com/ontodb/semantic-search.html" }
+  bibtex: |
+    @misc{nguyen2026beyondsort,
+      title  = {Beyond the Sort Order: Hierarchy Intervals and Vector Indexes in a B+ Tree Ontology Store},
+      author = {Lam Nguyen},
+      year   = {2026},
+      note   = {Preprint},
+      url    = {https://github.com/lamng3/OntoDB}
+    }
+
 - slug: ontodb-book
   abstract_label: Overview
   short: OntoDB book
   kind: book
   title: "OntoDB: Database Internals by Example"
   authors: "L. Nguyen"
-  venue: "Book, 119 pages"
+  venue: "Book, 129 pages"
   year: 2026
   status: living
   tldr: "How a database engine works, from pages and B+ trees to query plans, inference, locking, logging, and ARIES recovery. OntoDB, a database management system for ontologies, is the running example."
-  abstract: "Each chapter explains the theory first, then shows how OntoDB applies it, and lays out its design decisions: the choice, the alternatives, why, and what it costs. A list of all of them follows the contents, and every chapter ends with questions, answered in an appendix. Five parts follow a request through the engine: foundations; storage (pages, the buffer pool, B+ trees, indexing RDF, and log-structured trees for contrast); query processing (plans, the iterator model, joins, optimization, outer joins and aggregation, and materialized RDFS inference with semi-naive evaluation and delete-and-rederive); transactions (isolation and concurrency control); and recovery (the write-ahead rule, ARIES with a worked example, how OntoDB's persistent databases work today, moving the shell onto pages, and keeping the log small with truncation, full-page writes, and fuzzy checkpoints). Chapters for features not built yet say so. The book grows as OntoDB does."
+  abstract: "Each chapter explains the theory first, then shows how OntoDB applies it, and lays out its design decisions: the choice, the alternatives, why, and what it costs. A list of all of them follows the contents, and every chapter ends with questions, answered in an appendix. Five parts follow a request through the engine: foundations; storage (pages, the buffer pool, B+ trees, indexing RDF, and log-structured trees for contrast); query processing (plans, the iterator model, joins, optimization, outer joins and aggregation, materialized RDFS inference with semi-naive evaluation and delete-and-rederive, and semantic search with interval labels and vector indexes); transactions (isolation and concurrency control); and recovery (the write-ahead rule, ARIES with a worked example, how OntoDB's persistent databases work today, moving the shell onto pages, and keeping the log small with truncation, full-page writes, and fuzzy checkpoints). Chapters for features not built yet say so. The book grows as OntoDB does."
   highlights: []
   pdf: /assets/papers/ontodb-book.pdf
   links:
