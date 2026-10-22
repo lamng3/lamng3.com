@@ -14,7 +14,7 @@ layout: default
     <div class="tpl-actions">
       <button type="button" class="tpl-copy">Copy</button>
       {% for f in t.files %}
-        <a class="tpl-source" data-lang="{{ f.label }}" href="{{ f.url }}" {% unless forloop.first %}hidden{% endunless %}>GitHub ↗</a>
+        <a class="tpl-source" data-lang="{{ f.label }}" href="{{ f.url }}" {% unless forloop.first %}hidden{% endunless %}>Code ↗</a>
       {% endfor %}
     </div>
   </div>

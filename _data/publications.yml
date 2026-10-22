@@ -171,6 +171,6 @@
   highlights: []
   pdf: /assets/papers/ontodb-book.pdf
   links:
-    - { label: OntoDB, url: "https://github.com/lamng3/OntoDB" }
+    - { label: Code, url: "https://github.com/lamng3/OntoDB" }
     - { label: Manual, url: "https://lamng3.com/ontodb/" }
     - { label: Lecture, url: "/blog/databases/#database-engine" }
