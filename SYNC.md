@@ -147,3 +147,20 @@ The home page of each manual has a live demo that replays real output; `demo_dat
 ## Linking to projects
 
 In prose (the homepage, topic pages, project text) link a project to its publications page (`/publications/<slug>/`) and/or its manual (`https://lamng3.com/<name>/`), not to GitHub, arXiv, or a PDF in a repo. The publication page carries the overview, the PDF, and the code and manual links. Explicit `Code` or `GitHub` entries in `_data/*.yml`, and links to source files, are fine.
+
+## Manual and showcase upkeep
+
+Six manuals share one design (`memcommit-docs/restyle.py` applies it; `memcommit-docs/normalize.py` is copied into each manual and gives every page search, an on-this-page list, and previous and next links). Each manual's home page has a demo that replays real output; `demo_data.py` in each `-docs` repo regenerates its data from the project's recorded results, so rerun it when results change, then rebuild.
+
+| Manual | Demo shows | Regenerate from |
+| --- | --- | --- |
+| `/memcommit/` | a real memory log and its stale cascade | `memcommit` library |
+| `/ontodb/` | queries and plans printed by the shell | a built `ontodb` binary |
+| `/kroma/` | prompts built by KROMA's code, with recorded answers | `agentic-ontologist` results |
+| `/aegis/` | attack and defence results | `aegis/results/attack_defense` |
+| `/hermes/` | four systems on one question, and the leaderboard | `hermes/results/ck26` |
+| `/agentic-ontologist/` | routing quality against cost, and one decision | `agentic-ontologist/results/agentic_workflow` |
+
+Two projects also have a showcase, a single page built from the recorded runs with `showcase/build.py`: `/agentic-ontologist/showcase/` and the Aegis one (served from the `aegis` repo's Pages site, so add `/aegis/showcase/* -> https://lamng3.github.io/aegis/` ahead of `/aegis/*` in `_redirects` once that repo is public). Both inline `showcase/base.css` and `base.js`, copies of `memcommit-docs/showcase`.
+
+After a deploy, test the live sites: crawl every page for dead links, anchors, console errors, and overflow at 390px, and click through each demo.
