@@ -167,4 +167,6 @@ After a deploy, test the live sites: crawl every page for dead links, anchors, c
 
 ## Wording
 
+Label the link to a repository `Code` (not `GitHub`, `OntoDB`, or the repo name), in `projects.yml` and `publications.yml` alike.
+
 Call each project's guide a **Manual**, never "documentation" or "docs": in link labels (`Manual`), page titles (`Page — Name Manual`), sidebar headings, footers, and README badges, including the Toolbox and Hermit entries. A link to a blog lecture is labelled `Lecture`, not `Walkthrough`. The repos keep the `-docs` suffix and the sidebar-less home page is the exception to the title format.
