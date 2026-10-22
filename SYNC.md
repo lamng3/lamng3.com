@@ -184,3 +184,20 @@ Five manuals have a **Leaderboard** page drawn by `arena.js` (source in `memcomm
 | `/agentic-ontologist/leaderboard.html` | routing policies per agent | `agentic-ontologist/results/agentic_workflow/` |
 
 OntoDB has none: its benchmarks are timing tables that do not rank. Link a project's leaderboard from its publication entry (`Leaderboard`), never to a results file in the repo.
+
+## Playgrounds
+
+Every manual has a **Playground** page that runs in the visitor's browser, with no server of ours. Each says what it is and is not: the Python projects are not run in the browser, so each playground is either an engine stand-in on real data or a JavaScript port of part of the project, and each port is tested against the Python.
+
+| Manual | What runs | How it is checked |
+| --- | --- | --- |
+| `/ontodb/playground.html` | SPARQL on Oxigraph (WebAssembly) over Pizza or your Turtle, store in IndexedDB; OntoDB's own plans, recorded | every example runs; updates survive a reload |
+| `/hermes/playground.html` | the real corporate graph (26.9k triples) on Oxigraph; recorded queries of four systems; step-by-step replay; a model you run | prompt, extraction and repair ports equal the Python |
+| `/kroma/playground.html` | KROMA's prompt for any two concepts; a model you run | prompt, extraction and voting ports equal the Python for all real pairs |
+| `/agentic-ontologist/playground.html` | the evidence tier on the real Mouse-Human ontologies (TF-IDF retrieval, evidence, controller routing) | exact matches and 60 sampled sources equal the Python to 1e-15; an exact tie can keep a different candidate |
+| `/memcommit/playground.html` | the memory log: puts, retract and invalidate cascades, rollback, as_of | 12 recorded scenarios (657 log records) equal the library record by record |
+| `/aegis/playground.html` | the toy ontology: edits, harm, attribution, versioned rollback, greedy and beam attack searches | impacts, units, searches at four budgets and 40 random chains equal the Python |
+
+No model is hosted. Where a playground calls a model, the visitor points it at their own OpenAI-compatible endpoint (Ollama by default; `OLLAMA_ORIGINS="*" ollama serve`), and the settings stay in their browser. Each `-docs` repo has a `playground_data.py` that exports the ground truth from the real code; rerun it when the code changes, and rerun the page's tests. The shared helper is `memcommit-docs/playground/pg.js` (copied into each manual). The engine and Oxigraph load from a pinned jsDelivr URL.
+
+After a change, validate the HTML (`html-validate`), lint every page's text, crawl every page, and click through each demo and playground in a real browser.
