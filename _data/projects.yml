@@ -104,8 +104,8 @@
     - "Hermes treats a natural-language question as a planning problem over a typed SPARQL algebra: agents build the query from operators that are checked as they are composed, instead of writing query text and hoping it parses."
     - "It answers questions against a local ontology, an in-memory graph, or a live endpoint such as DBpedia, and reports results on public text-to-SPARQL benchmarks."
   links:
-    - { label: Docs, url: "https://lamng3.github.io/hermes-docs/" }
-    - { label: Paper, url: "https://github.com/lamng3/hermes/blob/master/paper/hermes.pdf" }
+    - { label: Docs, url: "https://lamng3.com/hermes/" }
+    - { label: Paper, url: "/publications/hermes/" }
     - { label: GitHub, url: "https://github.com/lamng3/hermes" }
 
 - slug: aegis

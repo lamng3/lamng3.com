@@ -136,6 +136,7 @@ Each project manual is built and hosted by its own `<name>-docs` repo on GitHub 
 | `/ontodb/` | `lamng3/ontodb-docs` |
 | `/kroma/` | `lamng3/kroma-docs` |
 | `/aegis/` | `lamng3/aegis-docs` |
+| `/hermes/` | `lamng3/hermes-docs` |
 | `/agentic-ontologist/` | `lamng3/agentic-ontologist-docs` |
 | `/agentic-ontologist/showcase/` | `lamng3/agentic-ontologist` (its Pages site; this rule comes first) |
 

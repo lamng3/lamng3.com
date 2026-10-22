@@ -16,6 +16,7 @@ http://lamng3.netlify.app/*  https://lamng3.com/:splat  301!
 /ontodb/*  https://lamng3.github.io/ontodb-docs/:splat  200!
 /kroma/*  https://lamng3.github.io/kroma-docs/:splat  200!
 /aegis/*  https://lamng3.github.io/aegis-docs/:splat  200!
+/hermes/*  https://lamng3.github.io/hermes-docs/:splat  200!
 /agentic-ontologist/showcase/*  https://lamng3.github.io/agentic-ontologist/:splat  200!
 /agentic-ontologist/*  https://lamng3.github.io/agentic-ontologist-docs/:splat  200!
 
