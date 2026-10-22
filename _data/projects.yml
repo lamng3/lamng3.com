@@ -18,6 +18,8 @@
   body:
     - "The Agentic Ontologist orchestrates memory-augmented agents for ontology engineering. Each decision is routed by cost: cheap retrieval and small models settle most of them, and only the hard ones reach a large model."
   links:
+    - { label: Manual, url: "https://lamng3.com/agentic-ontologist/" }
+    - { label: Playground, url: "https://lamng3.com/agentic-ontologist/playground.html" }
     - { label: Showcase, url: "https://lamng3.com/agentic-ontologist/showcase/" }
     - { label: Paper, url: "/publications/agentic-ontologist/" }
     - { label: Code, url: "https://github.com/lamng3/agentic-ontologist" }
@@ -39,6 +41,7 @@
     - "I wrote it to learn database internals end to end, and the [book](/publications/ontodb-book/) explains each layer as it is built."
   links:
     - { label: Manual, url: "https://lamng3.com/ontodb/" }
+    - { label: Playground, url: "https://lamng3.com/ontodb/playground.html" }
     - { label: Book, url: "/publications/ontodb-book/" }
     - { label: Code, url: "https://github.com/lamng3/OntoDB" }
 
@@ -58,6 +61,7 @@
     - "I built it to treat agent memory the way a database treats data, with transactions, a log, and rollback. The code, manual, and paper are public."
   links:
     - { label: Manual, url: "https://lamng3.com/memcommit/" }
+    - { label: Playground, url: "https://lamng3.com/memcommit/playground.html" }
     - { label: Paper, url: "/publications/memcommit/" }
     - { label: Code, url: "https://github.com/lamng3/memcommit" }
 
@@ -79,6 +83,7 @@
   links:
     - { label: Paper, url: "https://arxiv.org/abs/2507.14032" }
     - { label: Manual, url: "https://lamng3.com/kroma/" }
+    - { label: Playground, url: "https://lamng3.com/kroma/playground.html" }
     - { label: Code, url: "https://github.com/lamng3/kroma" }
 
 - slug: ontocheck
@@ -109,6 +114,7 @@
     - "It answers questions against a local ontology, an in-memory graph, or a live endpoint such as DBpedia, and reports results on public text-to-SPARQL benchmarks."
   links:
     - { label: Manual, url: "https://lamng3.com/hermes/" }
+    - { label: Playground, url: "https://lamng3.com/hermes/playground.html" }
     - { label: Paper, url: "/publications/hermes/" }
     - { label: Code, url: "https://github.com/lamng3/hermes" }
 
@@ -121,6 +127,10 @@
   body:
     - "Agents that answer questions over a knowledge graph lean on its ontology, and on a few of its concepts far more than the rest. An attacker who edits those few can make answers wrong without touching the graph. Aegis defends the ontology the way a database defends its data: every edit is a logged transaction, health checks run on each commit, forensics measure the damage over a query workload, and recovery rolls back to the last healthy state while keeping honest edits."
     - "Work in progress; the code will be public soon."
+  links:
+    - { label: Manual, url: "https://lamng3.com/aegis/" }
+    - { label: Playground, url: "https://lamng3.com/aegis/playground.html" }
+    - { label: Paper, url: "/publications/aegis/" }
 
 - slug: leetmath
   title: LeetMath
