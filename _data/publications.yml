@@ -175,6 +175,7 @@
     - "The whole engine, with its paged B+ trees and semantic search, runs in a browser from a 0.85 MB WebAssembly module."
   pdf: /assets/papers/ontodb-semantic.pdf
   links:
+    - { label: Extended version, url: "/assets/papers/ontodb-full.pdf" }
     - { label: Code, url: "https://github.com/lamng3/OntoDB" }
     - { label: Manual, url: "https://lamng3.com/ontodb/" }
     - { label: Playground, url: "https://lamng3.com/ontodb/playground.html" }
