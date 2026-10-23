@@ -16,6 +16,7 @@ http://lamng3.netlify.app/*  https://lamng3.com/:splat  301!
 
 # The project manuals are hosted on GitHub Pages (lamng3/<name>-docs) and served here under /<name>/ (proxy).
 # Same trailing-slash caveat as /leetmath/: no /<name> -> /<name>/ rules.
+/memcommit/visualize/*  https://lamng3.github.io/memcommit-visualization/:splat  200!
 /memcommit/*  https://lamng3.github.io/memcommit-docs/:splat  200!
 /ontodb/*  https://lamng3.github.io/ontodb-docs/:splat  200!
 /kroma/*  https://lamng3.github.io/kroma-docs/:splat  200!
