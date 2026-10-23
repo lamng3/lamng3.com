@@ -159,19 +159,19 @@
 
 - slug: ontodb-semantic
   short: OntoDB
-  title: "OntoDB: A B+ Tree Ontology Database with Hierarchy Intervals and Vector Search"
+  title: "OntoDB: A Fast Ontology Database for Pattern, Hierarchy, and Semantic Queries"
   authors: "L. Nguyen"
   venue: "Preprint"
   year: 2026
   status: preprint
-  tldr: "A B+ tree triple store with its algorithms written out, a class hierarchy kept as intervals the same tree can range-scan, and vector indexes inside the engine. Compared with Oxigraph, and built to run in a browser."
-  abstract: "An ontology store is asked three kinds of question: for the triples that match a pattern, for the instances at or below a class, and for the terms closest in meaning to a given term. We describe OntoDB, an open-source ontology database in C++20 built from the parts of a disk-based DBMS (dictionary-encoded triples in three B+ tree permutations, a buffer pool with LRU-K eviction, latch crabbing, a bulk loader, and page-level write-ahead logging) and extended to the last two questions. We give its algorithms for search, insert, delete, range scan, and bulk load, and a bound on the pages a scan reads. A postorder labelling of the class DAG with an interval set per class, kept in the engine's own B+ tree, turns everything under C into a few range scans: on the Gene Ontology the mean class needs 2.0 intervals, and the store holds 8.1 times fewer triples than materializing the closure and reads 48 times fewer pages than rewriting the query. We add exact, IVF, product-quantized, and HNSW vector indexes, prove that no linear order of points keeps neighbors close, and show that in an ontology a class filter is correlated with the vectors. Against Oxigraph on LUBM(10), OntoDB is 1.6 to 4.0 times faster on selective patterns, equal on large scans, and 7 times slower to load. The engine also compiles to a 0.85 MB WebAssembly module that runs in a browser. Every number in the paper regenerates from scripts in the repository."
+  tldr: "A B+ tree triple store with its algorithms written out, a class hierarchy kept as intervals the same tree can range-scan, and vector indexes inside the engine. Compared with Oxigraph, Jena TDB2, and SQLite, and built to run in a browser."
+  abstract: "Ontologies are queried in three ways: for the triples that match a pattern, for the instances at or below a class, and for the terms closest in meaning to a given term. Triple stores answer the first well, handle the second by rewriting queries or by materializing entailed triples, and leave the third to a separate vector database. This paper introduces OntoDB, an ontology database that answers all three inside one disk-based engine. (1) We describe a B+ tree triple store of three permutations behind a buffer pool, with algorithms for search, insert, delete, range scan, and bulk load, and bound the pages a range scan reads. (2) We label the class hierarchy with postorder intervals kept in the same B+ tree, so that ``everything under a class'' is a few range scans and no entailed triple is stored. (3) We add exact, IVF, product-quantized, and HNSW vector indexes, prove that no linear order of points keeps neighbors close, and show that in an ontology a class filter is correlated with the vectors, so the usual independence assumption fails. (4) We compile the engine to a 0.85 MB WebAssembly module that runs in a browser. On the Gene Ontology, the mean class needs 2.0 intervals; the store holds 8.1x fewer triples than materialization and reads 48x fewer pages than query rewriting. Against Oxigraph, Apache Jena TDB2, and SQLite on LUBM and the Gene Ontology, OntoDB answers selective triple patterns 4 to 40x faster and returns the instances of a class 2 to 6x faster, but loads 1.4 to 5.6x slower."
   highlights:
     - "Search, insert, delete, range scan and bulk load are given as algorithms, with a bound on the pages a range scan reads. The scan copies a leaf's keys and holds no latch between rows."
-    - "Against Oxigraph 0.5.13 on LUBM(10), OntoDB is 1.6 to 4.0 times faster on selective triple patterns and 32 times faster on the LUBM triangle query than Oxigraph on RocksDB. It is equal on large scans and loads 7 times slower."
-    - "For the instances of a class on the Gene Ontology, the interval scan returns 29,904 ids in 1.7 ms. Decoding them to strings takes 29 ms, 94% of the time, because the dictionary is the slowest part of the engine."
+    - "On LUBM(10), OntoDB answers selective triple patterns about 4 to 40 times faster than Oxigraph, Jena TDB2 and SQLite, and is within a factor of two of the best on large results. It is the slowest to load, by 1.4 to 5.6 times."
+    - "For the instances of a class on the Gene Ontology, OntoDB is 2.2 to 5.8 times faster than the other engines on the largest classes, once every answer is decoded to a string. Decoding is most of its time, which a cache of decoded terms halves."
     - "Against materializing the RDFS closure, the interval index stores 8.1 times fewer triples; against rewriting the query it reads 48 times fewer pages for large classes."
-    - "Resolving the class's members and scoring them exactly is the fastest exact strategy up to about 1,000 members, 10^2 to 10^4 times faster than any index strategy."
+    - "Resolving a class's members and scoring them exactly is the fastest exact strategy up to about 1,000 members, 10^2 to 10^4 times faster than any index strategy."
   pdf: /assets/papers/ontodb-semantic.pdf
   links:
     - { label: Code, url: "https://github.com/lamng3/OntoDB" }
@@ -179,7 +179,7 @@
     - { label: Playground, url: "https://lamng3.com/ontodb/playground.html" }
   bibtex: |
     @misc{nguyen2026ontodb,
-      title  = {{OntoDB}: A {B+} Tree Ontology Database with Hierarchy Intervals and Vector Search},
+      title  = {{OntoDB}: A Fast Ontology Database for Pattern, Hierarchy, and Semantic Queries},
       author = {Lam Nguyen},
       year   = {2026},
       note   = {Preprint},
