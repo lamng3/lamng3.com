@@ -1,7 +1,7 @@
 ---
 layout: paper
 paper: ontodb-semantic
-title: "Beyond the Sort Order: Hierarchy Intervals and Vector Indexes in a B+ Tree Ontology Store"
-description: "A sorted index cannot say what is close in meaning. A class hierarchy is a set of integer intervals that a B+ tree range-scans, vector indexes answer similarity, and a class filter combines them, measured on the Gene Ontology."
+title: "OntoDB: A B+ Tree Ontology Database with Hierarchy Intervals and Vector Search"
+description: "A B+ tree triple store with its algorithms written out, a class hierarchy kept as intervals that the same tree range-scans, and vector indexes in the engine, compared with Oxigraph and built to run in a browser."
 permalink: /publications/ontodb-semantic/
 ---
