@@ -158,25 +158,28 @@
     }
 
 - slug: ontodb-semantic
-  short: Beyond the Sort Order
-  title: "Beyond the Sort Order: Hierarchy Intervals and Vector Indexes in a B+ Tree Ontology Store"
+  short: OntoDB
+  title: "OntoDB: A B+ Tree Ontology Database with Hierarchy Intervals and Vector Search"
   authors: "L. Nguyen"
   venue: "Preprint"
   year: 2026
   status: preprint
-  tldr: "A sorted index cannot say what is close in meaning, and a bandwidth argument proves no order can. A class hierarchy, though, is a set of integer intervals, kept in the engine's own B+ tree; vector indexes handle similarity; and a class filter combines them."
-  abstract: "An ontology store is asked two kinds of question. Structural ones, such as which instances have a type at or below class C, have an exact answer in the data. Semantic ones, such as which terms are closest in meaning to t, need a similarity measure. We show that a sorted index cannot serve the second: no linear order of points in two or more dimensions keeps all neighbors within a short scan, and on the Gene Ontology with sentence embeddings the best order we tried, the postorder of the class hierarchy, finds only 38% of a term's ten nearest neighbors within 100 positions. We then use the order for what it can do. A postorder numbering of the class DAG with an interval set per class, kept in a B+ tree, turns everything under C into a few range scans. For similarity we add vector indexes inside the same engine: exact search, IVF with posting lists stored as B+ tree key ranges, product quantization, and HNSW. We compare four ways of filtering a nearest-neighbor search by a class and show that the filter is correlated with the vectors, which breaks the independence assumption behind the usual cost estimate. Everything is implemented in OntoDB, and every number regenerates from one script."
+  tldr: "A B+ tree triple store with its algorithms written out, a class hierarchy kept as intervals the same tree can range-scan, and vector indexes inside the engine. Compared with Oxigraph, and built to run in a browser."
+  abstract: "An ontology store is asked three kinds of question: for the triples that match a pattern, for the instances at or below a class, and for the terms closest in meaning to a given term. We describe OntoDB, an open-source ontology database in C++20 built from the parts of a disk-based DBMS (dictionary-encoded triples in three B+ tree permutations, a buffer pool with LRU-K eviction, latch crabbing, a bulk loader, and page-level write-ahead logging) and extended to the last two questions. We give its algorithms for search, insert, delete, range scan, and bulk load, and a bound on the pages a scan reads. A postorder labelling of the class DAG with an interval set per class, kept in the engine's own B+ tree, turns everything under C into a few range scans: on the Gene Ontology the mean class needs 2.0 intervals, and the store holds 8.1 times fewer triples than materializing the closure and reads 48 times fewer pages than rewriting the query. We add exact, IVF, product-quantized, and HNSW vector indexes, prove that no linear order of points keeps neighbors close, and show that in an ontology a class filter is correlated with the vectors. Against Oxigraph on LUBM(10), OntoDB is 1.6 to 4.0 times faster on selective patterns, equal on large scans, and 7 times slower to load. The engine also compiles to a 0.85 MB WebAssembly module that runs in a browser. Every number in the paper regenerates from scripts in the repository."
   highlights:
-    - "Against materializing the RDFS closure, the interval index stores 8.1 times fewer triples and a 4.2 times smaller file on 200,000 synthetic entities over the Gene Ontology, and answers within 1.8 times of its page reads; against rewriting the query it reads 48 times fewer pages for large classes."
-    - "The Gene Ontology's 38,092 classes need 2.01 intervals each on average (at most 741), within the bound of one interval plus the non-tree edges below a class."
-    - "Resolving the class's members and scoring them exactly is the fastest exact strategy up to about 1,000 members, 10^2 to 10^4 times faster than any index strategy; a masked HNSW search wins above 5,000."
+    - "Search, insert, delete, range scan and bulk load are given as algorithms, with a bound on the pages a range scan reads. The scan copies a leaf's keys and holds no latch between rows."
+    - "Against Oxigraph 0.5.13 on LUBM(10), OntoDB is 1.6 to 4.0 times faster on selective triple patterns and 32 times faster on the LUBM triangle query than Oxigraph on RocksDB. It is equal on large scans and loads 7 times slower."
+    - "For the instances of a class on the Gene Ontology, the interval scan returns 29,904 ids in 1.7 ms. Decoding them to strings takes 29 ms, 94% of the time, because the dictionary is the slowest part of the engine."
+    - "Against materializing the RDFS closure, the interval index stores 8.1 times fewer triples; against rewriting the query it reads 48 times fewer pages for large classes."
+    - "Resolving the class's members and scoring them exactly is the fastest exact strategy up to about 1,000 members, 10^2 to 10^4 times faster than any index strategy."
   pdf: /assets/papers/ontodb-semantic.pdf
   links:
     - { label: Code, url: "https://github.com/lamng3/OntoDB" }
-    - { label: Manual, url: "https://lamng3.com/ontodb/semantic-search.html" }
+    - { label: Manual, url: "https://lamng3.com/ontodb/" }
+    - { label: Playground, url: "https://lamng3.com/ontodb/playground.html" }
   bibtex: |
-    @misc{nguyen2026beyondsort,
-      title  = {Beyond the Sort Order: Hierarchy Intervals and Vector Indexes in a B+ Tree Ontology Store},
+    @misc{nguyen2026ontodb,
+      title  = {{OntoDB}: A {B+} Tree Ontology Database with Hierarchy Intervals and Vector Search},
       author = {Lam Nguyen},
       year   = {2026},
       note   = {Preprint},
