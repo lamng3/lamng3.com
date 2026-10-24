@@ -1,6 +1,6 @@
 # Syncing projects with this site
 
-Two projects are kept in step with this site: [OntoDB](#syncing-ontodb-with-this-site) and [MemCommit](#syncing-memcommit-with-this-site). Each lives in several repos that must agree; when one changes, walk its list.
+[OntoDB](#syncing-ontodb-with-this-site) is kept in step with this site. It lives in several repos that must agree; when one changes, walk its list.
 
 ## Syncing OntoDB with this site
 
@@ -65,84 +65,19 @@ After every PLAN slice that starts passing (`scripts/status` in `../ontodb` show
 
 One commit per repo per round, pushed to `main`. Messages are one plain sentence ending in a period, in the style of the existing history, for example `Implement the triple key (PLAN 0.2).`, `Update the book for the triple key.`, `Sync the OntoDB book: 0.2 done.`
 
-## Syncing MemCommit with this site
-
-MemCommit lives in six places that must agree. When one changes, walk this list.
-
-| Where | Repo | What it holds |
-| --- | --- | --- |
-| Code | `../memcommit` | The library, `PLAN.md`, `README.md`, `docs/design.md`, `docs/decisions.md`, `results/` |
-| Paper | `../memcommit/paper` | *MemCommit: A Transactional Memory Layer for Agents* (LaTeX, PDF committed) |
-| Manual | `../memcommit-docs` | <https://lamng3.com/memcommit/>, built from `content/` |
-| Users | `../agentic-ontologist`, `../agentic-ontologist-docs`, `../kroma`, `../aegis`, `../ontodb` | Code that imports `memcommit`, and the docs and showcase that describe the shared memory |
-| Site | this repo | The hosted paper PDF, the publication entry, the project entry, the homepage |
-
-All repos sit side by side in the same parent directory.
-
-### When to sync
-
-After every change to what MemCommit does, and after every rerun of a benchmark. One feature or one result is one round: code, paper, manual, users, site, each committed and pushed.
-
-### 1. Code (`../memcommit`)
-
-- `uv run ruff check . && uv run python -m pytest -q` pass.
-- `PLAN.md`: the feature bullets under "Runs now", and the benchmark line when a benchmark changes.
-- `README.md`: "What it is" bullets, the results table, and the usage blocks, when a feature or a result changes what MemCommit does or shows. The Quick start output must match `memcommit demo`.
-- `docs/design.md`: the section for the feature. `docs/decisions.md`: a dated entry for every choice, with Choice, Alternatives, Why, and Cost; when a later change makes an earlier entry wrong, amend it and say so.
-- A benchmark rerun writes `results/memory/<date>.json` or `results/policies/<date>.json`; update `results/memory/README.md` (generate its tables from the JSON, not by hand) and the table in `README.md`.
-- Find stale text: `grep -rn "Mneme\|mneme" . --include='*.py' --include='*.md' --include='*.tex'` should find only the rename entry in `docs/decisions.md`.
-
-### 2. Paper (`../memcommit/paper`)
-
-- `results/memory/*.json` changed: `make figures` redraws `fig/memory.pdf`; update Table 1 and the text of Section 5.1 (every number is quoted from the JSON). `results/policies/*.json` changed: Table 2 and Section 5.2.
-- A feature changed: Sections 3 and 4, and the abstract and contributions if the claim moved.
-- Keep the threats to validity true: if a result stops being circular or a caveat stops applying, say so; if a new one appears, add it.
-- Build: `cd paper && make` (`tectonic` when `pdflatex` is absent). Commit the `.tex` changes and `memcommit.pdf` together. Note the page count: `pdfinfo memcommit.pdf | grep Pages`.
-
-### 3. Manual (`../memcommit-docs`)
-
-- `content/*.md`: the page for the feature (`structure`, `sessions`, `notes`, `dreaming`, `recall`, `tiers`, `agents`, `audit`, `cli`, `api`, `benchmarks`, `log`, `provenance`, `storage`, `roadmap`). `benchmarks.md` quotes the results tables; `roadmap.md` lists what is next.
-- `content/decisions.md` is generated from `../memcommit/docs/decisions.md` by the build; do not edit it.
-- Find stale text: `grep -rn "not built yet\|planned\|will be" content`.
-- Build: `python3 build.py`. Commit `content/` and the regenerated HTML together.
-
-### 4. Users
-
-- `../agentic-ontologist`: `src/agentic_ontologist/integrations/memcommit/` (the declared `STRUCTURE` in `structure.py`, and the kinds in `cache.py` and `traces.py`), `tests/integration/test_memcommit.py`, `examples/shared_memory_workflow.py`, and the "Shared memory" section of `README.md`. Run with `PYTHONPATH=../memcommit/src uv run python -m pytest tests/integration`.
-- `../agentic-ontologist/showcase`: the Memory structure tab is generated from `STRUCTURE`. After changing it, `PYTHONPATH=../memcommit/src uv run python showcase/build.py results/agentic_workflow/2026-10-18.json`, then commit `showcase/` (GitHub Pages republishes it).
-- `../agentic-ontologist-docs/architecture.html`: the "Shared memory" section and the package-map row.
-- `../kroma`, `../aegis`: import `memcommit`; run their tests with `PYTHONPATH=../memcommit/src`. `../ontodb/README.md`: the "Agent memory" bullet and the `urn:memcommit:` namespace.
-- A rename of the package or of the OntoDB engine's namespace touches all of them.
-
-### 5. Site (this repo)
-
-- Copy the PDF: `scripts/sync-papers.sh`. The hosted copy is `assets/papers/memcommit.pdf`.
-- `_data/publications.yml`, entry `memcommit`: `tldr`, `abstract`, and `highlights` when the paper's claims or numbers change. When the code and manual repos are public, add `Code` and `Manual` to its `links`.
-- `_data/projects.yml`, entry `memcommit`: `lead` and `body`; when the repos are public, replace "The code and manual will be public soon." and add `GitHub` and `Manual` links, `repo: lamng3/memcommit`, an `image`, and `notable: true` if it should be on the homepage.
-- `_pages/about.md`: the MemCommit mention under the research interests, when the project's scope changes.
-- Find stale text: `grep -n -i "memcommit" _data/projects.yml _data/publications.yml _pages/about.md`.
-
-### 6. Commits
-
-One commit per repo per round, pushed to the default branch (`main`; `master` in `agentic-ontologist`). Messages are one plain sentence ending in a period, for example `Add offline dreaming: extract learnings from finished sessions, resolve conflicts, merge duplicates, and split oversized notes, with preview and undo.`
-
 ## Where the manuals are served
 
 Each project manual is built and hosted by its own `<name>-docs` repo on GitHub Pages, and this site proxies it so the URL stays on lamng3.com, as for `/keras-js/`. The rules are in `_redirects`:
 
 | URL on this site | Repo behind it |
 | --- | --- |
-| `/memcommit/` | `lamng3/memcommit-docs` |
 | `/ontodb/` | `lamng3/ontodb-docs` |
 | `/kroma/` | `lamng3/kroma-docs` |
-| `/aegis/` | `lamng3/aegis-docs` |
 | `/hermes/` | `lamng3/hermes-docs` |
-| `/agentic-ontologist/` | `lamng3/agentic-ontologist-docs` |
-| `/agentic-ontologist/showcase/` | `lamng3/agentic-ontologist` (its Pages site; this rule comes first) |
 
 Link to the lamng3.com address, never to `lamng3.github.io/...`, in `_data`, READMEs, and the manuals. The manuals use relative links, so they work under the prefix. A new manual needs a Pages site, a rule here, and no `<name> -> <name>/` redirect (Netlify ignores trailing slashes, so it would loop).
 
-The home page of each manual has a live demo that replays real output; `demo_data.py` in each `-docs` repo regenerates it. See the decision "Manuals share one design" in `memcommit/docs/decisions.md`.
+The home page of each manual has a live demo that replays real output; `demo_data.py` in each `-docs` repo regenerates it.
 
 ## Linking to projects
 
@@ -150,18 +85,13 @@ In prose (the homepage, topic pages, project text) link a project to its publica
 
 ## Manual and showcase upkeep
 
-Six manuals share one design (`memcommit-docs/restyle.py` applies it; `memcommit-docs/normalize.py` is copied into each manual and gives every page search, an on-this-page list, and previous and next links). Each manual's home page has a demo that replays real output; `demo_data.py` in each `-docs` repo regenerates its data from the project's recorded results, so rerun it when results change, then rebuild.
+The manuals share one design (`normalize.py` is copied into each manual and gives every page search, an on-this-page list, and previous and next links). Each manual's home page has a demo that replays real output; `demo_data.py` in each `-docs` repo regenerates its data from the project's recorded results, so rerun it when results change, then rebuild.
 
 | Manual | Demo shows | Regenerate from |
 | --- | --- | --- |
-| `/memcommit/` | a real memory log and its stale cascade | `memcommit` library |
 | `/ontodb/` | queries and plans printed by the shell | a built `ontodb` binary |
-| `/kroma/` | prompts built by KROMA's code, with recorded answers | `agentic-ontologist` results |
-| `/aegis/` | attack and defence results | `aegis/results/attack_defense` |
+| `/kroma/` | prompts built by KROMA's code, with recorded answers | KROMA's recorded results |
 | `/hermes/` | four systems on one question, and the leaderboard | `hermes/results/ck26` |
-| `/agentic-ontologist/` | routing quality against cost, and one decision | `agentic-ontologist/results/agentic_workflow` |
-
-Two projects also have a showcase, a single page built from the recorded runs with `showcase/build.py`: `/agentic-ontologist/showcase/` and the Aegis one (served from the `aegis` repo's Pages site, so add `/aegis/showcase/* -> https://lamng3.github.io/aegis/` ahead of `/aegis/*` in `_redirects` once that repo is public). Both inline `showcase/base.css` and `base.js`, copies of `memcommit-docs/showcase`.
 
 After a deploy, test the live sites: crawl every page for dead links, anchors, console errors, and overflow at 390px, and click through each demo.
 
@@ -173,15 +103,12 @@ Call each project's guide a **Manual**, never "documentation" or "docs": in link
 
 ## Leaderboards
 
-Five manuals have a **Leaderboard** page drawn by `arena.js` (source in `memcommit-docs/arena`, copied into each manual; its CSS is appended to each `style.css`). Each `-docs` repo has a `leaderboard_data.py` that reads the project's recorded results into `leaderboard-data.json`, so rerun it when results change, then rebuild:
+Manuals have a **Leaderboard** page drawn by `arena.js` (copied into each manual; its CSS is appended to each `style.css`). Each `-docs` repo has a `leaderboard_data.py` that reads the project's recorded results into `leaderboard-data.json`, so rerun it when results change, then rebuild:
 
 | Manual | Boards | Reads |
 | --- | --- | --- |
 | `/hermes/leaderboard.html` | ck26 and db26, Hermes runs beside the official systems | `hermes/results/LEADERBOARD.md` |
-| `/memcommit/leaderboard.html` | memory configurations by sessions per user | `memcommit/results/memory/` |
-| `/aegis/leaderboard.html` | attack strategies, and defenses, per ontology | `aegis/results/attack_defense/` |
 | `/kroma/leaderboard.html` | F1 per track against baselines and ablations | `kroma/README.md` (the paper's Table 3) |
-| `/agentic-ontologist/leaderboard.html` | routing policies per agent | `agentic-ontologist/results/agentic_workflow/` |
 
 OntoDB has none: its benchmarks are timing tables that do not rank. Link a project's leaderboard from its publication entry (`Leaderboard`), never to a results file in the repo.
 
@@ -194,10 +121,7 @@ Every manual has a **Playground** page that runs in the visitor's browser, with 
 | `/ontodb/playground.html` | SPARQL on Oxigraph (WebAssembly) over Pizza or your Turtle, store in IndexedDB; OntoDB's own plans, recorded | every example runs; updates survive a reload |
 | `/hermes/playground.html` | the real corporate graph (26.9k triples) on Oxigraph; recorded queries of four systems; step-by-step replay; a model you run | prompt, extraction and repair ports equal the Python |
 | `/kroma/playground.html` | KROMA's prompt for any two concepts; a model you run | prompt, extraction and voting ports equal the Python for all real pairs |
-| `/agentic-ontologist/playground.html` | the evidence tier on the real Mouse-Human ontologies (TF-IDF retrieval, evidence, controller routing) | exact matches and 60 sampled sources equal the Python to 1e-15; an exact tie can keep a different candidate |
-| `/memcommit/playground.html` | the memory log: puts, retract and invalidate cascades, rollback, as_of | 12 recorded scenarios (657 log records) equal the library record by record |
-| `/aegis/playground.html` | the toy ontology: edits, harm, attribution, versioned rollback, greedy and beam attack searches | impacts, units, searches at four budgets and 40 random chains equal the Python |
 
-No model is hosted. Where a playground calls a model, the visitor chooses where it runs: Ollama on their computer (detected when they open the panel, with its installed models listed; `OLLAMA_ORIGINS="*" ollama serve`), a tiny model in the page on WebGPU (Gemma 3 270M or LFM2.5 350M through jax-js, from `memcommit-docs/playground/localllm`, a few hundred MB that the browser caches), or another OpenAI-compatible endpoint. Settings stay in their browser. The tiny models follow formats but get tasks wrong: LFM2.5 350M answers No to every KROMA pair and writes no parsable query for any of Hermes's eight sample questions. Chrome asks permission before a page reaches a local server; Safari does not allow it, so every playground that calls a model also accepts a pasted reply. Each `-docs` repo has a `playground_data.py` that exports the ground truth from the real code; rerun it when the code changes, and rerun the page's tests. The shared helper is `memcommit-docs/playground/pg.js` (copied into each manual). The engine and Oxigraph load from a pinned jsDelivr URL.
+No model is hosted. Where a playground calls a model, the visitor chooses where it runs: Ollama on their computer (detected when they open the panel, with its installed models listed; `OLLAMA_ORIGINS="*" ollama serve`), a tiny model in the page on WebGPU (Gemma 3 270M or LFM2.5 350M through jax-js, a few hundred MB that the browser caches), or another OpenAI-compatible endpoint. Settings stay in their browser. The tiny models follow formats but get tasks wrong: LFM2.5 350M answers No to every KROMA pair and writes no parsable query for any of Hermes's eight sample questions. Chrome asks permission before a page reaches a local server; Safari does not allow it, so every playground that calls a model also accepts a pasted reply. Each `-docs` repo has a `playground_data.py` that exports the ground truth from the real code; rerun it when the code changes, and rerun the page's tests. The shared helper is `playground/pg.js` (copied into each manual). The engine and Oxigraph load from a pinned jsDelivr URL.
 
 After a change, validate the HTML (`html-validate`), lint every page's text, crawl every page, and click through each demo and playground in a real browser.
