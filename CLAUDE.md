@@ -5,7 +5,7 @@ Lam Nguyen's site, hosted on Netlify. A profile, projects, a code library, and a
 ## Pages
 
 - `_pages/about.md` is the homepage (`permalink: /`). Its "Notable work" list comes from projects with `notable: true` in `_data/projects.yml`.
-- `_pages/projects.md` is /projects/, built from `_data/projects.yml` in the order listed there (research first, then tools; the page can also sort by date or stars). A project with no `links` (Aegis, still private) shows no links or screenshot. Screenshots live in `assets/img/projects/` (960px JPEG). Refresh star counts with `scripts/update-stars.sh`.
+- `_pages/projects.md` is /projects/, built from `_data/projects.yml` in the order listed there (research first, then tools; the page can also sort by date or stars). A project with no `links` shows no links or screenshot. Screenshots live in `assets/img/projects/` (960px JPEG). Refresh star counts with `scripts/update-stars.sh`.
 - `_pages/resume.md` is /resume/: work, education with graduate and undergraduate coursework (course names from the CWRU transcript; never grades, GPA or IDs), awards, service.
 - The homepage text follows Lam's original wording. Keep edits to it small.
 - `_pages/library.md` is /library/, the code library. It is not in the nav; it is reached from its entry on /projects/ (slug `library`), and the nav highlights "projects" on library pages. `scripts/sync-library.py` generates `_data/library.yml` and `_pages/library/*.md` from `../competitive-programming` (lamng3/competitive-programming-notebook); do not edit those by hand, rerun the script.
@@ -40,8 +40,7 @@ toc:
 - Quote `title` and `description`. A `: ` inside an unquoted YAML value breaks the page.
 - `_redirects` maps the old dated post URLs (`/blog/2026/<slug>/`) to their sections. Keep it.
 
-## OntoDB and MemCommit
+## OntoDB
 
-The OntoDB book, manual, and code, and the MemCommit paper, manual, code, and the projects that use it, are kept in step with this site. `SYNC.md` lists what to update, where, and in what order, for each.
+The OntoDB book, manual, and code are kept in step with this site. `SYNC.md` lists what to update, where, and in what order.
 
-MemCommit's repos are still private, so its project entry links only the paper; add its code and manual links when they are public (see `SYNC.md`, section 5).
