@@ -59,7 +59,7 @@ description: >-
     <li><span><strong>Microsoft</strong> · Software Engineer, Agentic Security</span><time>2025</time></li>
     <li><span><strong>Microsoft</strong> · Software Engineer Intern, Security Copilot</span><time>2024</time></li>
     <li><span><strong>Amazon</strong> · Software Engineer Intern, Alexa Voice AI</span><time>2023</time></li>
-    <li><span><strong>Microsoft</strong> · Software Engineer Intern, Microsoft Security</span><time>2023</time></li>
+    <li><span><strong>Microsoft</strong> · Software Engineer Intern, Microsoft Sentinel</span><time>2023</time></li>
     <li><span><strong>Microsoft</strong> · Software Engineer Intern, Azure Data</span><time>2022</time></li>
   </ul>
 </section>

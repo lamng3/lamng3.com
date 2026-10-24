@@ -20,7 +20,7 @@ description: Lam Nguyen's work, education, coursework, and awards.
     <h3>Software Engineer at <a href="https://www.microsoft.com">Microsoft</a></h3>
     <p class="resume-meta">2025 – Current</p>
     <ul>
-      <li>Agentic security: schema-constrained retrieval for natural language to KQL.</li>
+      <li>Agentic Security: schema-constrained retrieval for natural language to KQL.</li>
     </ul>
   </div>
 
@@ -44,7 +44,7 @@ description: Lam Nguyen's work, education, coursework, and awards.
     <h3>Software Engineer Intern at Microsoft</h3>
     <p class="resume-meta">2023</p>
     <ul>
-      <li>Microsoft Security: log compaction that keeps critical agent signals hot.</li>
+      <li>Microsoft Sentinel: log compaction that keeps critical agent signals hot.</li>
     </ul>
   </div>
 
