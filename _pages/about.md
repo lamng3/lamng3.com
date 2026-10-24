@@ -18,10 +18,11 @@ description: >-
   <p>I build the <em>semantic data layer</em> for LLMs: ontologies and knowledge graphs that give agents the right context, from the right source, at a bounded cost. I design algorithms and systems through the lens of <em>databases</em>, so retrieval stays context-aware, cache-aware, and trustworthy as the knowledge underneath it evolves.</p>
   <p><strong>Research interests</strong></p>
   <ul class="interests">
-    <li><strong>Retrieval and context engineering</strong>: vector retrieval, reranking, tool use, model routing, and caching&nbsp;<span class="projects">(<a href="/publications/kroma/">KROMA</a>)</span>.</li>
-    <li><strong>Database systems</strong>: indexing, query optimization, MVCC, recovery, provenance, and agent memory&nbsp;<span class="projects">(<a href="/publications/ontodb-book/">OntoDB</a>)</span>.</li>
-    <li><strong>Natural language interfaces to databases</strong>: text-to-SPARQL as planning over a typed query algebra&nbsp;<span class="projects">(<a href="/publications/hermes/">Hermes</a>)</span>.</li>
-    <li><strong>Reliable and secure retrieval</strong>: query-driven ontology assessment and adversarial robustness&nbsp;<span class="projects">(<a href="https://github.com/cwru-sdle/OntoCheck">OntoCheck</a>)</span>.</li>
+    <li><strong>LLM agents and retrieval</strong>: agent memory, tool use, structured retrieval, and agentic workflows.</li>
+    <li><strong>Knowledge graphs and ontologies</strong>: ontology matching, knowledge graph construction, and LLM-enhanced question answering.</li>
+    <li><strong>Database systems</strong>: storage and indexing, query optimization, concurrency control, and recovery.</li>
+    <li><strong>Natural language interfaces to databases</strong>: translating questions into verified SPARQL and SQL queries.</li>
+    <li><strong>AI for scientific discovery</strong>: scientific agents, and LLM-assisted exploration and validation of new ideas.</li>
   </ul>
   <p>Lately, I have been exploring GPU-accelerated vector search for recsys, specifically fused ANN kernels. If you work on these, I would love to chat.</p>
 </section>
@@ -42,6 +43,12 @@ description: >-
         </li>
       {% endif %}
     {% endfor %}
+    <li>
+      <a class="notable-name" href="https://www.microsoft.com/en-us/security/business/ai-machine-learning/microsoft-security-copilot">Microsoft Security<span class="arrow" aria-hidden="true">↗</span></a>
+      <div>
+        <p class="notable-blurb">agentic security: AI agents that help defenders investigate and respond to threats</p>
+      </div>
+    </li>
   </ul>
   <p class="more"><a href="{{ '/projects/' | relative_url }}">All projects</a> · <a href="{{ '/resume/' | relative_url }}">Resume</a></p>
 </section>

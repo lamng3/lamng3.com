@@ -26,7 +26,6 @@
     - { label: Playground, url: "https://lamng3.com/ontodb/playground.html" }
     - { label: Book, url: "/publications/ontodb-book/" }
     - { label: Paper, url: "/publications/ontodb-semantic/" }
-    - { label: Vector paper, url: "/publications/ontodb-vector/" }
     - { label: Code, url: "https://github.com/lamng3/OntoDB" }
 
 - slug: kroma
