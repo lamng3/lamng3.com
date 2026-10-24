@@ -9,7 +9,7 @@ description: Lam Nguyen's work, education, coursework, and awards.
   <h2>Professional work</h2>
 
   <div class="job">
-    <h3>Researcher at the Center for Materials Data Science</h3>
+    <h3>Data Scientist at the Center for Materials Data Science</h3>
     <p class="resume-meta">2026 – Current</p>
     <ul>
       <li>AI for scientific discovery: semantic data layers for language agents.</li>
