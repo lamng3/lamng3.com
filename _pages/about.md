@@ -14,7 +14,7 @@ description: >-
 
 <section id="about" class="intro">
   <p><strong>I play with agentic retrieval and database internals.</strong></p>
-  <p>I work on AI for scientific discovery at the Center for Materials Data Science, and on agentic security at <a href="https://www.microsoft.com">Microsoft</a>. On the side, I am building <a href="https://lamng3.com/leetmath/">LeetMath</a>, a platform for AI&#8209;guided math training and automated grading.</p>
+  <p>I work on AI for scientific discovery at the Center for Materials Data Science, and on agentic security at <a href="https://www.microsoft.com">Microsoft</a>.</p>
   <p>I build the <em>semantic data layer</em> for LLMs: ontologies and knowledge graphs that give agents the right context, from the right source, at a bounded cost. I design algorithms and systems through the lens of <em>databases</em>, so retrieval stays context-aware, cache-aware, and trustworthy as the knowledge underneath it evolves.</p>
   <p><strong>Research interests</strong></p>
   <ul class="interests">
@@ -23,8 +23,8 @@ description: >-
     <li><strong>Database systems</strong>: indexing, query optimization, concurrency, and recovery.</li>
     <li><strong>Natural language interfaces to databases</strong>: text-to-SPARQL and text-to-SQL.</li>
     <li><strong>AI for scientific discovery</strong>: scientific agents and hypothesis validation.</li>
+    <li><strong>GPU vector search</strong>: fused ANN kernels for recommender systems.</li>
   </ul>
-  <p>Lately, I have been exploring GPU-accelerated vector search for recsys, specifically fused ANN kernels. If you work on these, I would love to chat.</p>
 </section>
 
 <section id="work">
@@ -56,7 +56,7 @@ description: >-
 <section id="experience">
   <h2>Experience</h2>
   <ul class="timeline">
-    <li><span><strong>Center for Materials Data Science</strong> · Researcher, AI for Scientific Discovery</span><time>2026</time></li>
+    <li><span><strong>Center for Materials Data Science</strong> · Data Scientist, AI for Scientific Discovery</span><time>2026</time></li>
     <li><span><strong>Microsoft</strong> · Software Engineer, Agentic Security</span><time>2025</time></li>
     <li><span><strong>Microsoft</strong> · Software Engineer Intern, Security Copilot</span><time>2024</time></li>
     <li><span><strong>Amazon</strong> · Software Engineer Intern, Alexa Voice AI</span><time>2023</time></li>
