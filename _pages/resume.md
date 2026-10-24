@@ -17,7 +17,7 @@ description: Lam Nguyen's work, education, coursework, and awards.
   </div>
 
   <div class="job">
-    <h3>Software Engineer at <a href="https://www.microsoft.com">Microsoft</a></h3>
+    <h3>Software Engineer at Microsoft</h3>
     <p class="resume-meta">2025 – Current</p>
     <ul>
       <li>Agentic Security: schema-constrained retrieval for natural language to KQL.</li>
