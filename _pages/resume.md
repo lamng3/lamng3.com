@@ -44,7 +44,7 @@ description: Lam Nguyen's work, education, coursework, and awards.
     <h3>Software Engineer Intern at Microsoft</h3>
     <p class="resume-meta">2023</p>
     <ul>
-      <li>Microsoft Sentinel: log compaction that keeps critical agent signals hot.</li>
+      <li>Microsoft Security: log compaction that keeps critical agent signals hot.</li>
     </ul>
   </div>
 
