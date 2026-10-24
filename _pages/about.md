@@ -43,12 +43,6 @@ description: >-
         </li>
       {% endif %}
     {% endfor %}
-    <li>
-      <a class="notable-name" href="https://www.microsoft.com/en-us/security/business/ai-machine-learning/microsoft-security-copilot">Microsoft Security<span class="arrow" aria-hidden="true">↗</span></a>
-      <div>
-        <p class="notable-blurb">agentic security: AI agents that help defenders investigate and respond to threats</p>
-      </div>
-    </li>
   </ul>
   <p class="more"><a href="{{ '/projects/' | relative_url }}">All projects</a> · <a href="{{ '/resume/' | relative_url }}">Resume</a></p>
 </section>
