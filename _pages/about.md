@@ -18,11 +18,11 @@ description: >-
   <p>I build the <em>semantic data layer</em> for LLMs: ontologies and knowledge graphs that give agents the right context, from the right source, at a bounded cost. I design algorithms and systems through the lens of <em>databases</em>, so retrieval stays context-aware, cache-aware, and trustworthy as the knowledge underneath it evolves.</p>
   <p><strong>Research interests</strong></p>
   <ul class="interests">
-    <li><strong>LLM agents and retrieval</strong>: agent memory, tool use, structured retrieval, and agentic workflows.</li>
-    <li><strong>Knowledge graphs and ontologies</strong>: ontology matching, knowledge graph construction, and LLM-enhanced question answering.</li>
-    <li><strong>Database systems</strong>: storage and indexing, query optimization, concurrency control, and recovery.</li>
-    <li><strong>Natural language interfaces to databases</strong>: translating questions into verified SPARQL and SQL queries.</li>
-    <li><strong>AI for scientific discovery</strong>: scientific agents, and LLM-assisted exploration and validation of new ideas.</li>
+    <li><strong>LLM agents</strong>: agent memory, tool use, and structured retrieval.</li>
+    <li><strong>Knowledge graphs</strong>: ontology matching, KG construction, and KGQA.</li>
+    <li><strong>Database systems</strong>: indexing, query optimization, concurrency, and recovery.</li>
+    <li><strong>Natural language interfaces to databases</strong>: text-to-SPARQL and text-to-SQL.</li>
+    <li><strong>AI for scientific discovery</strong>: scientific agents and hypothesis validation.</li>
   </ul>
   <p>Lately, I have been exploring GPU-accelerated vector search for recsys, specifically fused ANN kernels. If you work on these, I would love to chat.</p>
 </section>
