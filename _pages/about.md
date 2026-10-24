@@ -14,7 +14,7 @@ description: >-
 
 <section id="about" class="intro">
   <p><strong>I play with agentic retrieval and database internals.</strong></p>
-  <p>I work on AI for scientific discovery at the Center for Materials Data Science, and on agentic security at <a href="https://www.microsoft.com">Microsoft</a>.</p>
+  <p>I work on AI for scientific discovery at the Center for Materials Data Science, and on agentic security at Microsoft.</p>
   <p>I build the <em>semantic data layer</em> for LLMs: ontologies and knowledge graphs that give agents the right context, from the right source, at a bounded cost. I design algorithms and systems through the lens of <em>databases</em>, so retrieval stays context-aware, cache-aware, and trustworthy as the knowledge underneath it evolves.</p>
   <p><strong>Research interests</strong></p>
   <ul class="interests">
