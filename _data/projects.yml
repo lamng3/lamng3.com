@@ -78,7 +78,6 @@
   links:
     - { label: Manual, url: "https://lamng3.com/hermes/" }
     - { label: Playground, url: "https://lamng3.com/hermes/playground.html" }
-    - { label: Paper, url: "/publications/hermes/" }
     - { label: Code, url: "https://github.com/lamng3/hermes" }
 
 - slug: leetmath

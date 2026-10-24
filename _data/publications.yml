@@ -35,31 +35,6 @@
         doi={10.1007/978-3-032-09527-5_34},
     }
 
-- slug: hermes
-  short: Hermes
-  title: "Hermes: Verified Query Planning over the SPARQL Algebra with Language Agents"
-  authors: "L. Nguyen"
-  venue: "Preprint"
-  year: 2026
-  status: preprint
-  tldr: "A language agent builds a SPARQL query one algebra operator at a time instead of all at once. A verifier type-checks each step against the RDF schema, and execution feedback tells the agent what the step did."
-  abstract: "Translating natural-language questions into SPARQL lets users query knowledge graphs without learning their schema. Large language models now write plausible SPARQL, but they write the whole query at once: a query that fails to parse, joins values of incompatible types, or returns nothing is detected only after it is complete, and the repair is another guess. Hermes is a query-planning agent that builds a SPARQL query one operator of the SPARQL algebra at a time, over a typed formalization of the language. The RDF schema gives every query variable a type, and a verifier checks each step before it runs. A plan is accepted only when it is well typed and meets a goal stated from the question."
-  highlights:
-    - "On the Text2SPARQL 2026 corporate benchmark with Qwen3-14B, set F1 of 0.282, against 0.231 without the verifier, 0.197 for constraint-guided search, and 0.089 for one-shot generation."
-    - "The verifier cuts the items without a runnable query from 26 to 9, at a higher model-call budget."
-  pdf: /assets/papers/hermes.pdf
-  links:
-    - { label: Code, url: "https://github.com/lamng3/hermes" }
-    - { label: Manual, url: "https://lamng3.com/hermes/" }
-    - { label: Leaderboard, url: "https://lamng3.com/hermes/leaderboard.html" }
-  bibtex: |
-    @misc{nguyen2026hermes,
-      title  = {Hermes: Verified Query Planning over the SPARQL Algebra with Language Agents},
-      author = {Nguyen, Lam},
-      year   = {2026},
-      url    = {https://github.com/lamng3/hermes}
-    }
-
 - slug: thesis
   selected: true
   short: M.S. thesis
