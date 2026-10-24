@@ -113,34 +113,6 @@
       url    = {https://github.com/lamng3/OntoDB}
     }
 
-- slug: ontodb-vector
-  short: Meaning Under a Class
-  title: "Meaning Under a Class: Hierarchy-Filtered Vector Search Inside an Ontology Store"
-  authors: "L. Nguyen"
-  venue: "Preprint"
-  year: 2026
-  status: preprint
-  tldr: "Vector indexes lose recall without warning when a class filter is selective. Postorder intervals in the ontology store's own B+ tree make the class a membership test, and a cost model with one threshold picks between resolving the class and testing it per row."
-  abstract: "Ontologies pair a class hierarchy with names that embeddings can compare, and a natural question combines the two: which terms are closest in meaning to a given term and lie under a given class? Vector databases answer it by passing the index a filter, and approximate indexes silently lose recall when the filter is selective: on four ontologies, FAISS indexes asked for the ten nearest terms under a class return on average 61% (IVF) and 64% (HNSW) of the right answers, and 2% (HNSW) for a query that lies outside a small class; a 16 times larger beam raises that to only 20%. This paper presents a vector search that lives inside an ontology store and uses the hierarchy as the filter. (1) We prove that no linear order of points keeps nearest neighbors close, and measure how few a sorted index of an ontology puts within a short scan. (2) We label the class hierarchy with postorder intervals in the store's own B+ tree, so that a class's members are a few range scans and membership is a binary search, and we store IVF posting lists as key ranges of the same tree. (3) We show that in an ontology the class filter is correlated with the vectors, so the independence assumption behind filtered-search costing fails, and give four filtering strategies, a cost model for the crossover between resolving the class and testing it per row, and a rule that picks between them. (4) We evaluate against FAISS, hnswlib, and DuckDB on the Gene Ontology, the Human Phenotype Ontology, Uberon, and ChEBI (218,723 terms), with queries that are stored terms and queries that are not. Across 958 queries our rule returns recall 0.999 and never falls below 0.99, with a median of 26 us; for classes of at most ten members it is 33 times faster than an exact FAISS scan with an ID selector (2.1 against 70 us)."
-  highlights:
-    - "FAISS IVF and HNSW indexes with an ID selector return recall 0.61 and 0.64 on average over 958 class-filtered queries on four ontologies, and 0.02 for HNSW when the query lies outside a small class. A 16 times larger beam raises that to only 0.20."
-    - "The auto rule returns recall 0.999 and never falls below 0.99, with a median of 26 microseconds. For classes of at most ten members it is 33 times faster than an exact FAISS scan with an ID selector (2.1 against 70 microseconds)."
-    - "No linear order of points keeps neighbors close: every order separates some neighbors by (N-1)/D positions, and the best order of four ontologies holds at most 56% of a term's ten nearest neighbors within 100 positions."
-    - "The class filter is correlated with the vectors: for a query inside a class of 101 to 1,000 members, 31% of the unfiltered top 100 lie under it where independence predicts 1.2%. The cost model's threshold is 3,400 to 13,000 members, and 4,096 is within 25% of the best on all four ontologies."
-  pdf: /assets/papers/ontodb-vector.pdf
-  links:
-    - { label: Code, url: "https://github.com/lamng3/OntoDB" }
-    - { label: OntoDB paper, url: "/publications/ontodb-semantic/" }
-    - { label: Playground, url: "https://lamng3.com/ontodb/playground.html" }
-  bibtex: |
-    @misc{nguyen2026meaning,
-      title  = {Meaning Under a Class: Hierarchy-Filtered Vector Search Inside an Ontology Store},
-      author = {Lam Nguyen},
-      year   = {2026},
-      note   = {Preprint},
-      url    = {https://github.com/lamng3/OntoDB}
-    }
-
 - slug: ontodb-book
   abstract_label: Overview
   short: OntoDB book
