@@ -594,7 +594,6 @@ footer p {
   margin-bottom: 0.5rem;
 }
 
-
 /* an anchor jump shouldn't land the heading flush against the top */
 article.post h2[id],
 article.post h3[id] {
@@ -697,7 +696,9 @@ article.post h3[id] {
   background: var(--code-bg);
   border: 1px solid var(--rule);
   border-radius: 12px;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 
 .search-field:hover {
@@ -1414,7 +1415,9 @@ html.spotlight-open {
   margin-left: 0.4rem;
   font-size: 0.8em;
   color: var(--faint);
-  transition: transform 0.15s, color 0.15s;
+  transition:
+    transform 0.15s,
+    color 0.15s;
 }
 
 .notable-name:hover .arrow {
@@ -1677,13 +1680,19 @@ a.chip:hover {
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid var(--rule);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06);
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 8px 24px rgba(0, 0, 0, 0.06);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .project-image:hover {
   transform: translateY(-2px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05), 0 14px 32px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.05),
+    0 14px 32px rgba(0, 0, 0, 0.1);
 }
 
 .project-image img {
@@ -1760,7 +1769,9 @@ a.chip:hover {
   border-radius: 10px;
   text-decoration: none;
   color: var(--text);
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 
 .tpl-card a:hover {

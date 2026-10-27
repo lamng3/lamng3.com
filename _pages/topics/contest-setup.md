@@ -54,17 +54,17 @@ ll binpow(ll a, ll b) {
 
 In Python, that function is a built-in: `pow(a, b, MOD)`. The inverse is `pow(a, -1, MOD)`. Most of the notebook's helpers shrink the same way, because Python's standard library already has them:
 
-| C++ | Python |
-| --- | --- |
-| prefix-sum loop | `list(accumulate(a, initial=0))` |
+| C++                                         | Python                                                |
+| ------------------------------------------- | ----------------------------------------------------- |
+| prefix-sum loop                             | `list(accumulate(a, initial=0))`                      |
 | `sort`, `unique`, `lower_bound` to compress | `rank = {x: i for i, x in enumerate(sorted(set(a)))}` |
-| `binpow(a, b)`, `modInverse(a)` | `pow(a, b, MOD)`, `pow(a, -1, MOD)` |
-| memo table filled with `-1` | `@cache` on the recursive function |
-| `map<int, int> cnt` | `Counter(a)` |
-| `lower_bound`, `upper_bound` | `bisect_left`, `bisect_right` |
-| `priority_queue` (max on top) | `heappush(pq, -x)`, since `heapq` is a min-heap |
-| loop over adjacent pairs | `zip(a, a[1:])` |
-| `vector<vector<int>>(n, vi(m))` | `[[0] * m for _ in range(n)]` |
+| `binpow(a, b)`, `modInverse(a)`             | `pow(a, b, MOD)`, `pow(a, -1, MOD)`                   |
+| memo table filled with `-1`                 | `@cache` on the recursive function                    |
+| `map<int, int> cnt`                         | `Counter(a)`                                          |
+| `lower_bound`, `upper_bound`                | `bisect_left`, `bisect_right`                         |
+| `priority_queue` (max on top)               | `heappush(pq, -x)`, since `heapq` is a min-heap       |
+| loop over adjacent pairs                    | `zip(a, a[1:])`                                       |
+| `vector<vector<int>>(n, vi(m))`             | `[[0] * m for _ in range(n)]`                         |
 
 [`leetcode.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/leetcode.py) is the starter. It has these imports, `INF` and `MOD`, the `dr` and `dc` arrays, and a raised recursion limit. `cpnew A leetcode --py` copies it, the same way `cpnew A leetcode` copies the C++ one.
 

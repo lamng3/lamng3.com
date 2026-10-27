@@ -4,16 +4,16 @@
    rendered along with the rest of the page. Without JS the <nav> stays
    hidden, which is why the markup ships empty. */
 (function () {
-  var nav = document.querySelector('.post-toc:not(.topic-nav)');
-  var article = document.querySelector('article.post');
+  var nav = document.querySelector(".post-toc:not(.topic-nav)");
+  var article = document.querySelector("article.post");
   if (!nav || !article) return;
 
-  var heads = Array.prototype.filter.call(article.querySelectorAll('h2, h3'), function (h) {
-    return !h.closest('.post-toc');
+  var heads = Array.prototype.filter.call(article.querySelectorAll("h2, h3"), function (h) {
+    return !h.closest(".post-toc");
   });
   if (heads.length < 3) return; // too short to be worth navigating
 
-  var list = nav.querySelector('ol');
+  var list = nav.querySelector("ol");
   var counts = {};
   var items = [];
 
@@ -21,20 +21,20 @@
     if (!h.id) {
       // kramdown assigns these; this is only a fallback
       var base =
-        (h.textContent || '')
+        (h.textContent || "")
           .toLowerCase()
           .trim()
-          .replace(/[^\w\s-]/g, '')
-          .replace(/\s+/g, '-')
-          .replace(/-+/g, '-') || 'section';
+          .replace(/[^\w\s-]/g, "")
+          .replace(/\s+/g, "-")
+          .replace(/-+/g, "-") || "section";
       counts[base] = (counts[base] || 0) + 1;
-      h.id = counts[base] > 1 ? base + '-' + counts[base] : base;
+      h.id = counts[base] > 1 ? base + "-" + counts[base] : base;
     }
 
-    var li = document.createElement('li');
-    li.className = h.tagName === 'H3' ? 'toc-sub' : 'toc-top';
-    var a = document.createElement('a');
-    a.href = '#' + h.id;
+    var li = document.createElement("li");
+    li.className = h.tagName === "H3" ? "toc-sub" : "toc-top";
+    var a = document.createElement("a");
+    a.href = "#" + h.id;
     a.innerHTML = h.innerHTML; // keeps <code> and math delimiters intact
     li.appendChild(a);
     list.appendChild(li);
@@ -44,7 +44,7 @@
   nav.hidden = false;
 
   // Highlight whichever section is currently in view.
-  if (!('IntersectionObserver' in window)) return;
+  if (!("IntersectionObserver" in window)) return;
   var active = null;
   var observer = new IntersectionObserver(
     function (entries) {
@@ -53,14 +53,14 @@
         for (var i = 0; i < items.length; i++) {
           if (items[i].head !== entry.target) continue;
           if (active === items[i].link) return;
-          if (active) active.classList.remove('is-current');
-          items[i].link.classList.add('is-current');
+          if (active) active.classList.remove("is-current");
+          items[i].link.classList.add("is-current");
           active = items[i].link;
           return;
         }
       });
     },
-    { rootMargin: '0px 0px -70% 0px' }
+    { rootMargin: "0px 0px -70% 0px" }
   );
   items.forEach(function (item) {
     observer.observe(item.head);

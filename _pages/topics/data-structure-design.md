@@ -49,6 +49,7 @@ const int MOD = 1e9+7;
 
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 ```
+
 </details>
 
 ## Name the Query First {#name-the-query}
@@ -101,12 +102,12 @@ That is the certificate: the minimum of the $$k-1$$ **adjacent gaps**, down from
 
 Now step 3 — how much does one insertion break? Insert $$x$$ between its predecessor $$p$$ and successor $$s$$. The gap $$s - p$$ no longer exists, and two new gaps appear:
 
-| Neighbors of $$x$$ | Gaps destroyed | Gaps created |
-| ------------------ | -------------- | ------------ |
-| both $$p$$ and $$s$$ | $$s - p$$ | $$x - p$$, $$s - x$$ |
-| only $$p$$ (new maximum) | — | $$x - p$$ |
-| only $$s$$ (new minimum) | — | $$s - x$$ |
-| neither (set was empty) | — | — |
+| Neighbors of $$x$$       | Gaps destroyed | Gaps created         |
+| ------------------------ | -------------- | -------------------- |
+| both $$p$$ and $$s$$     | $$s - p$$      | $$x - p$$, $$s - x$$ |
+| only $$p$$ (new maximum) | —              | $$x - p$$            |
+| only $$s$$ (new minimum) | —              | $$s - x$$            |
+| neither (set was empty)  | —              | —                    |
 
 At most one gap dies and at most two are born, **regardless of $$k$$**. Deletion is the same table read backwards. Constant damage per update, so the certificate is maintainable:
 
@@ -138,7 +139,7 @@ public:
 };
 ```
 
-Note that `lower_bound(x)` returns the first element $$\ge x$$, which *is* the successor — so `prev(succ)` is the predecessor and no second lookup is needed. Duplicates need no special case either: a repeated value produces an adjacent gap of $$0$$, which is exactly the right answer when `valueDiff` is $$0$$.
+Note that `lower_bound(x)` returns the first element $$\ge x$$, which _is_ the successor — so `prev(succ)` is the predecessor and no second lookup is needed. Duplicates need no special case either: a repeated value produces an adjacent gap of $$0$$, which is exactly the right answer when `valueDiff` is $$0$$.
 
 The driver keeps the window at $$k$$ elements and asks the query once per position:
 
@@ -162,32 +163,32 @@ Both of these bite silently — the code compiles, passes the samples, and is wr
 
 **Erasing by value deletes too much.** `multiset::erase(key)` removes **every** element equal to `key`, not one of them. Gaps repeat constantly — any arithmetic run has identical gaps throughout — so `diffs.erase(d)` would wipe out unrelated gaps and corrupt the invariant. Erasing through an iterator, `diffs.erase(diffs.find(d))`, removes exactly one occurrence. The same distinction applies to `multiset<int> vals`, which is why `remove` erases through `it` rather than by value.
 
-**The gap overflows `int` before it is widened.** `diffs` is a `multiset<ll>`, which looks like enough. But in an expression like `*succ - x`, both operands are `int`, so the subtraction is evaluated in `int` and only *then* converted to `ll`. The constraints allow $$-2^{31} \le \text{nums}[i] \le 2^{31} - 1$$, so a gap can reach $$2^{32} - 1$$ and overflow. The minimal witness is `nums = [INT_MIN, INT_MAX]` with `indexDiff = 1`, `valueDiff = 1`: the true gap is $$4294967295$$, far outside the threshold, but the overflowed subtraction wraps to $$-1$$, the minimum gap reads as negative, and the function returns `true` instead of `false`. Checked against brute force over 20,000 random cases drawn from the extremes of the `int` range, the uncast version disagrees on **4,223** of them; casting one operand per subtraction — `(ll)*succ - x` — brings that to **0**, and to 0 across 40,000 further cases spanning the full range and small values.
+**The gap overflows `int` before it is widened.** `diffs` is a `multiset<ll>`, which looks like enough. But in an expression like `*succ - x`, both operands are `int`, so the subtraction is evaluated in `int` and only _then_ converted to `ll`. The constraints allow $$-2^{31} \le \text{nums}[i] \le 2^{31} - 1$$, so a gap can reach $$2^{32} - 1$$ and overflow. The minimal witness is `nums = [INT_MIN, INT_MAX]` with `indexDiff = 1`, `valueDiff = 1`: the true gap is $$4294967295$$, far outside the threshold, but the overflowed subtraction wraps to $$-1$$, the minimum gap reads as negative, and the function returns `true` instead of `false`. Checked against brute force over 20,000 random cases drawn from the extremes of the `int` range, the uncast version disagrees on **4,223** of them; casting one operand per subtraction — `(ll)*succ - x` — brings that to **0**, and to 0 across 40,000 further cases spanning the full range and small values.
 
 The general rule is the one worth carrying away: **declaring the container wide does not widen the arithmetic.** The cast belongs on the operands, at the subtraction, not on the destination.
 
-> **The faster alternative, and why it is less useful.** Bucket the values by width `valueDiff + 1` and keep one value per bucket; two values within `valueDiff` must land in the same bucket or in neighbors, so each step checks three buckets in $$O(1)$$ and the scan is $$O(n)$$. It is the better submission. But it answers only the threshold question — "is some pair within `valueDiff`?" — because the bucket width is derived from `valueDiff`. `GapSet` answers "what *is* the minimum gap?", which is a strictly stronger query that survives a change of threshold, supports multiple thresholds at once, and reports the actual value. That is the usual trade: the specialized trick wins on the problem as stated; the structure wins the moment the question moves.
+> **The faster alternative, and why it is less useful.** Bucket the values by width `valueDiff + 1` and keep one value per bucket; two values within `valueDiff` must land in the same bucket or in neighbors, so each step checks three buckets in $$O(1)$$ and the scan is $$O(n)$$. It is the better submission. But it answers only the threshold question — "is some pair within `valueDiff`?" — because the bucket width is derived from `valueDiff`. `GapSet` answers "what _is_ the minimum gap?", which is a strictly stronger query that survives a change of threshold, supports multiple thresholds at once, and reports the actual value. That is the usual trade: the specialized trick wins on the problem as stated; the structure wins the moment the question moves.
 
 ### The rest of the catalog
 
 Three more entries, each with the same three questions answered. They have standalone treatments, so these are the summaries.
 
-**Resolution order under streaming inserts.** [LeetCode 3481 — Apply Substitutions](https://leetcode.com/problems/apply-substitutions/) defines values that reference other values. *Query:* which keys are resolvable right now? *Certificate:* a per-key count of dependencies not yet resolved, where zero means ready — Kahn's algorithm's indegree, promoted from a scratch variable to a maintained invariant. *Damage:* inserting a key touches one indegree per dependency, and resolving one cascades only to its direct dependents. Full derivation in [Streaming Substitution](/blog/graphs-and-trees/#topological-order).
+**Resolution order under streaming inserts.** [LeetCode 3481 — Apply Substitutions](https://leetcode.com/problems/apply-substitutions/) defines values that reference other values. _Query:_ which keys are resolvable right now? _Certificate:_ a per-key count of dependencies not yet resolved, where zero means ready — Kahn's algorithm's indegree, promoted from a scratch variable to a maintained invariant. _Damage:_ inserting a key touches one indegree per dependency, and resolving one cascades only to its direct dependents. Full derivation in [Streaming Substitution](/blog/graphs-and-trees/#topological-order).
 
-**The few newest across many sorted lists.** [LeetCode 355 — Design Twitter](https://leetcode.com/problems/design-twitter/) wants the 10 most recent tweets from the accounts you follow. *Query:* what is the largest unconsumed element across $$k$$ sorted sequences? *Certificate:* a heap holding one entry per sequence — its current head. *Damage:* consuming an element pushes that sequence's next head, one $$O(\log k)$$ operation. Full derivation in [K-Way Merge](/blog/priority-queues/#k-way-merge).
+**The few newest across many sorted lists.** [LeetCode 355 — Design Twitter](https://leetcode.com/problems/design-twitter/) wants the 10 most recent tweets from the accounts you follow. _Query:_ what is the largest unconsumed element across $$k$$ sorted sequences? _Certificate:_ a heap holding one entry per sequence — its current head. _Damage:_ consuming an element pushes that sequence's next head, one $$O(\log k)$$ operation. Full derivation in [K-Way Merge](/blog/priority-queues/#k-way-merge).
 
-**Deleting from the middle of a heap.** A heap exposes only its top, so an element that becomes invalid while buried cannot be removed. *Query:* what is the smallest *still-valid* element? *Certificate:* the heap plus a record of what has been invalidated. *Damage:* none at invalidation time — pay at the top instead, discarding stale entries lazily before reading. Full derivation in [Priority Queues](/blog/priority-queues/#priority-queues).
+**Deleting from the middle of a heap.** A heap exposes only its top, so an element that becomes invalid while buried cannot be removed. _Query:_ what is the smallest _still-valid_ element? _Certificate:_ the heap plus a record of what has been invalidated. _Damage:_ none at invalidation time — pay at the top instead, discarding stale entries lazily before reading. Full derivation in [Priority Queues](/blog/priority-queues/#priority-queues).
 
 ### Reading the recipe backwards
 
 The catalog has a pattern, and it is in step 2 every time. Each certificate is a **reduction in the candidate set**, justified by a small proof:
 
-| Problem | Candidates, naively | Certificate | Why the rest can be ignored |
-| ------- | ------------------- | ----------- | --------------------------- |
-| Min gap in a window | all $$\binom{k}{2}$$ pairs | $$k-1$$ adjacent gaps | a difference telescopes into gaps, so it is at least the smallest one |
-| Resolution order | all unresolved keys | keys at indegree $$0$$ | a finite DAG always has a source |
-| $$k$$-way merge | every element of every list | $$k$$ list heads | each list is sorted, so its head dominates it |
-| Lazy deletion | the whole heap | the top, after discarding stale entries | a stale entry below the top can never be the answer first |
+| Problem             | Candidates, naively         | Certificate                             | Why the rest can be ignored                                           |
+| ------------------- | --------------------------- | --------------------------------------- | --------------------------------------------------------------------- |
+| Min gap in a window | all $$\binom{k}{2}$$ pairs  | $$k-1$$ adjacent gaps                   | a difference telescopes into gaps, so it is at least the smallest one |
+| Resolution order    | all unresolved keys         | keys at indegree $$0$$                  | a finite DAG always has a source                                      |
+| $$k$$-way merge     | every element of every list | $$k$$ list heads                        | each list is sorted, so its head dominates it                         |
+| Lazy deletion       | the whole heap              | the top, after discarding stale entries | a stale entry below the top can never be the answer first             |
 
 So the real work in designing one of these is never the code. It is finding the argument that lets you stop looking at most of the set — and then checking that an update only disturbs a constant amount of what you kept.
 
