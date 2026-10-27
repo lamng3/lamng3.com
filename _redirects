@@ -14,6 +14,10 @@ http://lamng3.netlify.app/*  https://lamng3.com/:splat  301!
 # Same trailing-slash caveat as /leetmath/: no /art-visualization -> /art-visualization/ rule.
 /art-visualization/*  https://lamng3.github.io/art-visualization/:splat  200!
 
+# The OntoCheck benchmark leaderboard is hosted on GitHub Pages (lamng3/ontocheck_benchmark_leaderboard) and served here under /ontocheck_benchmark_leaderboard/ (proxy).
+# Same trailing-slash caveat as /leetmath/: no /ontocheck_benchmark_leaderboard -> /ontocheck_benchmark_leaderboard/ rule.
+/ontocheck_benchmark_leaderboard/*  https://lamng3.github.io/ontocheck_benchmark_leaderboard/:splat  200!
+
 # The project manuals are hosted on GitHub Pages (lamng3/<name>-docs) and served here under /<name>/ (proxy).
 # Same trailing-slash caveat as /leetmath/: no /<name> -> /<name>/ rules.
 /ontodb/*  https://lamng3.github.io/ontodb-docs/:splat  200!
