@@ -49,13 +49,14 @@ const int MOD = 1e9+7;
 
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 ```
+
 </details>
 
 ## Topological Order, One Entry at a Time {#topological-order}
 
 [LeetCode 3481 — Apply Substitutions](https://leetcode.com/problems/apply-substitutions/) hands you a mapping of keys to values, where a value may itself mention other keys as `%KEY%`, plus a text full of placeholders. Expand everything.
 
-The constraints are deliberately tiny — at most 10 keys, values of at most 8 characters, and an explicit promise of no cyclic dependencies. So the problem as stated is a few lines. But the *shape* of it — values that reference other values, resolvable only in dependency order — is the shape of a build system, a CI config loader, a shell's variable expansion, and every template engine. That shape is worth building a component for rather than an answer.
+The constraints are deliberately tiny — at most 10 keys, values of at most 8 characters, and an explicit promise of no cyclic dependencies. So the problem as stated is a few lines. But the _shape_ of it — values that reference other values, resolvable only in dependency order — is the shape of a build system, a CI config loader, a shell's variable expansion, and every template engine. That shape is worth building a component for rather than an answer.
 
 ### The one-shot answer, and what it assumes
 
@@ -71,15 +72,15 @@ string expand(const string& k) {
 }
 ```
 
-This is correct and runs in time linear in the total output size. The recursion *is* a depth-first topological sort — the memo table is the "finished" mark, and a key's value is written only after all of its dependencies have been written.
+This is correct and runs in time linear in the total output size. The recursion _is_ a depth-first topological sort — the memo table is the "finished" mark, and a key's value is written only after all of its dependencies have been written.
 
 Three assumptions are buried in it, though:
 
-| Assumption | What breaks without it |
-| ---------- | ---------------------- |
-| Every key is defined before the first query | `raw[k]` silently default-constructs to `""`, and a missing definition expands to nothing instead of erroring |
-| No cycles | Infinite recursion, then a stack overflow — the constraints promise this away, nothing in the code enforces it |
-| You only ever ask for the final answer | No way to ask "is this resolvable *yet*?" between definitions |
+| Assumption                                  | What breaks without it                                                                                         |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Every key is defined before the first query | `raw[k]` silently default-constructs to `""`, and a missing definition expands to nothing instead of erroring  |
+| No cycles                                   | Infinite recursion, then a stack overflow — the constraints promise this away, nothing in the code enforces it |
+| You only ever ask for the final answer      | No way to ask "is this resolvable _yet_?" between definitions                                                  |
 
 Drop the first assumption and the problem genuinely changes. Suppose definitions arrive one at a time, in arbitrary order — `C` may reference `B` before `B` exists — and you must answer questions in between. You no longer want a function. You want a **data structure** that holds a partially-resolved world and repairs itself on every insertion.
 
@@ -99,7 +100,7 @@ $$
 
 which is well-defined precisely when the dependency relation is acyclic.
 
-Now orient an edge $$d \to k$$ whenever $$d \in D(k)$$ — read it as "$$d$$ must be resolved before $$k$$ can be." A legal resolution order is exactly a topological order of this DAG. **Mind the direction:** edges run from dependency to dependent, the reverse of how you'd naturally write `C depends on B`. That orientation is the point — it lets a newly resolved key *push* progress forward to everything waiting on it, which is what makes the structure incremental rather than something you re-run from scratch.
+Now orient an edge $$d \to k$$ whenever $$d \in D(k)$$ — read it as "$$d$$ must be resolved before $$k$$ can be." A legal resolution order is exactly a topological order of this DAG. **Mind the direction:** edges run from dependency to dependent, the reverse of how you'd naturally write `C depends on B`. That orientation is the point — it lets a newly resolved key _push_ progress forward to everything waiting on it, which is what makes the structure incremental rather than something you re-run from scratch.
 
 Let $$R \subseteq K$$ be the set of keys resolved so far, and define
 
@@ -115,7 +116,7 @@ $$
 
 ### Kahn's algorithm as a live invariant
 
-Textbook [Kahn's algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm) is a batch procedure: compute every indegree, seed a queue with the zeros, then pop and decrement until the queue empties. Here the graph isn't known up front — it *grows*. The move is to stop thinking of Kahn's as a procedure you run and start thinking of its state as an **invariant you maintain**.
+Textbook [Kahn's algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm) is a batch procedure: compute every indegree, seed a queue with the zeros, then pop and decrement until the queue empties. Here the graph isn't known up front — it _grows_. The move is to stop thinking of Kahn's as a procedure you run and start thinking of its state as an **invariant you maintain**.
 
 Two invariants carry the whole design:
 
@@ -138,7 +139,7 @@ void add(const string& k, const string& v) {
 }
 ```
 
-A dependency that is **already resolved contributes nothing**: no edge, no indegree. It needs no edge because its value is already sitting in `mp`, so the substitution pass will pick it up directly; and counting it would violate I2, which counts only *pending* dependencies. Only unresolved dependencies get tracked. That one `continue` is what keeps the indegree meaningful across a stream of insertions instead of a single batch.
+A dependency that is **already resolved contributes nothing**: no edge, no indegree. It needs no edge because its value is already sitting in `mp`, so the substitution pass will pick it up directly; and counting it would violate I2, which counts only _pending_ dependencies. Only unresolved dependencies get tracked. That one `continue` is what keeps the indegree meaningful across a stream of insertions instead of a single batch.
 
 And if nothing is pending, $$k$$ is resolvable immediately — so resolve it, which may unblock others.
 
@@ -161,17 +162,17 @@ void resolve(const string& s) {
 }
 ```
 
-When $$u$$ resolves, every dependent $$v$$ loses one pending dependency. Those that drop to zero become resolvable and are enqueued, transitively. Termination is immediate: a key is enqueued only when its indegree *reaches* zero, which happens at most once, so each key is processed at most once and the loop is $$O(\lvert K \rvert + \lvert E \rvert)$$ across the structure's whole lifetime — amortized across all the `add` calls, not per call.
+When $$u$$ resolves, every dependent $$v$$ loses one pending dependency. Those that drop to zero become resolvable and are enqueued, transitively. Termination is immediate: a key is enqueued only when its indegree _reaches_ zero, which happens at most once, so each key is processed at most once and the loop is $$O(\lvert K \rvert + \lvert E \rvert)$$ across the structure's whole lifetime — amortized across all the `add` calls, not per call.
 
 **Forward references fall out for free.** Add a key whose dependencies don't exist yet and it simply sits with a positive indegree, parked in the adjacency lists of keys that haven't arrived. When the last missing dependency finally shows up, its `resolve` cascade reaches the waiting key and finishes it. Nothing special-cases the out-of-order case; the invariant does it.
 
 Here is the trace on Example 2 with the definitions arriving in the most hostile order — `C` first, referencing a `B` that doesn't exist yet, and `A` last:
 
-| Step | `mp` (resolved) | `indeg` | pending edges `Adj` |
-| ---- | --------------- | ------- | ------------------- |
-| `add(C, "abc%B%")` | — | `C:1` | `B → [C]` |
-| `add(B, "ace")` | `B: ace`, then `C: abcace` | `B:0, C:0` | — |
-| `add(A, "bce")` | `A: bce` | `A:0` | — |
+| Step               | `mp` (resolved)            | `indeg`    | pending edges `Adj` |
+| ------------------ | -------------------------- | ---------- | ------------------- |
+| `add(C, "abc%B%")` | —                          | `C:1`      | `B → [C]`           |
+| `add(B, "ace")`    | `B: ace`, then `C: abcace` | `B:0, C:0` | —                   |
+| `add(A, "bce")`    | `A: bce`                   | `A:0`      | —                   |
 
 The second insertion does the real work: `B` has no dependencies, so it resolves at once; that drops `indeg[C]` to zero, so `C` resolves in the same cascade and picks up `mp[B]` — even though `C` was defined before `B` existed. `substitute("%A%_%B%_%C%")` then returns `bce_ace_abcace`.
 
@@ -183,7 +184,7 @@ The substitution pass makes one choice worth calling out. When it meets a key th
 res += mp.contains(run) ? mp[run] : "%" + run + "%";
 ```
 
-That single ternary is what makes partial substitution **total**: `substitute` is always callable, never throws, never silently drops text, and — crucially — its output is a valid *input* to a later `substitute`. Running it again after more definitions arrive makes strictly more progress, and running it on fully resolved text is a no-op. So a caller has two honest strategies, and `ready` lets it pick:
+That single ternary is what makes partial substitution **total**: `substitute` is always callable, never throws, never silently drops text, and — crucially — its output is a valid _input_ to a later `substitute`. Running it again after more definitions arrive makes strictly more progress, and running it on fully resolved text is a no-op. So a caller has two honest strategies, and `ready` lets it pick:
 
 ```cpp
 bool ready(const string& text) {
@@ -206,7 +207,7 @@ vector<string> stuck() {
 }
 ```
 
-This is the diagnostic the batch recursion cannot give you: it reports *who* is blocked, not just that something went wrong. But it conflates two genuinely different failures, and they want different fixes:
+This is the diagnostic the batch recursion cannot give you: it reports _who_ is blocked, not just that something went wrong. But it conflates two genuinely different failures, and they want different fixes:
 
 - a dependency was **never defined** — the caller forgot an entry, or typed a key wrong;
 - a **cycle** — the definitions are contradictory and no amount of waiting will help.
@@ -223,7 +224,7 @@ vector<string> missing() {               // referenced somewhere, never defined
 }
 ```
 
-For cycles, a depth-first search over the *forward* relation (key → its dependencies) finds a back edge, and the gray stack above it **is** the cycle — which is far more useful to report than a bare "cycle detected":
+For cycles, a depth-first search over the _forward_ relation (key → its dependencies) finds a back edge, and the gray stack above it **is** the cycle — which is far more useful to report than a bare "cycle detected":
 
 ```cpp
 // color: 0 = unvisited, 1 = on the current path (gray), 2 = done (black)
@@ -243,24 +244,24 @@ bool find_cycle(const string& u, map<string,int>& color,
 }
 ```
 
-Note the asymmetry: `resolve` pushes forward along `Adj` (dependency → dependent) because progress flows that way, while cycle detection walks backward along `D(k)` (dependent → dependency) because that is the direction a *reason* flows. Same relation, two orientations, each used where it reads naturally.
+Note the asymmetry: `resolve` pushes forward along `Adj` (dependency → dependent) because progress flows that way, while cycle detection walks backward along `D(k)` (dependent → dependency) because that is the direction a _reason_ flows. Same relation, two orientations, each used where it reads naturally.
 
 ### Where it breaks
 
 Being honest about the edges of a structure is part of designing it. Four real limits:
 
-| Limitation | What happens | Why it's hidden here |
-| ---------- | ------------ | -------------------- |
-| **Re-adding a key** | `add` resets `indeg[k] = 0`, but stale edges to `k` still sit in other keys' `Adj` lists. A later `resolve` decrements past zero, the `== 0` test never fires, and `k` is never re-resolved | LeetCode guarantees "all replacement keys are unique" |
-| **Stale downstream values** | Even with re-adding fixed, keys already resolved *from* the old value keep their old expansion — invalidation has to cascade too | Same guarantee |
-| **No escape for a literal `%`** | `%%` is read as an empty key, and an unbalanced trailing `%` is dropped by both the scanner and the filler | Values are drawn from a restricted alphabet |
-| **Exponential output** | A value like `%B%%B%` doubles its dependency's length, so $$n$$ chained keys can expand to $$\Theta(2^n)$$ characters | Values cap at 8 characters and $$n \le 10$$ |
+| Limitation                      | What happens                                                                                                                                                                                | Why it's hidden here                                  |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| **Re-adding a key**             | `add` resets `indeg[k] = 0`, but stale edges to `k` still sit in other keys' `Adj` lists. A later `resolve` decrements past zero, the `== 0` test never fires, and `k` is never re-resolved | LeetCode guarantees "all replacement keys are unique" |
+| **Stale downstream values**     | Even with re-adding fixed, keys already resolved _from_ the old value keep their old expansion — invalidation has to cascade too                                                            | Same guarantee                                        |
+| **No escape for a literal `%`** | `%%` is read as an empty key, and an unbalanced trailing `%` is dropped by both the scanner and the filler                                                                                  | Values are drawn from a restricted alphabet           |
+| **Exponential output**          | A value like `%B%%B%` doubles its dependency's length, so $$n$$ chained keys can expand to $$\Theta(2^n)$$ characters                                                                       | Values cap at 8 characters and $$n \le 10$$           |
 
 That last one is worth internalizing: the structure is linear in the **output** size, not the input size, and those can be exponentially far apart. A real template engine either shares expansions by reference instead of copying strings, or caps the total expansion.
 
-Fixing the first two means versioning the edges — stamp each adjacency entry with the generation of the key that created it and ignore entries from a stale generation — then re-running the cascade in *invalidate* mode before re-running it in resolve mode. That is a genuinely different structure, and it is where incremental build systems actually live.
+Fixing the first two means versioning the edges — stamp each adjacency entry with the generation of the key that created it and ignore entries from a stale generation — then re-running the cascade in _invalidate_ mode before re-running it in resolve mode. That is a genuinely different structure, and it is where incremental build systems actually live.
 
-One more design note, on representation. `Adj` here is a `map<string, vector<string>>` — a node-keyed adjacency list with a `map` lookup per edge traversal. That is the right call *because* the structure is streaming: nodes appear mid-run, keys are strings rather than dense indices, and `Adj.erase(u)` reclaims a node's edges once they are spent. If the key set were known up front and dense, the same graph would be far better laid out as [Compressed Sparse Row](/blog/databases/#compressed-sparse-row) — one contiguous array of neighbors plus one offset per node, which is both smaller and cache-friendly. But CSR needs the whole edge list before it can compute offsets, which is exactly the assumption a streaming structure gives up. The flexibility has a price, and it is worth knowing which one you are paying.
+One more design note, on representation. `Adj` here is a `map<string, vector<string>>` — a node-keyed adjacency list with a `map` lookup per edge traversal. That is the right call _because_ the structure is streaming: nodes appear mid-run, keys are strings rather than dense indices, and `Adj.erase(u)` reclaims a node's edges once they are spent. If the key set were known up front and dense, the same graph would be far better laid out as [Compressed Sparse Row](/blog/databases/#compressed-sparse-row) — one contiguous array of neighbors plus one offset per node, which is both smaller and cache-friendly. But CSR needs the whole edge list before it can compute offsets, which is exactly the assumption a streaming structure gives up. The flexibility has a price, and it is worth knowing which one you are paying.
 
 > **The pattern worth naming.** Converting a batch graph algorithm into an incrementally maintained one is a move that generalizes well beyond substitution. The recipe: identify the algorithm's working state (here, `indeg` plus the queue), promote it to an invariant of the data structure, then show that each mutation restores the invariant in time proportional to the damage done rather than to the whole graph. Incremental topological order is the classic instance — it is what `make` and every modern build system compute when a file changes, what a spreadsheet does when you edit a cell that other formulas reference, and what a dataflow framework does to schedule operators.
 
@@ -367,7 +368,7 @@ Against the judge, `applySubstitutions` just feeds the pairs in and asks for the
 
 ### The takeaway
 
-The problem says "apply substitutions." The structure underneath says **topological order**, and once you see that, the interesting question stops being "what is the answer" and becomes "what state do I keep between insertions." Three choices did the work here: edges oriented dependency → dependent so progress flows forward; indegree counting only *pending* dependencies so it stays meaningful mid-stream; and unresolved placeholders preserved verbatim so partial output stays re-feedable. None of them are needed to pass the judge. All of them are what separates an answer from a component. When the graph is known up front and each node should be combined once, that same order is [DP on a DAG](/blog/dynamic-programming/#dp-on-a-dag).
+The problem says "apply substitutions." The structure underneath says **topological order**, and once you see that, the interesting question stops being "what is the answer" and becomes "what state do I keep between insertions." Three choices did the work here: edges oriented dependency → dependent so progress flows forward; indegree counting only _pending_ dependencies so it stays meaningful mid-stream; and unresolved placeholders preserved verbatim so partial output stays re-feedable. None of them are needed to pass the judge. All of them are what separates an answer from a component. When the graph is known up front and each node should be combined once, that same order is [DP on a DAG](/blog/dynamic-programming/#dp-on-a-dag).
 
 ## Counting on Trees: The Meeting Vertex {#meeting-vertex}
 

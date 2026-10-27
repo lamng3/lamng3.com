@@ -49,6 +49,7 @@ const int MOD = 1e9+7;
 
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 ```
+
 </details>
 
 ## A Database Engine, End to End {#database-engine}
@@ -65,11 +66,11 @@ One detail in OntoDB is worth stealing: the first 8 bytes of every page are rese
 
 ### Which pages stay in memory
 
-The database is bigger than memory, so a **buffer pool** keeps some pages in frames and must pick a victim on every miss. That is [cache eviction](#cache-eviction) again, with one twist: a single table scan touches every page once, and plain LRU lets it flush the hot index pages. OntoDB uses **LRU-K** with $$K = 2$$: rank pages by the time since their *second*-most-recent access, so a page touched once has infinite distance and leaves first. It is the same instinct as 2Q's probation, expressed as a distance.
+The database is bigger than memory, so a **buffer pool** keeps some pages in frames and must pick a victim on every miss. That is [cache eviction](#cache-eviction) again, with one twist: a single table scan touches every page once, and plain LRU lets it flush the hot index pages. OntoDB uses **LRU-K** with $$K = 2$$: rank pages by the time since their _second_-most-recent access, so a page touched once has infinite distance and leaves first. It is the same instinct as 2Q's probation, expressed as a distance.
 
 The buffer pool also answers two questions that decide everything about recovery later:
 
-- **Steal**: may it write a page holding an *uncommitted* change, to free a frame? If yes, recovery may need to **undo**.
+- **Steal**: may it write a page holding an _uncommitted_ change, to free a frame? If yes, recovery may need to **undo**.
 - **Force**: must a commit write every page it changed? If no, recovery may need to **redo**.
 
 Fast engines answer steal and no force, and pay for it with a log that can do both. Hold that thought until the last two sections.
@@ -91,7 +92,7 @@ RDF is one table with three columns: subject, predicate, object. Two problems an
 1. **Strings are long and repeated.** A **dictionary** maps each term to a dense 64-bit id once, so a triple becomes three integers, 24 bytes.
 2. **Byte order must be key order.** Comparing keys with `memcmp` needs the most significant byte first: in little-endian, the id 256 (`00 01 …`) would sort below 1 (`01 00 …`). Big-endian makes integer order and byte order the same.
 
-A pattern with its bound positions first is then a **prefix**, and a prefix is one contiguous key range. For subject 5, the range is $$[(5,0,0),\,(6,0,0))$$. But "which subjects have object `Material`?" binds only the *last* position, so no single ordering serves every pattern. OntoDB keeps the same triples in three orders, SPO, POS, and OSP, which makes every combination of bound positions a prefix scan. Extra orderings change the **cost** of an answer, never the answer. How much? On LUBM(1), about 100,000 triples, SPO alone reads all 1,131 pages of its tree for `?x rdf:type C`; with POS that pattern reads 25. The other three orderings cost 80% more space and made no pattern cheaper, so OntoDB keeps three ([results](https://github.com/lamng3/OntoDB/blob/main/benchmarks/indexing/results.md)).
+A pattern with its bound positions first is then a **prefix**, and a prefix is one contiguous key range. For subject 5, the range is $$[(5,0,0),\,(6,0,0))$$. But "which subjects have object `Material`?" binds only the _last_ position, so no single ordering serves every pattern. OntoDB keeps the same triples in three orders, SPO, POS, and OSP, which makes every combination of bound positions a prefix scan. Extra orderings change the **cost** of an answer, never the answer. How much? On LUBM(1), about 100,000 triples, SPO alone reads all 1,131 pages of its tree for `?x rdf:type C`; with POS that pattern reads 25. The other three orderings cost 80% more space and made no pattern cheaper, so OntoDB keeps three ([results](https://github.com/lamng3/OntoDB/blob/main/benchmarks/indexing/results.md)).
 
 ### A query is a join
 
@@ -105,7 +106,7 @@ To choose, the optimizer estimates sizes. The textbook estimate assumes position
 
 ### Many users at once
 
-Two transactions, each reading and writing, can interleave into a result neither would produce alone. **Two-phase locking** fixes that: acquire locks, then release them, never acquire after releasing; the order in which transactions finish acquiring is an equivalent serial order. The question that makes it practical: *when* may a write lock be released? Not before commit. If $$T_1$$ releases an exclusive lock early and $$T_2$$ reads the value, then $$T_1$$ aborts, $$T_2$$ has read something that never existed. So exclusive locks are held to the end at every isolation level, and the levels differ only in how long *shared* locks are held. A B+ tree also needs **latches**, short page-level mutexes held only during one tree operation, which protect structure rather than data.
+Two transactions, each reading and writing, can interleave into a result neither would produce alone. **Two-phase locking** fixes that: acquire locks, then release them, never acquire after releasing; the order in which transactions finish acquiring is an equivalent serial order. The question that makes it practical: _when_ may a write lock be released? Not before commit. If $$T_1$$ releases an exclusive lock early and $$T_2$$ reads the value, then $$T_1$$ aborts, $$T_2$$ has read something that never existed. So exclusive locks are held to the end at every isolation level, and the levels differ only in how long _shared_ locks are held. A B+ tree also needs **latches**, short page-level mutexes held only during one tree operation, which protect structure rather than data.
 
 ### Surviving a crash: the log
 
@@ -121,12 +122,12 @@ Rule 1 guarantees undo information exists for anything stolen; rule 2 guarantees
 ARIES recovers in three passes:
 
 1. **Analysis** reads from the last checkpoint and rebuilds which transactions were running (the losers) and which pages were dirty.
-2. **Redo** replays *every* logged change, winners and losers alike, skipping a change when the page's pageLSN shows it already landed. The database is now exactly as it was at the crash.
+2. **Redo** replays _every_ logged change, winners and losers alike, skipping a change when the page's pageLSN shows it already landed. The database is now exactly as it was at the crash.
 3. **Undo** rolls back the losers, newest first, writing a **compensation record** for each step.
 
-The surprising part is redoing changes that are about to be undone. It makes undo start from a precise state, and the compensation records make recovery itself crash-safe: if the machine dies mid-undo, the next recovery redoes the compensations and skips straight past what was already undone. One more subtlety: a B+ tree split caused by a transaction that later aborts must *not* be undone, because other committed inserts may now live in the new page. ARIES logs the split as a **nested top action**, redone but never undone, and undoes only the logical insert.
+The surprising part is redoing changes that are about to be undone. It makes undo start from a precise state, and the compensation records make recovery itself crash-safe: if the machine dies mid-undo, the next recovery redoes the compensations and skips straight past what was already undone. One more subtlety: a B+ tree split caused by a transaction that later aborts must _not_ be undone, because other committed inserts may now live in the new page. ARIES logs the split as a **nested top action**, redone but never undone, and undoes only the logical insert.
 
-A split also raises a quieter problem. It writes three pages (the old leaf, the new leaf, the parent), and if the log reaches the disk with only the first two records, redo faithfully rebuilds a tree whose parent never heard of the new leaf: scans find every key and point lookups miss some. A multi-page change must reach the log whole or not at all. ARIES uses the nested top action again, InnoDB holds every latch until a *mini-transaction* commits, and PostgreSQL's B-link trees make a half split legal. OntoDB's page store logs a full image of each changed page and wraps every tree insert or delete in a **page group**: the log flushes nothing past the group's first record until it closes, and the buffer pool will not evict a page the group holds back. Its crash harness kills a real store inside splits and merges for 200 seeds; making the harness that thorough is what found the problem, and a second one: undo deleted a triple from one index, crashed, and the retry trusted that index and skipped the other two.
+A split also raises a quieter problem. It writes three pages (the old leaf, the new leaf, the parent), and if the log reaches the disk with only the first two records, redo faithfully rebuilds a tree whose parent never heard of the new leaf: scans find every key and point lookups miss some. A multi-page change must reach the log whole or not at all. ARIES uses the nested top action again, InnoDB holds every latch until a _mini-transaction_ commits, and PostgreSQL's B-link trees make a half split legal. OntoDB's page store logs a full image of each changed page and wraps every tree insert or delete in a **page group**: the log flushes nothing past the group's first record until it closes, and the buffer pool will not evict a page the group holds back. Its crash harness kills a real store inside splits and merges for 200 seeds; making the harness that thorough is what found the problem, and a second one: undo deleted a triple from one index, crashed, and the retry trusted that index and skipped the other two.
 
 ### Try it
 
@@ -792,12 +793,12 @@ On the sample, `sumRegion(2, 1, 4, 3)` returns $$8$$, and after `update(3, 2, 2)
 
 The constraints are also a good place to see the perimeter cost from the previous section. I counted the nodes `query` visits on a $$200 \times 200$$ grid:
 
-| Query | Nodes visited |
-| --- | --- |
-| the whole grid | $$1$$ |
-| one full row, `(100, 0, 100, 199)` | $$909$$ |
-| the whole grid minus its border, `(1, 1, 198, 198)` | $$2717$$ |
-| worst of $$3000$$ random rectangles | $$2841$$ |
+| Query                                               | Nodes visited |
+| --------------------------------------------------- | ------------- |
+| the whole grid                                      | $$1$$         |
+| one full row, `(100, 0, 100, 199)`                  | $$909$$       |
+| the whole grid minus its border, `(1, 1, 198, 198)` | $$2717$$      |
+| worst of $$3000$$ random rectangles                 | $$2841$$      |
 
 The whole grid is one stored sum, but shaving a single cell off each side puts the boundary through every level of the tree, and the cost jumps by three orders of magnitude. An update visits $$33$$ nodes. So the worst case is about $$5000 \times 2800 \approx 1.4 \times 10^7$$ node visits, small enough to pass in Python, though a 2D Fenwick tree answers each query with four prefix sums of about $$8 \times 8$$ steps, roughly $$256$$ in all. The full solution is [`308.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/leetcode/solve/quadtree/308.py).
 
@@ -939,7 +940,7 @@ All take an edge list and need real traversal over the adjacency — topological
 **A Database Engine, End to End**
 
 - [OntoDB: Database Internals by Example](/publications/ontodb-book/), the companion book to the lecture.
-- Alex Petrov, *Database Internals* (O'Reilly, 2019).
+- Alex Petrov, _Database Internals_ (O'Reilly, 2019).
 - Mohan et al., [ARIES](https://dl.acm.org/doi/10.1145/128765.128770) (TODS, 1992).
 - O'Neil, O'Neil, and Weikum, [The LRU-K page replacement algorithm](https://dl.acm.org/doi/10.1145/170036.170081) (SIGMOD, 1993).
 

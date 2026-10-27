@@ -6,7 +6,8 @@ layout: default
   <header>
     <p class="paper-kicker">
       <a href="{{ '/publications/' | relative_url }}">Publications</a>
-      · {{ pub.venue }}{% if pub.year %}, {{ pub.year }}{% endif %}
+      · {{ pub.venue -}}
+      {%- if pub.year %}, {{ pub.year }}{% endif %}
     </p>
     <h1>{{ pub.title }}</h1>
     <p class="authors">{{ pub.authors }}</p>
@@ -38,7 +39,9 @@ layout: default
   {% if pub.highlights and pub.highlights.size > 0 %}
     <h2 id="highlights">Highlights</h2>
     <ul class="no-math">
-      {% for h in pub.highlights %}<li>{{ h }}</li>{% endfor %}
+      {% for h in pub.highlights %}
+        <li>{{ h }}</li>
+      {% endfor %}
     </ul>
   {% endif %}
 
