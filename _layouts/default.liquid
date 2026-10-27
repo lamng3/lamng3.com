@@ -21,11 +21,16 @@
   <body>
     <main>
       {%- assign section = '' -%}
-      {%- if page.url contains '/projects/' -%}{%- assign section = 'projects' -%}
-      {%- elsif page.url contains '/library/' -%}{%- assign section = 'library' -%}
-      {%- elsif page.url contains '/blog/' -%}{%- assign section = 'blog' -%}
-      {%- elsif page.url contains '/publications/' -%}{%- assign section = 'publications' -%}
-      {%- elsif page.url contains '/resume/' -%}{%- assign section = 'resume' -%}
+      {%- if page.url contains '/projects/' -%}
+        {%- assign section = 'projects' -%}
+      {%- elsif page.url contains '/library/' -%}
+        {%- assign section = 'library' -%}
+      {%- elsif page.url contains '/blog/' -%}
+        {%- assign section = 'blog' -%}
+      {%- elsif page.url contains '/publications/' -%}
+        {%- assign section = 'publications' -%}
+      {%- elsif page.url contains '/resume/' -%}
+        {%- assign section = 'resume' -%}
       {%- endif -%}
       <header class="masthead">
         <div>
@@ -35,10 +40,34 @@
           {%- endif -%}
         </div>
         <nav class="sitenav" aria-label="Site">
-          <a href="{{ '/projects/' | relative_url }}" {% if section == 'projects' or section == 'library' %}aria-current="page"{% endif %}>projects</a>
-          <a href="{{ '/blog/' | relative_url }}" {% if section == 'blog' %}aria-current="page"{% endif %}>blog</a>
-          <a href="{{ '/publications/' | relative_url }}" {% if section == 'publications' %}aria-current="page"{% endif %}>publications</a>
-          <a href="{{ '/resume/' | relative_url }}" {% if section == 'resume' %}aria-current="page"{% endif %}>resume</a>
+          <a
+            href="{{ '/projects/' | relative_url }}"
+            {% if section == 'projects' or section == 'library' %}
+              aria-current="page"
+            {% endif %}
+            >projects</a
+          >
+          <a
+            href="{{ '/blog/' | relative_url }}"
+            {% if section == 'blog' %}
+              aria-current="page"
+            {% endif %}
+            >blog</a
+          >
+          <a
+            href="{{ '/publications/' | relative_url }}"
+            {% if section == 'publications' %}
+              aria-current="page"
+            {% endif %}
+            >publications</a
+          >
+          <a
+            href="{{ '/resume/' | relative_url }}"
+            {% if section == 'resume' %}
+              aria-current="page"
+            {% endif %}
+            >resume</a
+          >
           {% if page.url contains '/blog/' and page.url != '/blog/' %}
             <button class="nav-search" type="button" data-search-open aria-label="Search the blog">
               <svg viewBox="0 0 24 24" aria-hidden="true">

@@ -24,8 +24,9 @@ layout: default
               {% if page.url == topic_url %}
                 class="is-current" aria-current="page"
               {% endif %}
-              >{{ topic.title }}</a
             >
+              {{- topic.title -}}
+            </a>
           </li>
         {% endfor %}
       </ol>

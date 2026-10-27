@@ -43,4 +43,3 @@ toc:
 ## OntoDB
 
 The OntoDB book, manual, and code are kept in step with this site. `SYNC.md` lists what to update, where, and in what order.
-
