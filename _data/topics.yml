@@ -1,104 +1,104 @@
 - slug: contest-setup
   title: Contest Setup
   sections:
-  - id: python-templates
-    title: From Java to C++ to Python
+    - id: python-templates
+      title: From Java to C++ to Python
 - slug: binary-search
   title: Binary Search
   sections:
-  - id: search-d-not-x
-    title: Search D, Not x
+    - id: search-d-not-x
+      title: Search D, Not x
 - slug: dynamic-programming
   title: Dynamic Programming
   sections:
-  - id: digit-dp
-    title: Digit DP
-  - id: range-dp
-    title: Range DP
-  - id: reachability-dp
-    title: Reachability DP
-  - id: maximum-subarray
-    title: Maximum Subarray from a Range Update
-  - id: dp-on-a-dag
-    title: DP on a DAG
+    - id: digit-dp
+      title: Digit DP
+    - id: range-dp
+      title: Range DP
+    - id: reachability-dp
+      title: Reachability DP
+    - id: maximum-subarray
+      title: Maximum Subarray from a Range Update
+    - id: dp-on-a-dag
+      title: DP on a DAG
 - slug: range-queries
   title: Range Queries
   sections:
-  - id: segment-tree
-    title: Segment Tree
-  - id: lazy-segment-tree
-    title: Lazy Propagation
-  - id: segment-tree-walk
-    title: Segment Tree Walk
-  - id: fenwick-tree
-    title: Fenwick Tree with Coordinate Compression
+    - id: segment-tree
+      title: Segment Tree
+    - id: lazy-segment-tree
+      title: Lazy Propagation
+    - id: segment-tree-walk
+      title: Segment Tree Walk
+    - id: fenwick-tree
+      title: Fenwick Tree with Coordinate Compression
 - slug: priority-queues
   title: Priority Queues
   sections:
-  - id: priority-queues
-    title: Priority Queues and Lazy Deletion
-  - id: k-way-merge
-    title: K-Way Merge
+    - id: priority-queues
+      title: Priority Queues and Lazy Deletion
+    - id: k-way-merge
+      title: K-Way Merge
 - slug: hashing
   title: Hashing
   sections:
-  - id: rolling-hash
-    title: Rolling Hash
-  - id: xor-hashing
-    title: XOR Hashing
+    - id: rolling-hash
+      title: Rolling Hash
+    - id: xor-hashing
+      title: XOR Hashing
 - slug: strings
   title: Strings
   sections:
-  - id: trie
-    title: Trie
-  - id: persistent-trie
-    title: Persistent Trie
+    - id: trie
+      title: Trie
+    - id: persistent-trie
+      title: Persistent Trie
 - slug: graphs-and-trees
   title: Graphs and Trees
   sections:
-  - id: topological-order
-    title: Topological Order, One Entry at a Time
-  - id: meeting-vertex
-    title: 'Counting on Trees: The Meeting Vertex'
-  - id: colored-root
-    title: The Coloring Orients the Tree
+    - id: topological-order
+      title: Topological Order, One Entry at a Time
+    - id: meeting-vertex
+      title: "Counting on Trees: The Meeting Vertex"
+    - id: colored-root
+      title: The Coloring Orients the Tree
 - slug: combinatorics
   title: Combinatorics
   sections:
-  - id: inclusion-exclusion
-    title: Inclusion-Exclusion
-  - id: mobius-function
-    title: Möbius Function
-  - id: stars-and-bars
-    title: Stars and Bars
-  - id: degrees-of-freedom
-    title: Degrees of Freedom
-  - id: digit-counting
-    title: Digit Counting
+    - id: inclusion-exclusion
+      title: Inclusion-Exclusion
+    - id: mobius-function
+      title: Möbius Function
+    - id: stars-and-bars
+      title: Stars and Bars
+    - id: degrees-of-freedom
+      title: Degrees of Freedom
+    - id: digit-counting
+      title: Digit Counting
 - slug: data-structure-design
   title: Data Structure Design
   sections:
-  - id: name-the-query
-    title: Name the Query First
-  - id: static-precompute
-    title: Static Precompute
+    - id: name-the-query
+      title: Name the Query First
+    - id: static-precompute
+      title: Static Precompute
 - slug: databases
   title: Databases
   sections:
-  - id: database-engine
-    title: A Database Engine, End to End
-  - id: persistence
-    title: Persistence
-  - id: compressed-sparse-row
-    title: Compressed Sparse Row
-  - id: filters
-    title: Filters and Sketches
-  - id: skip-list
-    title: Skip List
-  - id: quadtree
-    title: Quadtree
-  - id: cache-eviction
-    title: Cache Eviction
+    - id: database-engine
+      title: A Database Engine, End to End
+    - id: persistence
+      title: Persistence
+    - id: compressed-sparse-row
+      title: Compressed Sparse Row
+    - id: filters
+      title: Filters and Sketches
+    - id: skip-list
+      title: Skip List
+    - id: quadtree
+      title: Quadtree
+    - id: cache-eviction
+      title: Cache Eviction
 - slug: selected-leetcode-problems
   title: Selected LeetCode Problems
   sections: []

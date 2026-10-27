@@ -49,6 +49,7 @@ const int MOD = 1e9+7;
 
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 ```
+
 </details>
 
 ## Search D, Not x {#search-d-not-x}
@@ -257,6 +258,7 @@ public:
     }
 };
 ```
+
 </details>
 
 A couple of notes on the code. `mn` and `mx` are the $$m$$ and $$M$$ from above, and `x`, `y` inside `can` are the forced pair for that $$D$$. A run is found by remembering where it started in `L` and processing it once the next entry is not $$-1$$. Everything stays `int`: $$D \le 10^9$$ and $$m \le 10^9$$, so $$m + D \le 2 \cdot 10^9$$, still under `INT_MAX`.

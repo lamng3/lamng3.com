@@ -6,12 +6,12 @@
 
 OntoDB lives in four places that must agree. When one changes, walk this list.
 
-| Where | Repo | What it holds |
-| --- | --- | --- |
-| Code | `../ontodb` | The engine, `PLAN.md`, `README.md`, `docs/architecture.md` |
-| Book | `../ontodb/book` | *OntoDB: Database Internals by Example* (LaTeX, PDF committed) |
-| Manual | `../ontodb-docs` | <https://lamng3.com/ontodb/>, built from `content/` |
-| Site | this repo | The hosted book PDF, the publication entry, the Databases lecture, the homepage |
+| Where  | Repo             | What it holds                                                                   |
+| ------ | ---------------- | ------------------------------------------------------------------------------- |
+| Code   | `../ontodb`      | The engine, `PLAN.md`, `README.md`, `docs/architecture.md`                      |
+| Book   | `../ontodb/book` | _OntoDB: Database Internals by Example_ (LaTeX, PDF committed)                  |
+| Manual | `../ontodb-docs` | <https://lamng3.com/ontodb/>, built from `content/`                             |
+| Site   | this repo        | The hosted book PDF, the publication entry, the Databases lecture, the homepage |
 
 All four repos sit side by side in the same parent directory.
 
@@ -69,11 +69,11 @@ One commit per repo per round, pushed to `main`. Messages are one plain sentence
 
 Each project manual is built and hosted by its own `<name>-docs` repo on GitHub Pages, and this site proxies it so the URL stays on lamng3.com, as for `/keras-js/`. The rules are in `_redirects`:
 
-| URL on this site | Repo behind it |
-| --- | --- |
-| `/ontodb/` | `lamng3/ontodb-docs` |
-| `/kroma/` | `lamng3/kroma-docs` |
-| `/hermes/` | `lamng3/hermes-docs` |
+| URL on this site | Repo behind it       |
+| ---------------- | -------------------- |
+| `/ontodb/`       | `lamng3/ontodb-docs` |
+| `/kroma/`        | `lamng3/kroma-docs`  |
+| `/hermes/`       | `lamng3/hermes-docs` |
 
 Link to the lamng3.com address, never to `lamng3.github.io/...`, in `_data`, READMEs, and the manuals. The manuals use relative links, so they work under the prefix. A new manual needs a Pages site, a rule here, and no `<name> -> <name>/` redirect (Netlify ignores trailing slashes, so it would loop).
 
@@ -87,11 +87,11 @@ In prose (the homepage, topic pages, project text) link a project to its publica
 
 The manuals share one design (`normalize.py` is copied into each manual and gives every page search, an on-this-page list, and previous and next links). Each manual's home page has a demo that replays real output; `demo_data.py` in each `-docs` repo regenerates its data from the project's recorded results, so rerun it when results change, then rebuild.
 
-| Manual | Demo shows | Regenerate from |
-| --- | --- | --- |
-| `/ontodb/` | queries and plans printed by the shell | a built `ontodb` binary |
-| `/kroma/` | prompts built by KROMA's code, with recorded answers | KROMA's recorded results |
-| `/hermes/` | four systems on one question, and the leaderboard | `hermes/results/ck26` |
+| Manual     | Demo shows                                           | Regenerate from          |
+| ---------- | ---------------------------------------------------- | ------------------------ |
+| `/ontodb/` | queries and plans printed by the shell               | a built `ontodb` binary  |
+| `/kroma/`  | prompts built by KROMA's code, with recorded answers | KROMA's recorded results |
+| `/hermes/` | four systems on one question, and the leaderboard    | `hermes/results/ck26`    |
 
 After a deploy, test the live sites: crawl every page for dead links, anchors, console errors, and overflow at 390px, and click through each demo.
 
@@ -105,10 +105,10 @@ Call each project's guide a **Manual**, never "documentation" or "docs": in link
 
 Manuals have a **Leaderboard** page drawn by `arena.js` (copied into each manual; its CSS is appended to each `style.css`). Each `-docs` repo has a `leaderboard_data.py` that reads the project's recorded results into `leaderboard-data.json`, so rerun it when results change, then rebuild:
 
-| Manual | Boards | Reads |
-| --- | --- | --- |
-| `/hermes/leaderboard.html` | ck26 and db26, Hermes runs beside the official systems | `hermes/results/LEADERBOARD.md` |
-| `/kroma/leaderboard.html` | F1 per track against baselines and ablations | `kroma/README.md` (the paper's Table 3) |
+| Manual                     | Boards                                                 | Reads                                   |
+| -------------------------- | ------------------------------------------------------ | --------------------------------------- |
+| `/hermes/leaderboard.html` | ck26 and db26, Hermes runs beside the official systems | `hermes/results/LEADERBOARD.md`         |
+| `/kroma/leaderboard.html`  | F1 per track against baselines and ablations           | `kroma/README.md` (the paper's Table 3) |
 
 OntoDB has none: its benchmarks are timing tables that do not rank. Link a project's leaderboard from its publication entry (`Leaderboard`), never to a results file in the repo.
 
@@ -116,11 +116,11 @@ OntoDB has none: its benchmarks are timing tables that do not rank. Link a proje
 
 Every manual has a **Playground** page that runs in the visitor's browser, with no server of ours. Each says what it is and is not: the Python projects are not run in the browser, so each playground is either an engine stand-in on real data or a JavaScript port of part of the project, and each port is tested against the Python.
 
-| Manual | What runs | How it is checked |
-| --- | --- | --- |
-| `/ontodb/playground.html` | SPARQL on Oxigraph (WebAssembly) over Pizza or your Turtle, store in IndexedDB; OntoDB's own plans, recorded | every example runs; updates survive a reload |
-| `/hermes/playground.html` | the real corporate graph (26.9k triples) on Oxigraph; recorded queries of four systems; step-by-step replay; a model you run | prompt, extraction and repair ports equal the Python |
-| `/kroma/playground.html` | KROMA's prompt for any two concepts; a model you run | prompt, extraction and voting ports equal the Python for all real pairs |
+| Manual                    | What runs                                                                                                                    | How it is checked                                                       |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `/ontodb/playground.html` | SPARQL on Oxigraph (WebAssembly) over Pizza or your Turtle, store in IndexedDB; OntoDB's own plans, recorded                 | every example runs; updates survive a reload                            |
+| `/hermes/playground.html` | the real corporate graph (26.9k triples) on Oxigraph; recorded queries of four systems; step-by-step replay; a model you run | prompt, extraction and repair ports equal the Python                    |
+| `/kroma/playground.html`  | KROMA's prompt for any two concepts; a model you run                                                                         | prompt, extraction and voting ports equal the Python for all real pairs |
 
 No model is hosted. Where a playground calls a model, the visitor chooses where it runs: Ollama on their computer (detected when they open the panel, with its installed models listed; `OLLAMA_ORIGINS="*" ollama serve`), a tiny model in the page on WebGPU (Gemma 3 270M or LFM2.5 350M through jax-js, a few hundred MB that the browser caches), or another OpenAI-compatible endpoint. Settings stay in their browser. The tiny models follow formats but get tasks wrong: LFM2.5 350M answers No to every KROMA pair and writes no parsable query for any of Hermes's eight sample questions. Chrome asks permission before a page reaches a local server; Safari does not allow it, so every playground that calls a model also accepts a pasted reply. Each `-docs` repo has a `playground_data.py` that exports the ground truth from the real code; rerun it when the code changes, and rerun the page's tests. The shared helper is `playground/pg.js` (copied into each manual). The engine and Oxigraph load from a pinned jsDelivr URL.
 
