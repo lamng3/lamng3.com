@@ -75,6 +75,13 @@
       title: Degrees of Freedom
     - id: digit-counting
       title: Digit Counting
+- slug: algebra
+  title: Algebra
+  sections:
+    - id: cauchy-schwarz
+      title: Cauchy–Schwarz and AM-GM
+    - id: sums-of-powers
+      title: Sums of Powers
 - slug: data-structure-design
   title: Data Structure Design
   sections:
