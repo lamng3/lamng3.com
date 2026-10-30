@@ -43,3 +43,7 @@ toc:
 ## OntoDB
 
 The OntoDB book, manual, and code are kept in step with this site. `SYNC.md` lists what to update, where, and in what order.
+
+## Before committing
+
+CI runs `npx prettier . --check` on every push, so a file Prettier would reformat fails the build. Run `npx prettier --write <changed files>` (or `npx prettier . --check` to see what fails) before every commit, and commit the formatted files. Markdown tables are the usual cause: Prettier realigns every row when one cell grows.
