@@ -7,8 +7,6 @@
 - slug: ontodb
   title: OntoDB
   date: 2026-10-01
-  repo: lamng3/OntoDB
-  stars: 1
   languages: [C++]
   category: Databases
   image: ontodb.jpg
@@ -22,11 +20,10 @@
     - "The engine also compiles to WebAssembly, so the [playground](https://lamng3.com/ontodb/playground.html) runs OntoDB itself in the page: SPARQL, its query plans, the B+ tree indexes and the semantic search, on a Gene Ontology slice."
     - "It also finds terms close in meaning: the class hierarchy is stored as intervals a B+ tree can range-scan, and vector indexes search one embedding per term, with the search limited to the terms under a class. The [paper](/publications/ontodb-semantic/) measures it on the Gene Ontology."
   links:
-    - { label: Manual, url: "https://lamng3.com/ontodb/" }
+    - { label: Demo, url: "https://lamng3.com/ontodb/" }
     - { label: Playground, url: "https://lamng3.com/ontodb/playground.html" }
     - { label: Book, url: "/publications/ontodb-book/" }
     - { label: Paper, url: "/publications/ontodb-semantic/" }
-    - { label: Code, url: "https://github.com/lamng3/OntoDB" }
 
 - slug: kroma
   title: KROMA
