@@ -76,8 +76,7 @@
   pdf: /assets/papers/ontodb-semantic.pdf
   links:
     - { label: Extended version, url: "/assets/papers/ontodb-full.pdf" }
-    - { label: Code, url: "https://github.com/lamng3/OntoDB" }
-    - { label: Manual, url: "https://lamng3.com/ontodb/" }
+    - { label: Demo, url: "https://lamng3.com/ontodb/" }
     - { label: Playground, url: "https://lamng3.com/ontodb/playground.html" }
   bibtex: |
     @misc{nguyen2026ontodb,
@@ -85,7 +84,7 @@
       author = {Lam Nguyen},
       year   = {2026},
       note   = {Preprint},
-      url    = {https://github.com/lamng3/OntoDB}
+      url    = {https://lamng3.com/ontodb/}
     }
 
 - slug: ontodb-book
@@ -102,6 +101,5 @@
   highlights: []
   pdf: /assets/papers/ontodb-book.pdf
   links:
-    - { label: Code, url: "https://github.com/lamng3/OntoDB" }
-    - { label: Manual, url: "https://lamng3.com/ontodb/" }
+    - { label: Demo, url: "https://lamng3.com/ontodb/" }
     - { label: Lecture, url: "/blog/databases/#database-engine" }

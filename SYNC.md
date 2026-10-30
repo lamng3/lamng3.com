@@ -10,7 +10,7 @@ OntoDB lives in four places that must agree. When one changes, walk this list.
 | ------ | ---------------- | ------------------------------------------------------------------------------- |
 | Code   | `../ontodb`      | The engine, `PLAN.md`, `README.md`, `docs/architecture.md`                      |
 | Book   | `../ontodb/book` | _OntoDB: Database Internals by Example_ (LaTeX, PDF committed)                  |
-| Manual | `../ontodb-docs` | <https://lamng3.com/ontodb/>, built from `content/`                             |
+| Manual | `../ontodb-docs` | Private, built from `content/`; `make_demo.py` writes `../ontodb-demo`, served at <https://lamng3.com/ontodb/> |
 | Site   | this repo        | The hosted book PDF, the publication entry, the Databases lecture, the homepage |
 
 All four repos sit side by side in the same parent directory.
@@ -45,6 +45,7 @@ After every PLAN slice that starts passing (`scripts/status` in `../ontodb` show
 - `content/config.md`: settings that answered `not built yet` and now work.
 - Find stale text: `grep -rn "PLAN <x.y>\|plan <x.y>\|of 53\|next item\|being built" content`.
 - Build: `python3 build.py`. Commit `content/` and the regenerated HTML together.
+- Demo: `python3 make_demo.py`, then commit and push `../ontodb-demo` (the public site has the demos only).
 
 ### 4. Site (this repo)
 
