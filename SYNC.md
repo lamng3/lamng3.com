@@ -6,12 +6,12 @@
 
 OntoDB lives in four places that must agree. When one changes, walk this list.
 
-| Where  | Repo             | What it holds                                                                   |
-| ------ | ---------------- | ------------------------------------------------------------------------------- |
-| Code   | `../ontodb`      | The engine, `PLAN.md`, `README.md`, `docs/architecture.md`                      |
-| Book   | `../ontodb/book` | _OntoDB: Database Internals by Example_ (LaTeX, PDF committed)                  |
+| Where  | Repo             | What it holds                                                                                                  |
+| ------ | ---------------- | -------------------------------------------------------------------------------------------------------------- |
+| Code   | `../ontodb`      | The engine, `PLAN.md`, `README.md`, `docs/architecture.md`                                                     |
+| Book   | `../ontodb/book` | _OntoDB: Database Internals by Example_ (LaTeX, PDF committed)                                                 |
 | Manual | `../ontodb-docs` | Private, built from `content/`; `make_demo.py` writes `../ontodb-demo`, served at <https://lamng3.com/ontodb/> |
-| Site   | this repo        | The hosted book PDF, the publication entry, the Databases lecture, the homepage |
+| Site   | this repo        | The hosted book PDF, the publication entry, the Databases lecture, the homepage                                |
 
 All four repos sit side by side in the same parent directory.
 
