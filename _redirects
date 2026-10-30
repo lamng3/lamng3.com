@@ -19,8 +19,12 @@ http://lamng3.netlify.app/*  https://lamng3.com/:splat  301!
 /ontocheck_benchmark_leaderboard/*  https://lamng3.github.io/ontocheck_benchmark_leaderboard/:splat  200!
 
 # The project manuals are hosted on GitHub Pages (lamng3/<name>-docs) and served here under /<name>/ (proxy).
+# Projects whose code is private publish only their demos (lamng3/<name>-demo, built by make_demo.py in <name>-docs).
 # Same trailing-slash caveat as /leetmath/: no /<name> -> /<name>/ rules.
-/ontodb/*  https://lamng3.github.io/ontodb-docs/:splat  200!
+/ontodb/*  https://lamng3.github.io/ontodb-demo/:splat  200!
+/agentic-ontologist/*  https://lamng3.github.io/agentic-ontologist-demo/:splat  200!
+/memcommit/*  https://lamng3.github.io/memcommit-demo/:splat  200!
+/aegis/*  https://lamng3.github.io/aegis-demo/:splat  200!
 /kroma/*  https://lamng3.github.io/kroma-docs/:splat  200!
 /hermes/*  https://lamng3.github.io/hermes-docs/:splat  200!
 
