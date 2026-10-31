@@ -21,7 +21,7 @@
   links:
     - { label: arXiv PDF, url: "https://arxiv.org/pdf/2507.14032" }
     - { label: Paper (Springer), url: "https://doi.org/10.1007/978-3-032-09527-5_34" }
-    - { label: Code, url: "https://github.com/lamng3/kroma" }
+    - { label: Code, url: "https://github.com/cwru-sdle/kroma" }
     - { label: Manual, url: "https://lamng3.com/kroma/" }
   bibtex: |
     @inproceedings{nguyen_2025_kroma,
