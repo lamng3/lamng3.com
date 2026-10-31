@@ -28,7 +28,7 @@
 - slug: kroma
   title: KROMA
   date: 2025-05-05
-  repo: lamng3/kroma
+  repo: cwru-sdle/kroma
   stars: 7
   languages: [Python]
   category: Knowledge Graphs
@@ -44,7 +44,7 @@
     - { label: Paper, url: "https://arxiv.org/abs/2507.14032" }
     - { label: Manual, url: "https://lamng3.com/kroma/" }
     - { label: Playground, url: "https://lamng3.com/kroma/playground.html" }
-    - { label: Code, url: "https://github.com/lamng3/kroma" }
+    - { label: Code, url: "https://github.com/cwru-sdle/kroma" }
 
 - slug: ontocheck
   title: OntoCheck
