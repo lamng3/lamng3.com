@@ -1,15 +1,15 @@
 ---
 layout: post
 title: "Range Queries"
-description: "Answering questions about a range of an array while the array changes. A segment tree stores a summary per node, lazy propagation updates a whole range with one tag, a walk descends the tree to find a position, and a Fenwick tree does prefix sums in less code once the values are compressed to ranks."
+description: "Answering questions about a range of an array while the array changes. A segment tree stores a summary per node, lazy propagation updates a whole range with one tag, a walk descends the tree to find a position, a Fenwick tree does prefix sums in less code once the values are compressed to ranks, and a difference array counts interval coverage in one pass."
 permalink: /blog/range-queries/
-last_updated: 2026-10-17
+last_updated: 2026-11-01
 author: Lam Nguyen
 toc:
   sidebar: right
 ---
 
-Answering questions about a range of an array while the array changes. A segment tree stores a summary per node, [lazy propagation](#lazy-segment-tree) updates a whole range with one tag, a walk descends the tree to find a position, and a Fenwick tree does prefix sums in less code once the values are compressed to ranks.
+Answering questions about a range of an array while the array changes. A segment tree stores a summary per node, [lazy propagation](#lazy-segment-tree) updates a whole range with one tag, a walk descends the tree to find a position, a Fenwick tree does prefix sums in less code once the values are compressed to ranks, and a difference array counts interval coverage in one pass.
 
 <details markdown="1">
 <summary>C++ template used by every implementation on this page</summary>
@@ -765,6 +765,134 @@ Each step is one range query and one point update, so the whole sweep is $$O(n \
 
 Whenever a Fenwick (or segment) tree needs to be keyed by a value that is large, sparse, or negative, compress: gather **all** values it will ever see — inserts and query bounds alike — into one sorted, deduped array, and use each value's rank as the index. The "and query bounds" half is the easy thing to forget.
 
+## Difference Arrays and Inversion Counts {#difference-array}
+
+Two cheap tools often show up together. A **difference array** answers "how many intervals cover position $$i$$?" for every $$i$$ in one pass. A **Fenwick tree over values** counts inversions, which is the exact number of adjacent swaps needed to sort. Neither is hard on its own. What makes this problem nice is seeing that it splits into those two questions and nothing more.
+
+### The problem
+
+[LeetCode 4099 — Minimum Operations to Sort With Locked Indices](https://leetcode.com/problems/minimum-operations-to-sort-with-locked-indices/): `nums` is a permutation of $$1 \dots n$$, and some indices are locked. One operation either swaps `nums[i]` and `nums[i+1]` when **both** $$i$$ and $$i+1$$ are unlocked, or permanently unlocks one index. At most $$k$$ unlocks are allowed. Return the fewest total operations that sort `nums`, or $$-1$$.
+
+### The first instinct, and why it stalls
+
+The obvious approach treats the locks as walls. They split the array into free segments, so you sort inside each segment and decide which walls to knock down. That leads to questions about which locks are worth spending an unlock on, and whether unlocking early saves swaps later. It looks like an optimization over subsets of locks.
+
+The question that gets unstuck is simpler: **where does each element have to go?** Value $$v$$ at index $$i$$ belongs at index $$t = v - 1$$. Adjacent swaps move it one step at a time, so it has to cross every pair $$(j, j+1)$$ between $$i$$ and $$t$$, and each of those swaps needs both endpoints unlocked. So every index in
+
+$$
+I_i = [\min(i, t),\ \max(i, t)]
+$$
+
+has to be unlocked at some point. That is **necessary**, and it leaves no choice: the set of indices to unlock is the union $$U = \bigcup_i I_i$$, fixed by the permutation.
+
+### The two costs separate
+
+$$U$$ is also **sufficient**. Take a maximal run of covered indices. No element inside the run belongs outside it, because getting out would mean crossing an uncovered index, and that index would then be in its interval. So each run holds exactly the values it needs, and bubble sort inside the run only swaps unlocked pairs.
+
+That gives two lower bounds, and both can be met at the same time:
+
+- **Unlocks.** Every locked index in $$U$$ has to be unlocked. If there are more than $$k$$ of them, the answer is $$-1$$.
+- **Swaps.** One adjacent swap fixes at most one inverted pair, so you need at least $$\operatorname{inv}(\text{nums})$$ swaps. Bubble sort uses exactly that many, and with $$U$$ unlocked it never touches a lock.
+
+When you unlock doesn't matter, so do every unlock first:
+
+$$
+\text{answer} = \bigl|\{\, i \in U : \text{locked}[i] \,\}\bigr| + \operatorname{inv}(\text{nums}).
+$$
+
+What looked like one optimization over subsets of locks is really a coverage question plus an inversion count.
+
+### Coverage with a difference array
+
+To test $$i \in U$$, count the intervals that cover $$i$$. Adding $$+1$$ to a whole interval is a range update, but every update comes before any query, so there's no need for a [lazy segment tree](#lazy-segment-tree). Write the interval's endpoints into a difference array and take one prefix sum:
+
+$$
+D[l] \mathrel{+}= 1, \qquad D[r+1] \mathrel{-}= 1, \qquad \text{cover}(i) = \sum_{j \le i} D[j].
+$$
+
+Then $$i \in U$$ exactly when $$\text{cover}(i) > 0$$. That is $$O(n)$$ total, whatever the interval lengths. Fixed points ($$i = t$$) add no interval. They still get unlocked if some other element passes over them, and that is correct.
+
+### Inversions with a Fenwick tree
+
+Scan from right to left. Before inserting `nums[i]`, ask how many values already seen (all to its right) are smaller than it. Each one is an inversion with $$i$$ on the left. The values are already $$1 \dots n$$, so they can index the tree directly. The [compression step](#fenwick-tree) only matters when they can't.
+
+$$
+\operatorname{inv} = \sum_{i} \#\{\, j > i : \text{nums}[j] < \text{nums}[i] \,\} = \sum_i \texttt{query}(\text{nums}[i] - 1).
+$$
+
+That is $$O(n \log n)$$, which answers the problem's follow-up. With $$n \le 2000$$ the count is at most about $$2 \times 10^6$$, so `int` is enough.
+
+<details markdown="1">
+<summary>C++ implementation</summary>
+
+```cpp
+class FenwickTree {
+private:
+    int n;
+    vi tree;
+public:
+    FenwickTree(int n) : n(n), tree(n+1, 0) {}
+    void add(int i, int u) {
+        for (; i <= n; i += i & -i) tree[i] += u;
+    }
+    int query(int i) {
+        int r = 0;
+        for (; i > 0; i -= i & -i) r += tree[i];
+        return r;
+    }
+};
+
+class Solution {
+public:
+    int minOperations(vi& nums, vi& locked, int k) {
+        int n = sz(nums);
+
+        // difference array
+        vi diff(n+1, 0);
+        REP(i, n) {
+            int target = nums[i] - 1;
+            if (i != target) {
+                int l = min(i, target);
+                int r = max(i, target);
+                diff[l]++;
+                diff[r+1]--;
+            }
+        }
+
+        int active = 0;
+        int unlock_ops = 0;
+        REP(i, n) {
+            active += diff[i];
+            // active > 0 means at least 1 misplaced number must pass through i to swap
+            // so i must be unlocked
+            if (active > 0 && locked[i]) {
+                unlock_ops++;
+            }
+        }
+
+        if (unlock_ops > k) return -1;
+
+        // number of swaps = inversions count
+        int swap_ops = 0;
+        FenwickTree ft(n);
+        RFOR(i, n) {
+            swap_ops += ft.query(nums[i]-1);
+            ft.add(nums[i], 1);
+        }
+
+        return unlock_ops + swap_ops;
+    }
+};
+```
+
+</details>
+
+Example 3 shows the $$-1$$ case. In `nums = [2,3,1]`, value 1 has to travel from index 2 to index 0, so $$U = \{0,1,2\}$$. Index 0 is locked and $$k = 0$$.
+
+### The takeaway
+
+When an operation moves things one step at a time, ask **which positions each item has to pass through**. That turns a search over choices into a fixed set, a union of intervals, which a difference array counts in one pass. Once the forced part is paid for, the rest is often a classic count. Here it is the number of inversions, the exact cost of sorting by adjacent swaps.
+
 ## From the Notebook {#notebook}
 
 Implementations from my [competitive programming notebook](https://github.com/lamng3/competitive-programming-notebook), tagged with their [USACO Guide](https://usaco.guide/) level where they have one.
@@ -806,6 +934,13 @@ Implementations from my [competitive programming notebook](https://github.com/la
 - [LeetCode 327 — Count of Range Sum](https://leetcode.com/problems/count-of-range-sum/)
 - [LeetCode 493 — Reverse Pairs](https://leetcode.com/problems/reverse-pairs/)
 - [LeetCode 315 — Count of Smaller Numbers After Self](https://leetcode.com/problems/count-of-smaller-numbers-after-self/)
+
+**Difference Arrays and Inversion Counts**
+
+- [LeetCode 4099 — Minimum Operations to Sort With Locked Indices](https://leetcode.com/problems/minimum-operations-to-sort-with-locked-indices/)
+- [LeetCode 1094 — Car Pooling](https://leetcode.com/problems/car-pooling/) (difference array)
+- [LeetCode 1109 — Corporate Flight Bookings](https://leetcode.com/problems/corporate-flight-bookings/) (difference array)
+- [CSES — Inversion Probability](https://cses.fi/problemset/task/1728) and [SPOJ — INVCNT](https://www.spoj.com/problems/INVCNT/) (inversion counting)
 
 ## Further reading {#further-reading}
 
