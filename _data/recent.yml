@@ -1,5 +1,9 @@
 # Newest first. Keep this to the notes you still want on the blog index.
 # Drop a line when it is no longer current.
+- date: "2026-11-01"
+  title: Difference Arrays and Inversion Counts
+  topic: Range Queries
+  url: /blog/range-queries/#difference-array
 - date: "2026-10-27"
   title: Cauchy–Schwarz and AM-GM
   topic: Algebra
@@ -20,7 +24,3 @@
   title: Persistent Trie
   topic: Strings
   url: /blog/strings/#persistent-trie
-- date: "2026-10-17"
-  title: Lazy Propagation
-  topic: Range Queries
-  url: /blog/range-queries/#lazy-segment-tree

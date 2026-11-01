@@ -32,6 +32,8 @@
       title: Segment Tree Walk
     - id: fenwick-tree
       title: Fenwick Tree with Coordinate Compression
+    - id: difference-array
+      title: Difference Arrays and Inversion Counts
 - slug: priority-queues
   title: Priority Queues
   sections:
