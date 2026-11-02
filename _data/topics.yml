@@ -8,6 +8,8 @@
   sections:
     - id: search-d-not-x
       title: Search D, Not x
+    - id: search-the-slope
+      title: Search the Slope, Not the Value
 - slug: dynamic-programming
   title: Dynamic Programming
   sections:
