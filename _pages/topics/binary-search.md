@@ -1,15 +1,15 @@
 ---
 layout: post
 title: "Binary Search"
-description: "When a problem asks to minimize the maximum (or maximize the minimum), the answer is often monotone even when the choices are not. Fix the answer, turn the problem into a yes-or-no check, and binary search. Reachability DP in Dynamic Programming starts the same way."
+description: "When a problem asks to minimize the maximum (or maximize the minimum), the answer is often monotone even when the choices are not. Fix the answer, turn the problem into a yes-or-no check, and binary search. When the function itself goes down and then up, search on the sign of its slope instead. Reachability DP in Dynamic Programming starts the same way."
 permalink: /blog/binary-search/
-last_updated: 2026-10-10
+last_updated: 2026-11-02
 author: Lam Nguyen
 toc:
   sidebar: right
 ---
 
-When a problem asks to minimize the maximum (or maximize the minimum), the answer is often monotone even when the choices are not. Fix the answer, turn the problem into a yes-or-no check, and binary search. Reachability DP in Dynamic Programming starts the same way.
+When a problem asks to minimize the maximum (or maximize the minimum), the answer is often monotone even when the choices are not. Fix the answer, turn the problem into a yes-or-no check, and binary search. When the function itself goes down and then up, search on the sign of its slope instead. Reachability DP in Dynamic Programming starts the same way.
 
 <details markdown="1">
 <summary>C++ template used by every implementation on this page</summary>
@@ -263,6 +263,159 @@ public:
 
 A couple of notes on the code. `mn` and `mx` are the $$m$$ and $$M$$ from above, and `x`, `y` inside `can` are the forced pair for that $$D$$. A run is found by remembering where it started in `L` and processing it once the next entry is not $$-1$$. Everything stays `int`: $$D \le 10^9$$ and $$m \le 10^9$$, so $$m + D \le 2 \cdot 10^9$$, still under `INT_MAX`.
 
+## Search the Slope, Not the Value {#search-the-slope}
+
+[LeetCode 462 — Minimum Moves to Equal Array Elements II](https://leetcode.com/problems/minimum-moves-to-equal-array-elements-ii/). One move adds or subtracts $$1$$ from one element. Return the fewest moves that make every element equal. Here $$n \le 10^5$$ and $$|\text{nums}[i]| \le 10^9$$.
+
+The usual answer is "pick the median." That's true, but it skips the interesting part: _why_ the median, and how you would find it without already knowing the trick. The route below starts from a cost function and gets the median as a corollary.
+
+### The cost of a target
+
+If every element ends at $$X$$, element $$a_i$$ costs $$|a_i - X|$$ moves, and the elements don't interact. So the problem is to minimize
+
+$$
+f(X) = \sum_{i=1}^{n} |a_i - X|.
+$$
+
+The optimal $$X$$ lies in $$[\min a,\ \max a]$$. Below $$\min a$$, raising $$X$$ by one brings every element closer, so $$f$$ drops by $$n$$, and the same holds above $$\max a$$ in mirror image.
+
+### First instinct: binary search on X
+
+$$X$$ is an integer in a known range, so binary search is the obvious move. But binary search needs a predicate that is false, then true. Evaluating $$f(\text{mid})$$ gives a number, not a direction. $$f$$ falls and then rises, so a large $$f(\text{mid})$$ could mean $$\text{mid}$$ is too small or too large.
+
+Compare with [Search D, Not x](#search-d-not-x). There the trick was to stop searching over choices and search over the answer, because $$\text{can}(D)$$ was monotone. Here the answer is $$\min f$$, and "is there an $$X$$ with $$f(X) \le c$$?" is monotone in $$c$$, but checking it means finding the minimum, which is the original problem.
+
+So the question becomes:
+
+> $$f$$ is not monotone. Is anything about $$f$$ monotone?
+
+### Look at how f changes
+
+Take the discrete derivative, the change from one step to the right:
+
+$$
+\Delta f(X) = f(X+1) - f(X) = \sum_{i} \bigl( |a_i - X - 1| - |a_i - X| \bigr).
+$$
+
+Each term is $$\pm 1$$. Moving the target from $$X$$ to $$X+1$$ moves it away from every $$a_i \le X$$ and toward every $$a_i > X$$:
+
+$$
+|a_i - (X+1)| - |a_i - X| =
+\begin{cases}
++1 & a_i \le X, \\
+-1 & a_i > X.
+\end{cases}
+$$
+
+Let $$L(X) = \#\{\, i : a_i \le X \,\}$$. Then
+
+$$
+\Delta f(X) = L(X) - \bigl(n - L(X)\bigr) = 2L(X) - n.
+$$
+
+$$L(X)$$ counts the elements at or below $$X$$, so it can only grow as $$X$$ grows. **$$\Delta f$$ is non-decreasing.** That makes $$f$$ convex, and it gives binary search its predicate:
+
+$$
+\text{up}(X) = \bigl[\, f(X+1) \ge f(X) \,\bigr] = \bigl[\, \Delta f(X) \ge 0 \,\bigr].
+$$
+
+It is false, then true. At $$X = \max a$$ it is true, since $$\Delta f = n$$.
+
+### Why the first true is the minimum
+
+Let $$X^*$$ be the smallest $$X$$ with $$\text{up}(X)$$ true.
+
+- For $$X < X^*$$, $$\Delta f(X) < 0$$, so $$f$$ strictly decreases all the way to $$X^*$$.
+- For $$X \ge X^*$$, $$\Delta f(X) \ge 0$$, so $$f$$ never decreases after $$X^*$$.
+
+So $$f(X^*)$$ is the global minimum. We never looked at a value of $$f$$ itself. We only asked which way it was heading, and binary searched for the point where it stops going down.
+
+### What the predicate says
+
+Read $$\Delta f(X) \ge 0$$ back through the formula: $$2L(X) \ge n$$, meaning **at least half the elements are $$\le X$$**. The smallest such $$X$$ is the lower median. The median wasn't assumed. It came out as the place where the slope changes sign.
+
+The derivative also explains the ties. When $$n$$ is even, $$\Delta f(X) = 0$$ exactly for $$X$$ between the two middle values, so $$f$$ is flat there and every $$X$$ in that stretch is optimal. For $$[1, 2, 9, 10]$$:
+
+| $$X$$        | $$1$$  | $$2$$  | $$3 \dots 8$$ | $$9$$  | $$10$$ |
+| ------------ | ------ | ------ | ------------- | ------ | ------ |
+| $$L(X)$$     | $$1$$  | $$2$$  | $$2$$         | $$3$$  | $$4$$  |
+| $$\Delta f$$ | $$-2$$ | $$0$$  | $$0$$         | $$+2$$ | $$+4$$ |
+| $$f(X)$$     | $$18$$ | $$16$$ | $$16$$        | $$16$$ | $$18$$ |
+
+The search stops at $$X^* = 2$$, the first point where the slope is no longer negative, and returns $$f(2) = 1 + 0 + 7 + 8 = 16$$. A plateau like this can break ternary search, which compares $$f$$ at two interior points and can't tell which side to drop when they are equal. The slope predicate is unaffected, because it only asks whether $$\Delta f \ge 0$$.
+
+### Complexity
+
+Each check computes $$f(\text{mid})$$ and $$f(\text{mid}+1)$$ in $$O(n)$$, over a range of about $$2 \times 10^9$$ values, so roughly $$31$$ steps:
+
+$$
+O(n \log V) \text{ time}, \qquad O(1) \text{ extra space}.
+$$
+
+Once the predicate is known to mean "lower median," you can skip the search: `nth_element` finds it in expected $$O(n)$$, or a sort finds it in $$O(n \log n)$$. The binary search is still how you get there without memorizing the result.
+
+<details markdown="1">
+<summary>C++ implementation</summary>
+
+```cpp
+class Solution {
+public:
+    /*
+        define f(X) = cost to move all numbers in nums = X
+        however, f(X) is not monotonic
+        but delta_f(X) does
+            define delta_f(X) = f(X+1) - f(X)
+        as X grows larger, #numbers <= X increases and #numbers > X decreases
+        so delta_f(X) = (#nums <= X) - (#nums > X)
+            #nums <= X non-decreasing
+            #nums > X non-increasing
+        => delta_f(X) non-decreasing
+        reason is as we move X to X+1, the change will be the count
+
+        now delta_f(X) is monotonic wrt X, we can binary search on X
+        given X, we perform a check(X)
+            if f(X+1) < f(X): X is too low, global minimum is on the right
+            if f(X+1) >= f(X): try smaller number
+    */
+    int minMoves2(vi& nums) {
+        int n = sz(nums);
+        int mn = INF, mx = -INF;
+        REP(i, n) {
+            mn = min(mn, nums[i]);
+            mx = max(mx, nums[i]);
+        }
+        auto cost = [&](int X) {
+            ll r = 0;
+            REP(i, n) r += abs(nums[i] - X);
+            return r;
+        };
+        auto valid = [&](int X) {
+            // non decreasing
+            return cost(X+1) >= cost(X);
+        };
+        int left = mn, right = mx, best = left;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (valid(mid)) {
+                best = mid;
+                right = mid-1;
+            }
+            else left = mid+1;
+        }
+        return cost(best);
+    }
+};
+```
+
+</details>
+
+A note on sizes. `cost` sums in `ll`, since $$f$$ can reach about $$10^5 \cdot 2 \times 10^9$$ away from the optimum, even though the problem promises the _minimum_ fits in an `int`. The single difference `nums[i] - X` stays in `int`: with $$X \le 10^9 + 1$$, the worst case is $$-10^9 - (10^9 + 1) = -2{,}000{,}000{,}001$$, just above `INT_MIN`.
+
+### What to ask next time
+
+1. **Binary search needs a direction, not a value.** If $$f$$ itself goes down and then up, ask whether its change $$f(X+1) - f(X)$$ is monotone. Then the predicate is "is $$f$$ still decreasing here?"
+2. **Write the change as a count.** For a sum of per-element costs, $$\Delta f$$ usually splits into "elements that got worse" minus "elements that got better," and monotonicity is visible at a glance. The same derivation with weights gives the weighted median ([LeetCode 2448](https://leetcode.com/problems/minimum-cost-to-make-array-equal/)).
+
 ## From the Notebook {#notebook}
 
 Implementations from my [competitive programming notebook](https://github.com/lamng3/competitive-programming-notebook), tagged with their [USACO Guide](https://usaco.guide/) level where they have one.
@@ -277,3 +430,10 @@ Implementations from my [competitive programming notebook](https://github.com/la
 - [LeetCode 410 — Split Array Largest Sum](https://leetcode.com/problems/split-array-largest-sum/)
 - [LeetCode 875 — Koko Eating Bananas](https://leetcode.com/problems/koko-eating-bananas/)
 - [LeetCode 1011 — Capacity To Ship Packages Within D Days](https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/)
+
+**Search the Slope, Not the Value**
+
+- [LeetCode 462 — Minimum Moves to Equal Array Elements II](https://leetcode.com/problems/minimum-moves-to-equal-array-elements-ii/)
+- [LeetCode 2448 — Minimum Cost to Make Array Equal](https://leetcode.com/problems/minimum-cost-to-make-array-equal/) (weighted, same slope argument)
+- [LeetCode 2033 — Minimum Operations to Make a Uni-Value Grid](https://leetcode.com/problems/minimum-operations-to-make-a-uni-value-grid/)
+- [LeetCode 2967 — Minimum Cost to Make Array Equalindromic](https://leetcode.com/problems/minimum-cost-to-make-array-equalindromic/)
