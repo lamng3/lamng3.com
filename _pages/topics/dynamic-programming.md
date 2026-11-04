@@ -1,20 +1,20 @@
 ---
 layout: post
 title: "Dynamic Programming"
-description: "Most of dynamic programming is choosing what to remember. Each technique here is a different answer to that question: digits and a remainder, a split point, a set of reachable values, a running best, or a node processed only after everything it depends on."
+description: "Most of dynamic programming is choosing what to remember. Each technique here is a different answer to that question: digits and a remainder, a split point, a set of reachable values, a running best, a node processed only after everything it depends on, or a subset written as an integer."
 permalink: /blog/dynamic-programming/
-last_updated: 2026-10-17
+last_updated: 2026-11-03
 author: Lam Nguyen
 toc:
   sidebar: right
 ---
 
-Most of dynamic programming is choosing what to remember. Each technique here is a different answer to that question: digits and a remainder, a split point, a set of reachable values, a running best, or a node processed only after everything it depends on.
+Most of dynamic programming is choosing what to remember. Each technique here is a different answer to that question: digits and a remainder, a split point, a set of reachable values, a running best, a node processed only after everything it depends on, or a subset written as an integer.
 
 <details markdown="1">
-<summary>C++ template used by every implementation on this page</summary>
+<summary>C++ template used by the C++ implementations on this page</summary>
 
-Each implementation below starts after this header. A snippet that needs a different modulus defines its own `MOD` in place of this one.
+Each C++ implementation below starts after this header. A snippet that needs a different modulus defines its own `MOD` in place of this one.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -822,6 +822,202 @@ void count_routes() {
 
 > **The pattern worth naming.** Any DP is a DAG, and `for i in range(n)` is a topological order you were given for free. When the edges are part of the input, compute the order and run the same loop. Longest path, shortest path with negative weights, counting paths, and a critical path are one function with three different `combine`s. Cycles are not a reason to switch algorithms until you have condensed them into a DAG.
 
+## Bitmask DP {#bitmask-dp}
+
+[LeetCode 465 — Optimal Account Balancing](https://leetcode.com/problems/optimal-account-balancing/). Each transaction $$[u, v, a]$$ says person $$u$$ gave person $$v$$ an amount $$a$$. Return the fewest transfers that settle all the debt. There are at most $$8$$ transactions and $$12$$ people.
+
+I like this problem because the bitmask is not the hard part. The hard part is a small theorem that turns "fewest transfers" into "most zero-sum groups." Once that is on the table, the DP over subsets writes itself.
+
+### Only the balances matter
+
+Who paid whom is history. All that survives is each person's net position:
+
+$$
+P_x = (\text{received by } x) - (\text{given by } x).
+$$
+
+A positive $$P_x$$ means $$x$$ still owes the group money, and a negative one means the group owes $$x$$. Every transaction adds $$a$$ to one balance and subtracts $$a$$ from another, so $$\sum_x P_x = 0$$ always.
+
+People with $$P_x = 0$$ have nothing to settle, so drop them. Let $$U$$ be the $$m$$ nonzero balances. The two examples from the statement reduce to:
+
+- `[[0,1,10],[2,0,5]]` gives $$U = \{-5, -5, 10\}$$.
+- `[[0,1,10],[1,0,1],[1,2,5],[2,0,5]]` gives $$U = \{-4, 4\}$$. Person $$2$$ dropped out.
+
+### First instinct: settle greedily
+
+Have the largest debtor pay the largest creditor, as much as possible. Each transfer brings at least one person to zero, and the last transfer clears two at once, so this never uses more than $$m - 1$$ transfers. That looks hard to beat. Now try
+
+$$
+U = \{-9, -6, 4, 5, 6\}.
+$$
+
+Greedy matches $$6$$ with $$-9$$, leaving $$\{-3, -6, 4, 5\}$$. Then $$5$$ with $$-6$$, leaving $$\{-3, -1, 4\}$$. Then $$4$$ with $$-3$$, and finally $$1$$ with $$-1$$. That is $$4$$ transfers.
+
+Three are enough. The $$6$$ and $$-6$$ cancel with one transfer, and $$-9$$ collects from $$4$$ and $$5$$ with two more. Greedy's first move broke a pair that could have settled on its own.
+
+So the saving came from the people splitting into two groups that each sum to zero. The question becomes:
+
+> Does every saved transfer come from a zero-sum group, and is that the only way to save one?
+
+### The number of transfers is a partition
+
+**A zero-sum group of $$k$$ people needs at most $$k - 1$$ transfers.** Line them up. The first person settles their whole balance with the second, the second settles their updated balance with the third, and so on. After $$k - 1$$ transfers, everyone but the last is at zero, and the last holds the group's total, which is zero.
+
+So if $$U$$ splits into $$c$$ zero-sum groups of sizes $$k_1, \dots, k_c$$, we can settle in
+
+$$
+\sum_{i=1}^{c} (k_i - 1) = m - c
+$$
+
+transfers. More groups means fewer transfers.
+
+**No settlement does better.** Take any settlement and draw a graph with people as vertices and transfers as edges. Money never leaves a connected component, so the balances inside each component sum to zero. Thus the components split $$U$$ into zero-sum groups. A component holding $$k_i$$ people from $$U$$ has at least $$k_i$$ vertices, so at least $$k_i - 1$$ edges. Pulling in someone with a zero balance only adds vertices, which never lowers the count. Summing over the $$c$$ components that touch $$U$$, the settlement uses at least $$m - c$$ transfers.
+
+Together these give the theorem the problem is hiding:
+
+$$
+\text{answer} = m - c^*, \qquad c^* = \text{the most zero-sum groups } U \text{ can be split into.}
+$$
+
+The amounts no longer appear in the objective. They only decide which subsets sum to zero. Checking the examples: $$\{-5, -5, 10\}$$ has no nonempty proper zero-sum subset, so $$c^* = 1$$ and the answer is $$3 - 1 = 2$$. $$\{-4, 4\}$$ gives $$2 - 1 = 1$$.
+
+The theorem also explains the tiny constraints. The answer beats $$m - 1$$ exactly when some nonempty proper subset of $$U$$ sums to zero, and that is a subset sum question. There is no reason to expect a polynomial algorithm, so $$m \le 12$$ is an invitation to go exponential.
+
+### Why a bitmask
+
+Trying every partition of $$12$$ people means the Bell number $$B_{12} = 4{,}213{,}597$$ partitions, and most of them repeat work. If a partition sets aside the group $$\{-6, 6\}$$, the best way to split the remaining people depends only on _which_ people remain, not on how we got there. So the state is a subset, and a subset of $$m \le 12$$ people fits in an integer: bit $$i$$ is set when $$U_i$$ is in the subset.
+
+For a zero-sum `mask`, let $$\mathrm{dp}[\text{mask}]$$ be the fewest transfers that clear exactly those people. An optimal partition of `mask` has two possible shapes:
+
+- It is one group, costing $$\vert \text{mask} \vert - 1$$.
+- It has at least two groups. Then some nonempty proper subset $$s$$ is a union of its groups, and the two sides are independent.
+
+$$
+\mathrm{dp}[\text{mask}] = \min\left( \vert \text{mask} \vert - 1,\ \min_{\substack{\emptyset \ne s \subsetneq \text{mask} \\ \text{sum}(s) = 0}} \mathrm{dp}[s] + \mathrm{dp}[\text{mask} \setminus s] \right)
+$$
+
+Since `mask` sums to zero, $$\text{sum}(s) = 0$$ forces $$\text{sum}(\text{mask} \setminus s) = 0$$. Checking one side is enough, and the DP never reads an entry for a nonzero subset.
+
+The evaluation order is free. A subset of `mask` is numerically smaller than `mask`, because removing bits can only lower the value. So `for mask in range(FULL)` is already a [topological order](#dp-on-a-dag) of the dependency graph.
+
+### Walking the submasks
+
+The transition has to visit every subset of `mask`, without wasting time on integers that are not subsets. One line does it:
+
+```python
+submask = (submask - 1) & mask
+```
+
+Subtracting $$1$$ clears the lowest set bit and sets every bit below it. The AND then discards the bits `mask` does not own. The effect is counting down in binary using only the positions of `mask`, so every submask comes up exactly once, in decreasing order. For `mask = 1011`:
+
+```text
+1011 -> 1010 -> 1001 -> 1000 -> 0011 -> 0010 -> 0001 -> 0000
+```
+
+Starting from `(mask - 1) & mask` and stopping at $$0$$ gives the nonempty proper subsets, which are exactly the $$s$$ in the recurrence.
+
+### Implementation
+
+This is the Python I submitted.
+
+```python
+class Solution:
+    def minTransfers(self, transactions: list[list[int]]) -> int:
+        INF = 10 ** 9 + 7
+
+        # balance of each after all transactions
+        # invariant: sum(P) = 0
+        P = defaultdict(int)
+        for u, v, amt in transactions:
+            P[u] -= amt
+            P[v] += amt
+
+        # unsettled
+        U = sorted([p for p in P.values() if p != 0])
+        m = len(U)
+        if m == 0: return 0
+
+        FULL = 1 << m
+
+        # subset sum
+        subsum = [0] * FULL
+        for mask in range(FULL):
+            for i in range(m):
+                if mask & (1 << i):
+                    subsum[mask] += U[i]
+
+        # dp[mask] = min txns to clear debts in mask
+        dp = [INF] * FULL
+        dp[0] = 0
+
+        # for each subsets with sum = 0, try find better configs
+        for mask in range(1, FULL):
+            if subsum[mask]: continue
+            # k people needs at most k-1 transactions
+            dp[mask] = mask.bit_count() - 1
+
+            # https://usaco.guide/gold/dp-bitmasks
+            submask = (mask - 1) & mask
+            while submask > 0:
+                subset = mask ^ submask
+                if subsum[submask] == 0:
+                    dp[mask] = min(dp[mask], dp[submask] + dp[subset])
+                submask = (submask - 1) & mask
+
+        return dp[FULL-1]
+```
+
+The full set always sums to zero, so `dp[FULL-1]` is always a real value.
+
+### Complexity
+
+The subset sums take $$O(m \cdot 2^m)$$ as written. A mask with $$j$$ bits has $$2^j$$ submasks, so even if every mask ran the inner loop, the total would be
+
+$$
+\sum_{j=0}^{m} \binom{m}{j} 2^j = 3^m,
+$$
+
+by the binomial theorem. There is a direct way to see it: each person is outside `mask`, in the submask, or in the rest, which is three choices per person. For $$m = 12$$ that is $$531{,}441$$.
+
+The `if subsum[mask]: continue` line makes the real number smaller, because only zero-sum masks pay for the loop. With six pairs of $$\pm 1$$ there are $$\binom{12}{6} = 923$$ zero-sum masks and $$126{,}058$$ inner steps. Each split is also visited twice, once from each side. Requiring $$s$$ to contain the lowest bit of `mask` would halve that if it ever mattered.
+
+### Faster: count the zero prefixes
+
+The chain from the upper bound leads to a second DP. Put all of $$U$$ in one line, in any order, and pass the running sum along. The transfer after position $$i$$ carries the prefix sum, so when a prefix sums to zero, that transfer is skipped. The last prefix always sums to zero and has no transfer after it, so a line with $$z$$ zero prefixes uses $$m - z$$ transfers.
+
+For $$\{-9, -6, 4, 5, 6\}$$, the order $$-6, 6, -9, 4, 5$$ has prefix sums $$-6, 0, -9, -5, 0$$. That is two zeros and $$5 - 2 = 3$$ transfers. Concatenating the groups of any partition gives a line with one zero per group, and cutting a line at its zeros gives a partition, so the most zero prefixes over all orders is exactly $$c^*$$.
+
+That looks like a search over $$m!$$ orders, but a prefix sum depends only on _which_ elements are in the prefix, not their order. So $$m!$$ orders collapse to $$2^m$$ states, in the same way as the Held-Karp DP for the traveling salesman. Let $$g[\text{mask}]$$ be the most zero prefixes when `mask` is laid out first, and pull out whichever element comes last:
+
+$$
+g[\text{mask}] = \max_{i \in \text{mask}} g[\text{mask} \setminus \{i\}] + \mathbb{1}[\text{sum}(\text{mask}) = 0].
+$$
+
+The answer is $$m - g[\text{full}]$$.
+
+```python
+subsum = [0] * FULL
+g = [0] * FULL
+for mask in range(1, FULL):
+    low = mask & -mask
+    subsum[mask] = subsum[mask ^ low] + U[low.bit_length() - 1]
+    best = max(g[mask ^ (1 << i)] for i in range(m) if mask >> i & 1)
+    g[mask] = best + (subsum[mask] == 0)
+return m - g[FULL - 1]
+```
+
+Here `low` is the lowest set bit, which also computes all the subset sums in $$O(2^m)$$. The total is $$O(m \cdot 2^m)$$, about $$49{,}000$$ steps for $$m = 12$$. Both DPs compute the same $$c^*$$. The submask version is the one to reach for first, since it states the partition directly and carries over to problems where a group's value is not a simple yes or no.
+
+### The pattern
+
+Three things point to this technique:
+
+- **The limit is about $$12$$ to $$20$$.** $$3^n$$ is fine up to about $$16$$, and $$n \cdot 2^n$$ up to about $$20$$.
+- **The future depends on a set, not an order.** Here, the people still unsettled. That is what makes the state a mask.
+- **The answer is a partition into groups.** Then the transition splits off a submask, and the cost is $$3^n$$. If the items instead get added one at a time, the cost is $$n \cdot 2^n$$.
+
+The real step on this problem came before any of that: proving that the transfer count is $$m - c$$. Without it, there is no obvious set to put in the mask.
+
 ## From the Notebook {#notebook}
 
 Implementations from my [competitive programming notebook](https://github.com/lamng3/competitive-programming-notebook), tagged with their [USACO Guide](https://usaco.guide/) level where they have one.
@@ -867,6 +1063,15 @@ Implementations from my [competitive programming notebook](https://github.com/la
 - [USACO Gold 2020 February — Timeline](http://www.usaco.org/index.php?page=viewproblem2&cpid=1017) (earliest start times)
 - [CSES — Subtree Queries](https://cses.fi/problemset/task/1137) and [Path Queries](https://cses.fi/problemset/task/1138) (Euler tour, the tree cousin)
 
+**Bitmask DP**
+
+- [LeetCode 465 — Optimal Account Balancing](https://leetcode.com/problems/optimal-account-balancing/) (the problem above)
+- [AtCoder DP Contest U — Grouping](https://atcoder.jp/contests/dp/tasks/dp_u) (the same split-off-a-submask recurrence, with a score per group)
+- [LeetCode 1986 — Minimum Number of Work Sessions to Finish the Tasks](https://leetcode.com/problems/minimum-number-of-work-sessions-to-finish-the-tasks/) (partition into the fewest groups under a capacity)
+- [LeetCode 1723 — Find Minimum Time to Finish All Jobs](https://leetcode.com/problems/find-minimum-time-to-finish-all-jobs/) (partition into $$k$$ groups, minimizing the largest)
+- [CSES — Elevator Rides](https://cses.fi/problemset/task/1653) (the $$n \cdot 2^n$$ one-item-at-a-time form)
+- [CSES — Hamiltonian Flights](https://cses.fi/problemset/task/1690) (Held-Karp: a set plus a last vertex)
+
 ## Further reading {#further-reading}
 
 **Reachability DP**
@@ -881,3 +1086,9 @@ Implementations from my [competitive programming notebook](https://github.com/la
 - [CP-Algorithms — Topological Sort](https://cp-algorithms.com/graph/topological-sort.html), and [strongly connected components](https://cp-algorithms.com/graph/strongly-connected-components.html) for the condensation step.
 - [Competitive Programmer's Handbook](https://cses.fi/book/book.pdf), 16.2.
 - [USACO Guide — Euler Tour Technique](https://usaco.guide/gold/tree-euler), for the tree flattening this section only distinguishes.
+
+**Bitmask DP**
+
+- [USACO Guide — Bitmask DP](https://usaco.guide/gold/dp-bitmasks).
+- [CP-Algorithms — Submask Enumeration](https://cp-algorithms.com/algebra/all-submasks.html), including the $$3^n$$ count.
+- [Competitive Programmer's Handbook](https://cses.fi/book/book.pdf), ch. 10, for bit manipulation and going from permutations to subsets.

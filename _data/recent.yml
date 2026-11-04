@@ -1,5 +1,9 @@
 # Newest first. Keep this to the notes you still want on the blog index.
 # Drop a line when it is no longer current.
+- date: "2026-11-03"
+  title: Bitmask DP
+  topic: Dynamic Programming
+  url: /blog/dynamic-programming/#bitmask-dp
 - date: "2026-11-02"
   title: Search the Slope, Not the Value
   topic: Binary Search
@@ -20,7 +24,3 @@
   title: The Coloring Orients the Tree
   topic: Graphs and Trees
   url: /blog/graphs-and-trees/#colored-root
-- date: "2026-10-17"
-  title: DP on a DAG
-  topic: Dynamic Programming
-  url: /blog/dynamic-programming/#dp-on-a-dag
