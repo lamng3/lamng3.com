@@ -23,6 +23,8 @@
       title: Maximum Subarray from a Range Update
     - id: dp-on-a-dag
       title: DP on a DAG
+    - id: bitmask-dp
+      title: Bitmask DP
 - slug: range-queries
   title: Range Queries
   sections:

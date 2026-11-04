@@ -3,7 +3,7 @@ layout: post
 title: "Selected LeetCode Problems"
 description: "A running, hand-picked list of LeetCode problems I found interesting, each tagged with the topic or technique it exercises. A companion index to the technique write-ups on this blog."
 permalink: /blog/selected-leetcode-problems/
-last_updated: 2026-11-02
+last_updated: 2026-11-03
 author: Lam Nguyen
 toc:
   sidebar: right
@@ -44,3 +44,4 @@ A running list of LeetCode problems worth remembering, each labeled with the top
 | [427 — Construct Quad Tree](https://leetcode.com/problems/construct-quad-tree/)                                                                                      | [Region Quadtree](/blog/databases/#quadtree-427)                                                                      |
 | [4099 — Minimum Operations to Sort With Locked Indices](https://leetcode.com/problems/minimum-operations-to-sort-with-locked-indices/)                               | [Difference Array, Fenwick Inversion Count](/blog/range-queries/#difference-array)                                    |
 | [462 — Minimum Moves to Equal Array Elements II](https://leetcode.com/problems/minimum-moves-to-equal-array-elements-ii/)                                            | [Binary Search on the Slope, Median](/blog/binary-search/#search-the-slope)                                           |
+| [465 — Optimal Account Balancing](https://leetcode.com/problems/optimal-account-balancing/)                                                                          | [Bitmask DP, Submask Enumeration](/blog/dynamic-programming/#bitmask-dp)                                              |
