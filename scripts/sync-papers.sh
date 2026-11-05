@@ -2,13 +2,13 @@
 # Copy the paper PDFs the site hosts from their source repositories.
 # Run from the repository root when a paper, or the OntoDB book, changes:
 #   scripts/sync-papers.sh
-# The source repos are expected next to this one (../kroma, ../ontodb).
+# The source repos are expected next to this one (../kroma, ../ontodb-docs).
 set -euo pipefail
 src="$(cd "$(dirname "$0")/../.." && pwd)"
 dest="$(cd "$(dirname "$0")/.." && pwd)/assets/papers"
 mkdir -p "$dest"
 cp "$src/kroma/full.pdf" "$dest/kroma-full.pdf"
-cp "$src/ontodb/book/ontodb-book.pdf" "$dest/ontodb-book.pdf"
-cp "$src/ontodb/papers/query-engine/ontodb.pdf" "$dest/ontodb-semantic.pdf"
-cp "$src/ontodb/papers/query-engine/ontodb-full.pdf" "$dest/ontodb-full.pdf"
+cp "$src/ontodb-docs/book/ontodb-book.pdf" "$dest/ontodb-book.pdf"
+cp "$src/ontodb-docs/papers/query-engine/ontodb.pdf" "$dest/ontodb-semantic.pdf"
+cp "$src/ontodb-docs/papers/query-engine/ontodb-full.pdf" "$dest/ontodb-full.pdf"
 ls -la "$dest"
