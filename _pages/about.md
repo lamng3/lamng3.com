@@ -17,13 +17,11 @@ description: >-
   <p>I work on AI for science at the Center for Materials Data Science and agentic security at Microsoft. I want agents to get the right context, from the right source, at a bounded cost. I approach LLM reasoning through the lens of <em>databases</em>: agentic retrieval, agent memory, natural language interfaces, and fast, verifiable query processing.</p>
   <p><strong>Research interests</strong></p>
   <ul class="interests">
-    <li><strong>Semantic engineering</strong>: ontology matching and evolving knowledge graphs.</li>
-    <li><strong>Quality governance</strong>: query-driven assessment, provenance, and integrity.</li>
-    <li><strong>Agentic security</strong>: schema-constrained retrieval and verifiable agent actions.</li>
-    <li><strong>LLM agents</strong>: agent memory, tool use, and natural language interfaces to databases.</li>
-    <li><strong>Database systems</strong>: indexing, query optimization, concurrency, and recovery.</li>
+    <li><strong>Semantic data</strong>: ontology matching, evolving knowledge graphs, and governance.</li>
+    <li><strong>Trustworthy agents</strong>: memory, tool use, security, and NLIDB.</li>
+    <li><strong>Data systems</strong>: indexing, query optimization, recovery, and GPU search.</li>
     <li><strong>AI for science</strong>: scientific agents and hypothesis validation.</li>
-    <li><strong>GPU vector search</strong>: fused ANN kernels for recommender systems.</li>
+    <li><strong>Decision theory</strong>: MDPs, Bellman equations, bandits, and UCB.</li>
   </ul>
 </section>
 
