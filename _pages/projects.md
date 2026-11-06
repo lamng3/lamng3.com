@@ -8,6 +8,7 @@ description: Open-source projects by Lam Nguyen, from database engines and ontol
 <section class="projects-intro">
   <h2>Open source</h2>
   <p>I build in the open to learn a topic all the way down: a database engine to understand <em>recovery</em>, a reasoner to understand <em>description logics</em>, a framework port to understand <em>training</em>.</p>
+  <p>The research projects build <em>semantic data infrastructure</em> for AI agents: KROMA aligns ontologies, OntoCheck measures whether they answer the questions scientists ask, and OntoDB stores and queries them.</p>
   <p>You'll see that I particularly like databases, knowledge graphs, language agents, and machine learning systems. If something here is useful to you, I'd love to <a href="mailto:lamng3.work@gmail.com">hear about it</a>.</p>
 </section>
 

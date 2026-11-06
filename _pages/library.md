@@ -7,7 +7,7 @@ description: C++ and Python implementations of algorithms and data structures fr
 
 <section class="library-intro">
   <h2>Welcome!</h2>
-  <p>Here you will find the C++ and Python implementations of algorithms and data structures I use for competitive programming and interviews, plus my contest templates. They come from my <a href="https://github.com/lamng3/competitive-programming-notebook">notebook</a>, where each one has unit tests, and the <a href="{{ '/blog/' | relative_url }}">blog</a> explains many of the ideas behind them.</p>
+  <p>Here you will find the C++ and Python implementations of algorithms and data structures I use for competitive programming and interviews, plus my contest templates. They come from my <a href="https://github.com/lamng3/competitive-programming-notebook">notebook</a>, where each one has unit tests, and the <a href="{{ '/blog/' | relative_url }}">algorithm notes</a> explain many of the ideas behind them.</p>
 </section>
 
 <div class="library-tools">

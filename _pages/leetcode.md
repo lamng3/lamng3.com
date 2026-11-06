@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Selected LeetCode Problems"
-description: "A running, hand-picked list of LeetCode problems I found interesting, each tagged with the topic or technique it exercises. A companion index to the technique write-ups on this blog."
+description: "A running, hand-picked list of LeetCode problems I found interesting, each tagged with the topic or technique it exercises. A companion index to the technique write-ups on this site."
 permalink: /blog/selected-leetcode-problems/
 last_updated: 2026-11-03
 author: Lam Nguyen
@@ -9,7 +9,7 @@ toc:
   sidebar: right
 ---
 
-A running list of LeetCode problems worth remembering, each labeled with the topic or technique it turns on. It doubles as an index into the topic pages on this blog, and I add to it as I go.
+A running list of LeetCode problems worth remembering, each labeled with the topic or technique it turns on. It doubles as an index into the topic pages on this site, and I add to it as I go.
 
 ## The list
 
