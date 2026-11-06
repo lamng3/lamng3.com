@@ -19,11 +19,46 @@ description: Lam Nguyen's academic resume, with education, publications, researc
     <p class="degree-note">Graduated cum laude.</p>
   </div>
 
-  <h4>Selected coursework:</h4>
+  <h4>Graduate-level technical coursework:</h4>
   <ul>
-    <li><strong>Databases and systems:</strong> Advanced Database Systems, High Performance Data and Computing, Data Science Systems, Database Systems, Operating Systems, Computer Networks I</li>
-    <li><strong>AI and machine learning:</strong> Large Language Models, Machine Learning, Artificial Intelligence, Data Mining, Applied Data Science Research, Data Science Models and Prediction</li>
-    <li><strong>Mathematics and theory:</strong> Algorithms, Discrete Mathematics, Probability, Theoretical Statistics I, Linear Algebra, Elementary Number Theory</li>
+    <li>Large Language Models (CSDS 600)</li>
+    <li>High Performance Data and Computing (CSDS 438)</li>
+    <li>Data Mining (CSDS 435)</li>
+    <li>Advanced Database Systems (CSDS 433)</li>
+    <li>Applied Data Science Research (DSCI 452)</li>
+    <li>Data Science Models and Prediction (DSCI 453)</li>
+  </ul>
+
+  <h4>Undergraduate technical coursework:</h4>
+  <ul>
+    <li>Algorithms (CSDS 310)</li>
+    <li>Machine Learning (CSDS 340)</li>
+    <li>Artificial Intelligence (CSDS 391)</li>
+    <li>Database Systems (CSDS 341)</li>
+    <li>Data Science Systems (CSDS 312)</li>
+    <li>Data Engineering (CSDS 351)</li>
+    <li>Structured and Unstructured Data (CSDS 234)</li>
+    <li>Data Privacy (CSDS 356)</li>
+    <li>Operating Systems (CSDS 338)</li>
+    <li>Computer Networks I (CSDS 325)</li>
+    <li>Logic Design and Computer Organization (CSDS 281)</li>
+    <li>Software Engineering (CSDS 393)</li>
+    <li>Software Craftsmanship (CSDS 293)</li>
+    <li>Data Structures (CSDS 233)</li>
+    <li>Functional Programming in Java (CSDS 245)</li>
+    <li>Full Stack Web Development (CSDS 221)</li>
+    <li>Senior Project in Computer Science (CSDS 395)</li>
+    <li>Introduction to Data Science and Engineering for Majors (CSDS 133)</li>
+    <li>Introduction to Programming in Java (CSDS 132)</li>
+    <li>Introduction to C/C++ Programming (CSDS 297)</li>
+    <li>Introduction to Computer Game Design (CSDS 290)</li>
+    <li>Elementary Number Theory (MATH 303)</li>
+    <li>Linear Algebra (MATH 307)</li>
+    <li>Discrete Mathematics (MATH 304)</li>
+    <li>Probability (MATH 380)</li>
+    <li>Theoretical Statistics I (STAT 345)</li>
+    <li>Calculus for Science and Engineering III (MATH 223)</li>
+    <li>Computational Economics (ECON 380)</li>
   </ul>
 </section>
 
@@ -82,7 +117,7 @@ description: Lam Nguyen's academic resume, with education, publications, researc
     <h3>Software Engineer at Microsoft</h3>
     <p class="resume-meta">2025 – 2026</p>
     <ul>
-      <li>Agentic Security: risky-file clustering and schema-constrained retrieval for natural language to KQL in Security Copilot.</li>
+      <li>Risky-file clustering and schema-constrained retrieval for natural language to KQL.</li>
     </ul>
   </div>
 
@@ -90,7 +125,7 @@ description: Lam Nguyen's academic resume, with education, publications, researc
     <h3>Software Engineer Intern at Microsoft</h3>
     <p class="resume-meta">2024</p>
     <ul>
-      <li>Security Copilot: an agentic workflow for sensitive-data detection across 1M+ private documents.</li>
+      <li>An agentic workflow for sensitive-data detection across 1M+ private documents.</li>
     </ul>
   </div>
 
@@ -98,7 +133,7 @@ description: Lam Nguyen's academic resume, with education, publications, researc
     <h3>Software Engineer Intern at Amazon</h3>
     <p class="resume-meta">2023</p>
     <ul>
-      <li>Alexa Voice AI: ranking inference for voice shopping, and a dashboard benchmarking LLMs on human feedback.</li>
+      <li>Ranking inference for voice shopping, and a dashboard benchmarking LLMs on human feedback.</li>
     </ul>
   </div>
 
@@ -106,7 +141,7 @@ description: Lam Nguyen's academic resume, with education, publications, researc
     <h3>Software Engineer Intern at Microsoft</h3>
     <p class="resume-meta">2023</p>
     <ul>
-      <li>Microsoft Security: a tiered archive for 110M+ monthly agent logs that keeps critical signals hot.</li>
+      <li>A tiered archive for 110M+ monthly agent logs that keeps critical signals hot.</li>
     </ul>
   </div>
 
@@ -114,7 +149,7 @@ description: Lam Nguyen's academic resume, with education, publications, researc
     <h3>Software Engineer Intern at Microsoft</h3>
     <p class="resume-meta">2022</p>
     <ul>
-      <li>Azure Data: disk provisioning and dynamic VM scaling for processing partitioned audit logs.</li>
+      <li>Disk provisioning and dynamic VM scaling for processing partitioned audit logs.</li>
     </ul>
   </div>
 </section>
