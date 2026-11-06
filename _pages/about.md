@@ -14,8 +14,7 @@ description: >-
 
 <section id="about" class="intro">
   <p><strong>I build semantic data infrastructure for trustworthy AI agents.</strong></p>
-  <p style="text-wrap: balance">I work on AI for science at the Center&nbsp;for&nbsp;Materials&nbsp;Data&nbsp;Science and agentic security at Microsoft.</p>
-  <p>I want agents to get the right context, from the right source, at a bounded cost. I approach LLM reasoning through the lens of <em>databases</em>: agentic retrieval, agent memory, natural language interfaces, and fast, verifiable query processing.</p>
+  <p>I work on AI for science at the Center for Materials Data Science and agentic security at Microsoft. I want agents to get the right context, from the right source, at a bounded cost. I approach LLM reasoning through the lens of <em>databases</em>: agentic retrieval, agent memory, natural language interfaces, and fast, verifiable query processing.</p>
   <p><strong>Research interests</strong></p>
   <ul class="interests">
     <li><strong>Semantic engineering</strong>: ontology matching and evolving knowledge graphs.</li>
