@@ -18,9 +18,9 @@ description: >-
   <p>I want agents to get the right context, from the right source, at a bounded cost. I approach LLM reasoning through the lens of <em>databases</em>: agentic retrieval, agent memory, natural language interfaces, and fast, verifiable query processing.</p>
   <p><strong>Research interests</strong></p>
   <ul class="interests">
-    <li><strong>Semantic engineering</strong>: ontology matching, knowledge graph construction, and keeping knowledge current.</li>
+    <li><strong>Semantic engineering</strong>: ontology matching and evolving knowledge graphs.</li>
     <li><strong>Quality governance</strong>: query-driven assessment, provenance, and integrity.</li>
-    <li><strong>Agentic security</strong>: schema-constrained retrieval and agents that act only on what they can verify.</li>
+    <li><strong>Agentic security</strong>: schema-constrained retrieval and verifiable agent actions.</li>
     <li><strong>LLM agents</strong>: agent memory, tool use, and natural language interfaces to databases.</li>
     <li><strong>Database systems</strong>: indexing, query optimization, concurrency, and recovery.</li>
     <li><strong>AI for science</strong>: scientific agents and hypothesis validation.</li>
