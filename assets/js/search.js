@@ -1,4 +1,4 @@
-/* Spotlight-style search over the blog.
+/* Spotlight-style search over the algorithm notes.
    The index is built in the browser: on first open, every topic page is
    fetched and cut into one record per h2/h3 section (plus one per row of
    the LeetCode table), so a hit links straight to its #id. The built index
@@ -157,7 +157,7 @@
     // the LeetCode list: one record per problem
     var table = article.querySelector("table");
     if (table && /leetcode/.test(url)) {
-      var page = rec("topic", topic.title, "Blog", url, topic.title);
+      var page = rec("topic", topic.title, "Algorithms", url, topic.title);
       page.b = topic.desc || "";
       out.push(page);
       Array.prototype.forEach.call(table.querySelectorAll("tbody tr"), function (tr) {
@@ -173,7 +173,7 @@
       return out.map(finish);
     }
 
-    var top = rec("topic", topic.title, "Blog", url, topic.title);
+    var top = rec("topic", topic.title, "Algorithms", url, topic.title);
     top.b = (topic.desc || "") + " ";
     out.push(top);
     var h2 = null;
@@ -481,7 +481,7 @@
     if (!terms.length) {
       // nothing typed: browse the topics
       var rows = data.topics.map(function (t) {
-        var r = { k: "topic", t: t.title, p: "Blog", u: t.url, b: t.desc || "", topic: t.title };
+        var r = { k: "topic", t: t.title, p: "Algorithms", u: t.url, b: t.desc || "", topic: t.title };
         items.push(r);
         return row(r, items.length - 1, [], false);
       });

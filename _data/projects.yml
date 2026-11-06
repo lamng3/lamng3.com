@@ -4,27 +4,6 @@
 # scripts/update-stars.sh. `notable` puts a project on the home page, with
 # `blurb` and an optional `stat`. A project with no `links` is not public yet.
 
-- slug: ontodb
-  title: OntoDB
-  date: 2026-10-01
-  languages: [C++]
-  category: Databases
-  image: ontodb.jpg
-  notable: true
-  blurb: a database management system for ontologies
-  stat: SPARQL over B+ trees, strict 2PL, and ARIES recovery
-  lead: A database management system for ontologies. Data is RDF and the query language is SPARQL.
-  body:
-    - "The shell answers a SPARQL subset over B+ tree indexes with a cost-based optimizer, runs statements under strict two-phase locking, and recovers pages with ARIES after a crash, from a checksummed write-ahead log."
-    - "I wrote it to learn database internals end to end, and the [book](/publications/ontodb-book/) explains each layer as it is built."
-    - "The engine also compiles to WebAssembly, so the [playground](https://lamng3.com/ontodb/playground.html) runs OntoDB itself in the page: SPARQL, its query plans, the B+ tree indexes and the semantic search, on a Gene Ontology slice."
-    - "It also finds terms close in meaning: the class hierarchy is stored as intervals a B+ tree can range-scan, and vector indexes search one embedding per term, with the search limited to the terms under a class. The [paper](/publications/ontodb-semantic/) measures it on the Gene Ontology."
-  links:
-    - { label: Demo, url: "https://lamng3.com/ontodb/" }
-    - { label: Playground, url: "https://lamng3.com/ontodb/playground.html" }
-    - { label: Book, url: "/publications/ontodb-book/" }
-    - { label: Paper, url: "/publications/ontodb-semantic/" }
-
 - slug: kroma
   title: KROMA
   date: 2025-05-05
@@ -46,6 +25,30 @@
     - { label: Playground, url: "https://lamng3.com/kroma/playground.html" }
     - { label: Code, url: "https://github.com/cwru-sdle/kroma" }
 
+- slug: ontodb
+  title: OntoDB
+  date: 2026-10-01
+  repo: lamng3/OntoDB
+  stars: 1
+  languages: [C++]
+  category: Databases
+  image: ontodb.jpg
+  notable: true
+  blurb: a fast and persistent query engine for ontologies
+  stat: SPARQL over B+ trees, strict 2PL, and ARIES recovery
+  lead: A database management system for ontologies. Data is RDF and the query language is SPARQL.
+  body:
+    - "The shell answers a SPARQL subset over B+ tree indexes with a cost-based optimizer, runs statements under strict two-phase locking, and recovers pages with ARIES after a crash, from a checksummed write-ahead log."
+    - "I wrote it to learn database internals end to end, and the [book](/publications/ontodb-book/) explains each layer as it is built."
+    - "The engine also compiles to WebAssembly, so the [playground](https://lamng3.com/ontodb/playground.html) runs OntoDB itself in the page: SPARQL, its query plans, the B+ tree indexes and the semantic search, on a Gene Ontology slice."
+    - "It also finds terms close in meaning: the class hierarchy is stored as intervals a B+ tree can range-scan, and vector indexes search one embedding per term, with the search limited to the terms under a class. The [paper](/publications/ontodb-semantic/) measures it on the Gene Ontology."
+  links:
+    - { label: Paper, url: "/publications/ontodb-semantic/" }
+    - { label: Demo, url: "https://lamng3.com/ontodb/" }
+    - { label: Playground, url: "https://lamng3.com/ontodb/playground.html" }
+    - { label: Book, url: "/publications/ontodb-book/" }
+    - { label: Code, url: "https://github.com/lamng3/OntoDB" }
+
 - slug: ontocheck
   title: OntoCheck
   date: 2025-09-22
@@ -53,11 +56,16 @@
   stars: 4
   languages: [Python]
   category: Knowledge Graphs
+  notable: true
+  blurb: query-driven assessment of scientific ontologies
+  stat: scores an ontology on the questions its users ask; on PyPI
   lead: Query-driven ontology assessment for scientific domain applications.
   body:
     - "OntoCheck asks whether an ontology can answer the questions its users need answered, and scores it on those queries. I contributed to it at the Center for Materials Data Science."
   links:
     - { label: Code, url: "https://github.com/cwru-sdle/OntoCheck" }
+    - { label: Project page, url: "https://cwru-sdle.github.io/OntoCheck/" }
+    - { label: PyPI, url: "https://pypi.org/project/OntoCheck/" }
 
 - slug: leetmath
   title: LeetMath
@@ -134,7 +142,7 @@
   image: library.jpg
   lead: C++ and Python implementations of the algorithms and data structures I use for competitive programming and interviews, with contest templates.
   body:
-    - "44 entries, from segment trees and Fenwick trees to rolling hashes, graph algorithms, caches and probabilistic sketches. Each comes from my notebook, where it has unit tests, and has its own page with the code and a copy button. The [blog](/blog/) explains many of the ideas behind them."
+    - "44 entries, from segment trees and Fenwick trees to rolling hashes, graph algorithms, caches and probabilistic sketches. Each comes from my notebook, where it has unit tests, and has its own page with the code and a copy button. The [algorithm notes](/blog/) explain many of the ideas behind them."
   links:
     - { label: Library, url: "/library/" }
     - { label: Code, url: "https://github.com/lamng3/competitive-programming-notebook" }

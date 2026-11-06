@@ -1,7 +1,7 @@
 ---
 layout: default
 permalink: /blog/
-title: Blog
+title: Algorithms
 description: Study notes on algorithms, data structures, and the systems built on them, and where they turn up again in agentic memory.
 ---
 
@@ -11,7 +11,7 @@ description: Study notes on algorithms, data structures, and the systems built o
 </section>
 
 <div class="search-wrap">
-  <button class="search-field" type="button" data-search-open aria-label="Search the blog">
+  <button class="search-field" type="button" data-search-open aria-label="Search the algorithm notes">
     <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5 21 21" /></svg>
     <span class="search-field-text">Search techniques, problems, keywords…</span>
     <kbd class="search-shortcut">⌘K</kbd>

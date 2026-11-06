@@ -3,7 +3,7 @@ layout: default
 title: Lam Nguyen
 permalink: /
 description: >-
-  Lam Nguyen, researcher. AI for scientific discovery, agentic retrieval, and database internals.
+  Lam Nguyen, researcher. Semantic data infrastructure for trustworthy AI agents, with AI for science as the main application.
 ---
 
 <p class="tagline">
@@ -13,16 +13,17 @@ description: >-
 </p>
 
 <section id="about" class="intro">
-  <p><strong>I play with agentic retrieval and database internals.</strong></p>
-  <p>I work on AI for scientific discovery at the Center for Materials Data Science, and on agentic security at Microsoft.</p>
-  <p>I build the <em>semantic data layer</em> for LLMs: ontologies and knowledge graphs that give agents the right context, from the right source, at a bounded cost. I design algorithms and systems through the lens of <em>databases</em>, so retrieval stays context-aware, cache-aware, and trustworthy as the knowledge underneath it evolves.</p>
+  <p><strong>I build semantic data infrastructure for trustworthy AI agents.</strong></p>
+  <p>I work on AI for science at the Center for Materials Data Science, after working on agentic security at Microsoft.</p>
+  <p>I want agents to get the right context, from the right source, at a bounded cost. I approach LLM reasoning through the lens of <em>databases</em>: agentic retrieval, agent memory, natural language interfaces, and fast, verifiable query processing.</p>
   <p><strong>Research interests</strong></p>
   <ul class="interests">
-    <li><strong>LLM agents</strong>: agent memory, tool use, and structured retrieval.</li>
-    <li><strong>Knowledge graphs</strong>: ontology matching, KG construction, and KGQA.</li>
+    <li><strong>Semantic engineering</strong>: ontology matching, knowledge graph construction, and keeping knowledge current.</li>
+    <li><strong>Quality governance</strong>: query-driven assessment, provenance, and integrity.</li>
+    <li><strong>Agentic security</strong>: schema-constrained retrieval and agents that act only on what they can verify.</li>
+    <li><strong>LLM agents</strong>: agent memory, tool use, and natural language interfaces to databases.</li>
     <li><strong>Database systems</strong>: indexing, query optimization, concurrency, and recovery.</li>
-    <li><strong>Natural language interfaces to databases</strong>: text-to-SPARQL and text-to-SQL.</li>
-    <li><strong>AI for scientific discovery</strong>: scientific agents and hypothesis validation.</li>
+    <li><strong>AI for science</strong>: scientific agents and hypothesis validation.</li>
     <li><strong>GPU vector search</strong>: fused ANN kernels for recommender systems.</li>
   </ul>
 </section>
@@ -48,7 +49,7 @@ description: >-
 </section>
 
 <section id="background" class="intro">
-  <p>Previously, I interned at Microsoft and Amazon. Before that, I trained competitive programming, with honorable mentions at the <a href="https://icpc.global/ICPCID/6R4PCMCBJSSW">ICPC East Central North America</a> regional and a place in the top 1% of <a href="https://leetcode.com/u/lamng3/">LeetCode contests</a>. I still find data structures a useful lens for thinking about agentic memory. Growing up, I trained competitive math, earning gold at the Hanoi Open Mathematics Competition and silver at the Singapore Mathematical Olympiad.</p>
+  <p>Previously, I was a software engineer at Microsoft, and interned at Microsoft and Amazon. Before that, I trained competitive programming, with honorable mentions at the <a href="https://icpc.global/ICPCID/6R4PCMCBJSSW">ICPC East Central North America</a> regional and a place in the top 1% of <a href="https://leetcode.com/u/lamng3/">LeetCode contests</a>. I still find data structures a useful lens for thinking about agentic memory. Growing up, I trained competitive math, earning gold at the Hanoi Open Mathematics Competition and silver at the Singapore Mathematical Olympiad.</p>
   <p>I hold a B.S. and an M.S. in Computer Science from <a href="https://case.edu">Case Western Reserve University</a>, where I was advised by <a href="https://yinghwu.github.io">Yinghui&nbsp;Wu</a> and wrote my <a href="https://etd.ohiolink.edu/acprod/odb_etd/ws/send_file/send?accession=case1751987504689716&amp;disposition=inline">thesis</a> on ontology matching with knowledge retrieval and efficient language models.</p>
   <p>Reaching me is O(log log log n), practically a constant. Please feel free to reach out at lamng3.work [at] gmail [dot] com if you'd like to talk about any of the above.</p>
 </section>
@@ -56,8 +57,10 @@ description: >-
 <section id="experience">
   <h2>Experience</h2>
   <ul class="timeline">
-    <li><span><strong>Center for Materials Data Science</strong> · Data Scientist, AI for Scientific Discovery</span><time>2026</time></li>
-    <li><span><strong>Microsoft</strong> · Software Engineer, Agentic Security</span><time>2025</time></li>
+    <li><span><strong>Center for Materials Data Science</strong> · Data Science Researcher</span><time>2026–Present</time></li>
+    <li><span><strong>Microsoft</strong> · Software Engineer, Agentic Security</span><time>2025–2026</time></li>
+    <li><span><strong>Center for Materials Data Science</strong> · Affiliate Researcher</span><time>2025–2026</time></li>
+    <li><span><strong>Center for Materials Data Science</strong> · Graduate Student Researcher</span><time>2024–2025</time></li>
     <li><span><strong>Microsoft</strong> · Software Engineer Intern, Security Copilot</span><time>2024</time></li>
     <li><span><strong>Amazon</strong> · Software Engineer Intern, Alexa Voice AI</span><time>2023</time></li>
     <li><span><strong>Microsoft</strong> · Software Engineer Intern, Microsoft Security</span><time>2023</time></li>
@@ -73,7 +76,7 @@ description: >-
         <li>
           <span class="authors">{{ pub.authors }}.</span>
           <a class="ptitle" href="{{ '/publications/' | append: pub.slug | append: '/' | relative_url }}">{{ pub.title }}.</a>
-          {% if pub.status == 'published' %}<span class="venue">{{ pub.venue }}</span>, {{ pub.year }}.{% endif %}
+          <span class="venue">{{ pub.venue }}</span>, {{ pub.year }}.
           {% if pub.pdf %}{%- assign pdf_url = pub.pdf -%}{%- unless pdf_url contains '://' -%}{%- assign pdf_url = pdf_url | relative_url -%}{%- endunless -%}<a href="{{ pdf_url }}">[PDF]</a>{% endif %}
           {% for link in pub.links %}{% if link.label == 'Code' %}<a href="{{ link.url }}">[Code]</a>{% endif %}{% endfor %}
         </li>
@@ -83,7 +86,7 @@ description: >-
   <p class="more"><a href="{{ '/publications/' | relative_url }}">All publications</a></p>
 </section>
 
-<section id="service">
-  <h2>Service</h2>
-  <p>Co-reviewer, IEEE BigData 2024. Founding member of the CWRU Competitive Programming Club, and vice president of the IEEE Hacker Society.</p>
+<section id="services">
+  <h2>Services</h2>
+  <p>Co-reviewer, IEEE BigData 2024.</p>
 </section>

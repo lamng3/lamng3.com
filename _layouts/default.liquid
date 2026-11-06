@@ -27,6 +27,7 @@
         {%- assign section = 'library' -%}
       {%- elsif page.url contains '/blog/' -%}
         {%- assign section = 'blog' -%}
+        {%- assign section_name = 'Algorithms' -%}
       {%- elsif page.url contains '/publications/' -%}
         {%- assign section = 'publications' -%}
       {%- elsif page.url contains '/resume/' -%}
@@ -36,7 +37,9 @@
         <div>
           <a class="name" href="{{ '/' | relative_url }}">Lam Nguyen</a>
           {%- if section != '' -%}
-            <a class="page-name" href="{{ '/' | append: section | append: '/' | relative_url }}">{{ section | capitalize }}</a>
+            <a class="page-name" href="{{ '/' | append: section | append: '/' | relative_url }}">
+              {{- section_name | default: section | capitalize -}}
+            </a>
           {%- endif -%}
         </div>
         <nav class="sitenav" aria-label="Site">
@@ -52,7 +55,7 @@
             {% if section == 'blog' %}
               aria-current="page"
             {% endif %}
-            >blog</a
+            >algorithms</a
           >
           <a
             href="{{ '/publications/' | relative_url }}"
@@ -69,7 +72,7 @@
             >resume</a
           >
           {% if page.url contains '/blog/' and page.url != '/blog/' %}
-            <button class="nav-search" type="button" data-search-open aria-label="Search the blog">
+            <button class="nav-search" type="button" data-search-open aria-label="Search the algorithm notes">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5 21 21" />
               </svg>
