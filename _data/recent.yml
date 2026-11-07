@@ -1,5 +1,9 @@
 # Newest first. Keep this to the notes you still want on the algorithms index.
 # Drop a line when it is no longer current.
+- date: "2026-11-07"
+  title: Cancellation Stack
+  topic: Stacks
+  url: /blog/stacks/#cancellation-stack
 - date: "2026-11-03"
   title: Bitmask DP
   topic: Dynamic Programming
