@@ -45,6 +45,11 @@
       title: Priority Queues and Lazy Deletion
     - id: k-way-merge
       title: K-Way Merge
+- slug: stacks
+  title: Stacks
+  sections:
+    - id: cancellation-stack
+      title: Cancellation Stack
 - slug: hashing
   title: Hashing
   sections:
