@@ -95,7 +95,7 @@
   kind: book
   title: "OntoDB: Database Internals and Vector Search, by Example"
   authors: "L. Nguyen"
-  venue: "Book, 184 pages"
+  venue: "Book, 186 pages"
   year: 2026
   status: living
   tldr: "How a database engine works, from pages and B+ trees to query plans, inference, locking, logging, and ARIES recovery, and how vector search works, from product quantization, IVF, and HNSW to DiskANN, SPANN, GPU search, and filtered search. OntoDB, a database management system for ontologies, is the running example."
