@@ -148,6 +148,56 @@ long long countVanishing(const vector<int>& a) {
 }
 ```
 
+### Follow-up: counting valid intervals
+
+[LeetCode 4104 — Count Valid Substrings II](https://leetcode.com/problems/count-valid-substrings-ii/). Given a string of `a`, `b`, and `c`, count the substrings that do **not** contain `abc` as a subsequence. Again $$n \le 10^5$$.
+
+There are no removals here and no stack, but the move is the same. Keep a small summary of the prefix, update it one letter at a time, and count intervals by their right end, as the vanishing-subarray count above does.
+
+**Fix the right end.** There are $$O(n^2)$$ substrings, too many to check one by one. What unblocks it is monotonicity: if $$s[j..i]$$ contains `abc`, so does every longer substring $$s[j'..i]$$ with $$j' < j$$. So for a fixed end $$i$$, the invalid starts are exactly $$0, \dots, L_i$$, where $$L_i$$ is the latest start whose substring contains `abc` ($$-1$$ if there is none), and
+
+$$
+\text{answer} = \sum_{i} (i - L_i).
+$$
+
+**How far has each start gotten?** $$L_i$$ cannot be updated by itself, because whether a new `c` completes `abc` depends on where the latest `ab` starts. So track one latest start per stage of the pattern. Let $$p = $$ `abc`, and let $$L_k(i)$$ be the largest $$j$$ such that the first $$k$$ letters of $$p$$ are a subsequence of $$s[j..i]$$. The empty pattern fits in the empty substring, so $$L_0(i - 1) = i$$.
+
+A best match for the first $$k$$ letters either uses $$s[i]$$ as its last letter or doesn't:
+
+- If it doesn't, the best start is $$L_k(i - 1)$$.
+- If it does, then $$s[i] = p_k$$ and the first $$k - 1$$ letters fit in $$s[j..i-1]$$, so the best start is $$L_{k-1}(i - 1)$$.
+
+A shorter pattern needs less room, so $$L_{k-1} \ge L_k$$ always, and when $$s[i]$$ matches, the second option wins:
+
+$$
+L_k(i) =
+\begin{cases}
+L_{k-1}(i - 1) & \text{if } s[i] = p_k, \\
+L_k(i - 1) & \text{otherwise.}
+\end{cases}
+$$
+
+The letters of `abc` are distinct, so each step changes exactly one stage:
+
+```cpp
+long long countValidSubstrings(string s) {
+    // latest start j such that s[j..i] contains "a", "ab", "abc" as a subsequence
+    int last_a = -1, last_ab = -1, last_abc = -1;
+    long long ans = 0;
+    for (int i = 0; i < (int)s.size(); i++) {
+        if (s[i] == 'a') last_a = i;
+        else if (s[i] == 'b') last_ab = last_a;   // b extends the latest a
+        else last_abc = last_ab;                  // c extends the latest ab
+        ans += i - last_abc;                      // starts last_abc+1 .. i are valid
+    }
+    return ans;
+}
+```
+
+The chain $$L_1 \ge L_2 \ge L_3$$ plays the role the stack played before. Each stage records how far a partial match has gotten, just as each count recorded how far a run had gotten through its production. When a `c` arrives, the `ab` stage hands its start to the `abc` stage, much as a closing letter ends a run.
+
+For a pattern with repeated letters, one letter can advance several stages at once. Update $$k$$ from $$m$$ down to $$1$$, so that each stage reads the previous step's value, the same order as a 0/1 knapsack. That costs $$O(nm)$$ for a pattern of length $$m$$.
+
 ### Where the stack stops working
 
 The whole argument rested on one fact: overlapping removals give the same word. That is the first thing to check on a new problem. Write down the rules and look for two matches that can overlap.
@@ -162,6 +212,7 @@ The whole argument rested on one fact: overlapping removals give the same word. 
 1. **Before searching over orders, ask whether order matters.** If terminating rules agree on every overlap, every order ends at the same word, and the choices were never real.
 2. **Keep the normal form of the prefix.** Run-length encoding gives $$O(1)$$ updates, and a buried entry resumes when what sits above it vanishes.
 3. **Equal stack states mean a vanishing subarray.** Anything prefix sums do for zero-sum subarrays, stack states can do for cancellation.
+4. **To count intervals, fix the right end.** When validity is monotone in the start, the valid starts for each end form a suffix. Track where it begins with one value per stage of partial progress.
 
 ## Practice {#practice}
 
@@ -178,6 +229,12 @@ The whole argument rested on one fact: overlapping removals give the same word. 
 - [Codeforces 1092D1 — Great Vova Wall (Version 1)](https://codeforces.com/problemset/problem/1092/D1) and [D2](https://codeforces.com/problemset/problem/1092/D2)
 - [Codeforces 878B — Teams Formation](https://codeforces.com/problemset/problem/878/B) (reduce once, then reason about repeated copies)
 - [Codeforces 1223F — Stack Exterminable Arrays](https://codeforces.com/problemset/problem/1223/F) (equal stack states)
+
+**Counting Intervals**
+
+- [LeetCode 4104 — Count Valid Substrings II](https://leetcode.com/problems/count-valid-substrings-ii/)
+- [LeetCode 1358 — Number of Substrings Containing All Three Characters](https://leetcode.com/problems/number-of-substrings-containing-all-three-characters/)
+- [LeetCode 115 — Distinct Subsequences](https://leetcode.com/problems/distinct-subsequences/) (a DP over the stages of the pattern)
 
 **Brackets**
 
