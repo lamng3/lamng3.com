@@ -56,7 +56,7 @@ mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 The sections after this one are pieces. This one is a lecture that puts them inside a whole engine, following one request from the disk up and back down again, and asking at each layer the question that forces the design. The example throughout is [OntoDB](https://github.com/lamng3/OntoDB), a database management system for ontologies that I am building: its data is RDF triples, and its query language is SPARQL.
 
-The companion book, [**OntoDB: Database Internals and Vector Search, by Example**](/publications/ontodb-book/) (PDF, 182 pages), develops every step below in full, with figures and a worked ARIES trace. The [OntoDB demo](https://lamng3.com/ontodb/) runs it in the browser. A [paper](/publications/ontodb-semantic/) extends it to semantic search: why a sort order cannot hold similarity, how a class hierarchy becomes a few ranges of integers in the same B+ tree, and how vector indexes answer the rest.
+The companion book, [**OntoDB: Database Internals and Vector Search, by Example**](/publications/ontodb-book/) (PDF, 184 pages), develops every step below in full, with figures and a worked ARIES trace. The [OntoDB demo](https://lamng3.com/ontodb/) runs it in the browser. A [paper](/publications/ontodb-semantic/) extends it to semantic search: why a sort order cannot hold similarity, how a class hierarchy becomes a few ranges of integers in the same B+ tree, and how vector indexes answer the rest.
 
 ### Why data lives in pages
 
