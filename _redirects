@@ -24,9 +24,11 @@ http://lamng3.netlify.app/*  https://lamng3.com/:splat  301!
 /ontodb/*  https://lamng3.github.io/ontodb-demo/:splat  200!
 /agentic-ontologist/*  https://lamng3.github.io/agentic-ontologist-demo/:splat  200!
 /memcommit/*  https://lamng3.github.io/memcommit-demo/:splat  200!
-/ontoattack/*  https://lamng3.github.io/ontoattack-demo/:splat  200!
-# Aegis was renamed OntoAttack; keep old links working.
-/aegis/*  /ontoattack/:splat  301!
+/ontoattackplanner/*  https://lamng3.github.io/ontoattackplanner-demo/:splat  200!
+# OntoAttack was renamed OntoAttackPlanner; keep old links working.
+/ontoattack/*  /ontoattackplanner/:splat  301!
+# Aegis was renamed OntoAttack, then OntoAttackPlanner; keep old links working.
+/aegis/*  /ontoattackplanner/:splat  301!
 /kroma/*  https://lamng3.github.io/kroma-docs/:splat  200!
 /hermes/*  https://lamng3.github.io/hermes-docs/:splat  200!
 
