@@ -93,13 +93,13 @@
   abstract_label: Overview
   short: OntoDB book
   kind: book
-  title: "OntoDB: Database Internals by Example"
+  title: "OntoDB: Database Internals and Vector Search, by Example"
   authors: "L. Nguyen"
-  venue: "Book, 129 pages"
+  venue: "Book, 182 pages"
   year: 2026
   status: living
-  tldr: "How a database engine works, from pages and B+ trees to query plans, inference, locking, logging, and ARIES recovery. OntoDB, a database management system for ontologies, is the running example."
-  abstract: "Each chapter explains the theory first, then shows how OntoDB applies it, and lays out its design decisions: the choice, the alternatives, why, and what it costs. A list of all of them follows the contents, and every chapter ends with questions, answered in an appendix. Five parts follow a request through the engine: foundations; storage (pages, the buffer pool, B+ trees, indexing RDF, and log-structured trees for contrast); query processing (plans, the iterator model, joins, optimization, outer joins and aggregation, materialized RDFS inference with semi-naive evaluation and delete-and-rederive, and semantic search with interval labels and vector indexes); transactions (isolation and concurrency control); and recovery (the write-ahead rule, ARIES with a worked example, how OntoDB's persistent databases work today, moving the shell onto pages, and keeping the log small with truncation, full-page writes, and fuzzy checkpoints). Chapters for features not built yet say so. The book grows as OntoDB does."
+  tldr: "How a database engine works, from pages and B+ trees to query plans, inference, locking, logging, and ARIES recovery, and how vector search works, from product quantization, IVF, and HNSW to DiskANN, SPANN, GPU search, and filtered search. OntoDB, a database management system for ontologies, is the running example."
+  abstract: "Each chapter explains the theory first, then shows how OntoDB applies it, and lays out its design decisions: the choice, the alternatives, why, and what it costs. A list of all of them follows the contents, and every chapter ends with questions, answered in an appendix. Five parts follow a request through the engine, and a sixth is about searching by similarity: foundations; storage (pages, the buffer pool, B+ trees, indexing RDF, and log-structured trees for contrast); query processing (plans, the iterator model, joins, optimization, outer joins and aggregation, materialized RDFS inference with semi-naive evaluation and delete-and-rederive, and a class hierarchy as interval labels); transactions (isolation and concurrency control); and recovery (the write-ahead rule, ARIES with a worked example, how OntoDB's persistent databases work today, moving the shell onto pages, and keeping the log small with truncation, full-page writes, and fuzzy checkpoints); and vector search (embeddings and similarity, scalar, product, and binary quantization, IVF and SPANN, HNSW, DiskANN and FreshDiskANN, GPU search with FAISS and CAGRA and the roofline that says when it pays, filtered search, and how the pieces become a vector database). A reading list closes the book. Chapters for features not built yet say so. The book grows as OntoDB does."
   highlights: []
   pdf: /assets/papers/ontodb-book.pdf
   links:
