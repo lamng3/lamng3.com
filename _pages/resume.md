@@ -86,7 +86,7 @@ description: Lam Nguyen's academic resume, with education, publications, researc
   <h2>Research experience</h2>
 
   <div class="job">
-    <h3>Data Science Researcher at the Center for Materials Data Science</h3>
+    <h3>AI Research Scientist at the Center for Materials Data Science</h3>
     <p class="resume-meta">2026 – Present</p>
     <ul>
       <li>Semantic data infrastructure for LLM agents: a query engine for ontologies, a transactional memory layer for agents, and memory-augmented agents that build and maintain ontologies.</li>

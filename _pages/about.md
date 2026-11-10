@@ -54,7 +54,7 @@ description: >-
 <section id="experience">
   <h2>Experience</h2>
   <ul class="timeline">
-    <li><span><strong>Center for Materials Data Science</strong> · Data Science Researcher</span><time>2026–Present</time></li>
+    <li><span><strong>Center for Materials Data Science</strong> · AI Research Scientist</span><time>2026–Present</time></li>
     <li><span><strong>Microsoft</strong> · Software Engineer</span><time>2025–2026</time></li>
     <li><span><strong>Center for Materials Data Science</strong> · Affiliate Researcher</span><time>2025–2026</time></li>
     <li><span><strong>Center for Materials Data Science</strong> · Graduate Student Researcher</span><time>2024–2025</time></li>
