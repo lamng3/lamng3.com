@@ -117,6 +117,8 @@
       title: Quadtree
     - id: cache-eviction
       title: Cache Eviction
+    - id: accumulator
+      title: Accumulators and Aggregates
 - slug: selected-leetcode-problems
   title: Selected LeetCode Problems
   sections: []

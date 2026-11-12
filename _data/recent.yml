@@ -1,5 +1,9 @@
 # Newest first. Keep this to the notes you still want on the algorithms index.
 # Drop a line when it is no longer current.
+- date: "2026-11-11"
+  title: Accumulators and Aggregates
+  topic: Databases
+  url: /blog/databases/#accumulator
 - date: "2026-11-07"
   title: Cancellation Stack
   topic: Stacks

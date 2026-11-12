@@ -1,15 +1,15 @@
 ---
 layout: post
 title: "Databases"
-description: "Ideas from competitive programming that show up inside database systems: keeping old versions around (persistence, MVCC, copy-on-write B-trees), laying sparse data out for fast scans (compressed sparse row), answering membership in little memory (filters and sketches), keeping a sorted table in memory (skip lists), summing over rectangles of a grid (quadtrees), deciding what stays in a full cache (eviction), and a lecture on a whole database engine, end to end."
+description: "Ideas from competitive programming that show up inside database systems: keeping old versions around (persistence, MVCC, copy-on-write B-trees), laying sparse data out for fast scans (compressed sparse row), answering membership in little memory (filters and sketches), keeping a sorted table in memory (skip lists), summing over rectangles of a grid (quadtrees), deciding what stays in a full cache (eviction), folding a stream of rows into a few numbers (accumulators and aggregates), and a lecture on a whole database engine, end to end."
 permalink: /blog/databases/
-last_updated: 2026-10-30
+last_updated: 2026-11-11
 author: Lam Nguyen
 toc:
   sidebar: right
 ---
 
-Ideas from competitive programming that show up inside database systems: keeping old versions around (persistence, MVCC, copy-on-write B-trees), laying sparse data out for fast scans (compressed sparse row), answering membership in little memory (filters and sketches), keeping a sorted table in memory (skip lists), summing over rectangles of a grid (quadtrees), and deciding what stays in a full cache (eviction). The first section is a lecture that puts these pieces inside a whole database engine, from pages to crash recovery, with [OntoDB](#database-engine) as the example.
+Ideas from competitive programming that show up inside database systems: keeping old versions around (persistence, MVCC, copy-on-write B-trees), laying sparse data out for fast scans (compressed sparse row), answering membership in little memory (filters and sketches), keeping a sorted table in memory (skip lists), summing over rectangles of a grid (quadtrees), deciding what stays in a full cache (eviction), and folding a stream of rows into a few numbers (accumulators and aggregates). The first section is a lecture that puts these pieces inside a whole database engine, from pages to crash recovery, with [OntoDB](#database-engine) as the example.
 
 <details markdown="1">
 <summary>C++ template used by every implementation on this page</summary>
@@ -892,6 +892,156 @@ A new page enters A1in. If it ages out without anyone caring, its key passes thr
 
 A database buffer pool makes this choice for disk pages. An agent with a bounded context makes it for facts, tool results, and past turns: what to keep, what to drop, and what to remember only by name, like A1out, so it can be fetched again if it turns out to matter.
 
+## Accumulators and Aggregates {#accumulator}
+
+A cache keeps as much as memory allows. An aggregate goes to the other extreme: it reads every row once and keeps only a few numbers. `SUM`, `MAX`, and `AVG` all work this way, and so does a small loop that solves a LeetCode problem. Both have the same shape, and seeing it once makes the database version easy to read.
+
+### The problem
+
+[LeetCode 3105](https://leetcode.com/problems/longest-strictly-increasing-or-strictly-decreasing-subarray/) gives an array `nums` and asks for the length of the longest subarray that is strictly increasing or strictly decreasing. For `[1, 4, 3, 3, 2]` the answer is $$2$$: `[1, 4]` goes up, `[4, 3]` and `[3, 2]` go down, and the equal pair `3, 3` is neither.
+
+### First instinct: check every subarray
+
+There are $$O(n^2)$$ subarrays, and checking one takes up to $$O(n)$$. Most of that work is wasted. If `nums[i] <= nums[i-1]`, no increasing subarray can contain both $$i-1$$ and $$i$$, so everything before $$i$$ stops mattering for increasing runs. So which facts about the prefix do we actually need?
+
+Fix the right end $$i$$. Every increasing subarray that ends at $$i$$ is a suffix of the **longest** one ending at $$i$$, so that longest one is the only one worth tracking. Call its length $$\text{run}_i$$. It extends the run ending at $$i-1$$ exactly when the last step goes up:
+
+$$
+\text{run}_i =
+\begin{cases}
+\text{run}_{i-1} + 1 & \text{if } \text{nums}[i] > \text{nums}[i-1], \\
+1 & \text{otherwise,}
+\end{cases}
+\qquad
+\text{answer} = \max_i \text{run}_i .
+$$
+
+This is a DP, but $$\text{run}_i$$ depends only on $$\text{run}_{i-1}$$, so the table shrinks to two integers: the current run, and the best seen so far.
+
+### The accumulator
+
+Put those two integers and their update in a struct:
+
+```cpp
+struct Accumulator {
+    int best = 1, run = 1;
+    void push(bool ok) {
+        run = ok ? run + 1 : 1;
+        best = max(best, run);
+    }
+    int get() const { return best; }
+};
+
+class Solution {
+public:
+    int longestMonotonicSubarray(vi& nums) {
+        Accumulator inc, dec;
+        FOR(i, 1, sz(nums)-1) {
+            inc.push(nums[i] > nums[i-1]);
+            dec.push(nums[i] < nums[i-1]);
+        }
+        return max(inc.get(), dec.get());
+    }
+};
+```
+
+On `[1, 4, 3, 3, 2]`, each step feeds one comparison to each accumulator:
+
+| step $$i$$ | pair   | `inc` gets | `inc.run` | `dec` gets | `dec.run` |
+| ---------- | ------ | ---------- | --------- | ---------- | --------- |
+| 1          | (1, 4) | true       | 2         | false      | 1         |
+| 2          | (4, 3) | false      | 1         | true       | 2         |
+| 3          | (3, 3) | false      | 1         | false      | 1         |
+| 4          | (3, 2) | false      | 1         | true       | 2         |
+
+Both `best` values end at $$2$$. Three choices in this code are worth noticing:
+
+- **`push` takes a `bool`, not a number.** The accumulator does not know what "increasing" means. The caller decides what counts as continuing the run, so the same struct finds the longest non-decreasing run (`>=`), the longest run of equal values (`==`), or the longest run of ones.
+- **Two accumulators instead of one with a direction.** A first attempt keeps a single run plus a flag for up or down. Then an equal pair has to break both directions, and a change of direction has to restart the run at $$2$$, not $$1$$, because the pair that turned belongs to the new run. Two independent accumulators avoid both cases: an equal pair sends `false` to each, and at a turn the accumulator for the new direction is already at $$2$$.
+- **Both share one loop.** The array is read once, whatever we count during that pass.
+
+That makes it $$O(n)$$ time and $$O(1)$$ extra space. The array never needs to be in memory at all; the solution works on a stream.
+
+### This is how a database computes an aggregate
+
+A query engine computes `SUM(x)` the same way. It does not collect the column first. It keeps a **state**, calls a **step** function on each row, and calls a **final** function at the end. PostgreSQL names these parts directly in [`CREATE AGGREGATE`](https://www.postgresql.org/docs/current/xaggr.html), and SQLite's [application-defined aggregates](https://www.sqlite.org/appfunc.html) implement the same parts as callbacks:
+
+| Accumulator          | PostgreSQL    | SQLite            |
+| -------------------- | ------------- | ----------------- |
+| `int best, run`      | `STYPE`       | aggregate context |
+| `best = 1, run = 1`  | `INITCOND`    | zeroed context    |
+| `push(ok)`           | `SFUNC`       | `xStep`           |
+| `get()`              | `FINALFUNC`   | `xFinal`          |
+| (next section) merge | `COMBINEFUNC` | none              |
+
+Why separate the state from the answer at all? `AVG` shows why. Its state cannot be the running average, because an average of averages is wrong when the parts have different sizes. The state is the pair (sum, count), and only the final function divides. Here the state is (best, run), and `get` throws `run` away.
+
+The initial state matters as well. `best = 1, run = 1` already counts the first element, which is correct because LeetCode guarantees $$n \ge 1$$. On an empty input it would answer $$1$$. SQL aggregates handle this case explicitly: over zero rows, `MAX` returns `NULL` and `COUNT` returns $$0$$.
+
+Running two accumulators in one loop is also standard. `SELECT MIN(x), MAX(x), AVG(x) FROM t` scans `t` once and updates three states per row, as `inc` and `dec` share one pass over `nums`.
+
+### The same question in SQL: gaps and islands
+
+Written declaratively, without a loop, this is the classic **gaps and islands** query. A table has no "previous element"; the window function `LAG` provides one. Flag each row that starts a new run, and a running sum of those flags gives every run its own id:
+
+```sql
+WITH flagged AS (
+  SELECT i, x,
+         CASE WHEN x > LAG(x) OVER (ORDER BY i) THEN 0 ELSE 1 END AS starts_run
+  FROM nums
+),
+islands AS (
+  SELECT i, SUM(starts_run) OVER (ORDER BY i) AS run_id
+  FROM flagged
+)
+SELECT MAX(len) FROM (
+  SELECT COUNT(*) AS len FROM islands GROUP BY run_id
+);
+```
+
+On the first row `LAG` returns `NULL`, the comparison is `NULL`, and the `CASE` falls to `1`, so the first row starts a run as it should. The query returns $$2$$ on the example. It computes the same recurrence: `starts_run` is `!ok`, and the length of each island is the final `run` before a reset. The loop kept one integer; the query writes a flag and an id on every row and then groups them. Both are fine, but the loop shows that the state the query needs is constant-size.
+
+### Splitting the scan: what a chunk must tell its neighbor
+
+A parallel scan splits the table into chunks, gives each worker one chunk, and merges the partial states. Can we merge two `Accumulator`s?
+
+The first instinct is `best = max(left.best, right.best)`. That misses any run that crosses the seam: in `[1, 2 | 3, 4]` each half reports $$2$$, but the answer is $$4$$. The right half also started its `run` at $$1$$ without knowing what came before it.
+
+So the real question is: **what does a chunk have to tell its neighbor?** A run crosses the seam only if it ends the left chunk and begins the right one, and joining them depends on a single comparison, the left chunk's last value against the right chunk's first. So each chunk reports:
+
+- `first`, `last`: its end values, for that comparison;
+- `pre`, `suf`: the length of the run at its start and at its end;
+- `len`: its size, to tell whether the whole chunk is one run;
+- `best`: the longest run inside it.
+
+```cpp
+struct Run {
+    int first, last, len, pre, suf, best;
+};
+Run leaf(int x) { return {x, x, 1, 1, 1, 1}; }
+Run combine(const Run& a, const Run& b) {
+    bool ok = a.last < b.first;           // the one comparison at the seam
+    Run c;
+    c.first = a.first, c.last = b.last, c.len = a.len + b.len;
+    c.pre  = (ok && a.pre == a.len) ? a.len + b.pre : a.pre;
+    c.suf  = (ok && b.suf == b.len) ? b.len + a.suf : b.suf;
+    c.best = max({a.best, b.best, ok ? a.suf + b.pre : 0});
+    return c;
+}
+```
+
+The prefix extends past the seam only when the left chunk is a single run (`a.pre == a.len`), and the suffix likewise. This is the node merge from the [segment tree for LeetCode 2213](/blog/range-queries/#segment-tree), with "same character" replaced by "goes up". A segment tree is this combine applied in a fixed tree shape.
+
+`combine` is **associative**: any bracketing of the chunks gives the same answer. That is what makes a parallel merge correct, and it holds here (I checked it against brute force on random splits and random merge orders). It is **not commutative**, though: `combine(b, a)` compares the wrong ends. Chunks have to be merged in their original order. PostgreSQL's parallel aggregation makes no such promise about row order, and it [does not run in parallel](https://www.postgresql.org/docs/current/parallel-plans.html#PARALLEL-AGGREGATION) when an aggregate call contains `ORDER BY`.
+
+Gray et al. classify aggregates by their state. **Distributive** ones like `SUM` and `MAX` merge partial answers directly. **Algebraic** ones like `AVG` need a fixed-size state larger than the answer. **Holistic** ones like `MEDIAN` have no fixed-size state at all. The longest run is algebraic: its answer is one integer, but its mergeable state is six. Each field has a counterpart in the loop. `best` stays `best`, `run` becomes `suf`, and the previous element the loop reads as `nums[i-1]` becomes `last`. Merging adds `pre`, `first`, and `len`, because a chunk can also be extended on its left, which a loop that only appends never has to handle.
+
+### What to take from it
+
+1. **Ask what the next element needs from the past.** Here it is the run ending at the previous element. When that fits in a few integers, the DP becomes an accumulator, and the array becomes a stream.
+2. **Keep the predicate outside the accumulator.** A struct that takes a `bool` handles every "longest run of adjacent pairs that satisfy P" problem.
+3. **To parallelize, ask what a chunk must tell its neighbor.** Answering that question gives the combine function, and the combine function must be associative.
+
 ## From the Notebook {#notebook}
 
 Implementations from my [competitive programming notebook](https://github.com/lamng3/competitive-programming-notebook), tagged with their [USACO Guide](https://usaco.guide/) level where they have one.
@@ -935,6 +1085,14 @@ All take an edge list and need real traversal over the adjacency — topological
 - [LeetCode 146 — LRU Cache](https://leetcode.com/problems/lru-cache/)
 - [LeetCode 460 — LFU Cache](https://leetcode.com/problems/lfu-cache/)
 
+**Accumulators and Aggregates**
+
+- [LeetCode 3105 — Longest Strictly Increasing or Strictly Decreasing Subarray](https://leetcode.com/problems/longest-strictly-increasing-or-strictly-decreasing-subarray/) ([worked above](#accumulator))
+- [LeetCode 674 — Longest Continuous Increasing Subsequence](https://leetcode.com/problems/longest-continuous-increasing-subsequence/) (one accumulator)
+- [LeetCode 1446 — Consecutive Characters](https://leetcode.com/problems/consecutive-characters/) (the predicate is `==`)
+- [LeetCode 978 — Longest Turbulent Subarray](https://leetcode.com/problems/longest-turbulent-subarray/) (the predicate looks at three elements)
+- [LeetCode 2213 — Longest Substring of One Repeating Character](https://leetcode.com/problems/longest-substring-of-one-repeating-character/) (the mergeable state, in a segment tree)
+
 ## Further reading {#further-reading}
 
 **A Database Engine, End to End**
@@ -943,6 +1101,12 @@ All take an edge list and need real traversal over the adjacency — topological
 - Alex Petrov, _Database Internals_ (O'Reilly, 2019).
 - Mohan et al., [ARIES](https://dl.acm.org/doi/10.1145/128765.128770) (TODS, 1992).
 - O'Neil, O'Neil, and Weikum, [The LRU-K page replacement algorithm](https://dl.acm.org/doi/10.1145/170036.170081) (SIGMOD, 1993).
+
+**Accumulators and Aggregates**
+
+- PostgreSQL, [User-Defined Aggregates](https://www.postgresql.org/docs/current/xaggr.html) and [Parallel Aggregation](https://www.postgresql.org/docs/current/parallel-plans.html#PARALLEL-AGGREGATION).
+- SQLite, [Application-Defined SQL Functions](https://www.sqlite.org/appfunc.html).
+- Gray et al., _Data Cube: A Relational Aggregation Operator Generalizing Group-By, Cross-Tab, and Sub-Totals_ (Data Mining and Knowledge Discovery, 1997), for distributive, algebraic, and holistic aggregates.
 
 **Compressed Sparse Row**
 
