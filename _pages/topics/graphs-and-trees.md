@@ -708,9 +708,23 @@ A note on "$$O(1)$$". It means a constant number of operations on machine words,
 
 An **Euler tour** of a graph is a closed walk that uses every edge exactly once.
 
-A tree with at least one edge has no Euler tour. Each time a closed walk passes through a vertex, it arrives on one edge and leaves on another, so the edges the walk uses at that vertex pair up, and every vertex must have even degree. A leaf has degree $$1$$.
+**In general, trees do not have Euler tours.** Two facts give this.
 
-The fix is to replace each edge $$\{u, v\}$$ with two directed edges, $$u \to v$$ and $$v \to u$$. Now every vertex has as many edges in as out, and the graph is connected, so by Euler's theorem it has an Euler tour. A DFS writes one down: go down $$v \to c$$, tour $$c$$'s subtree, come back up $$c \to v$$. Record the vertex the walk is at after every move, and you get the sequence `flatten` builds:
+- _A closed walk that uses every edge exactly once needs every degree to be even._ Each time the walk passes through a vertex, it arrives on one edge and leaves on another. The start vertex is no exception, since the walk leaves it first and arrives back at the end. So the edges at each vertex are used in (in, out) pairs, and since every edge is used, the degree is even.
+- _Every tree with $$n \ge 2$$ vertices has at least two leaves._ Take a longest path $$x_0, x_1, \dots, x_k$$. If $$x_0$$ had a neighbor other than $$x_1$$, either that neighbor is off the path, and the path could be extended, or it is on the path, and the tree would have a cycle. So $$x_0$$ has degree $$1$$, and so does $$x_k$$.
+
+A leaf has odd degree, so a tree with an edge has no Euler tour. The smallest case shows the problem: on the tree $$1 - 2$$, a walk from $$1$$ uses the only edge to reach $$2$$ and has no edge left to come back on.
+
+**Why we want a tour anyway.** For LCA we want a walk that starts at the root, reaches every vertex, and comes back to $$v$$ after it finishes each child of $$v$$. That return is what will put the LCA between $$u$$ and $$v$$ in the theorem below. In a tree, the only way out of a child $$c$$'s subtree and back to $$v$$ is the edge $$\{v, c\}$$ itself. So the walk we want crosses every edge **twice**, once going down and once coming back up. A tree's own edges can carry each crossing only once, and that is the gap the doubling fills.
+
+**Technique: replace each edge $$\{u, v\}$$ with two directed edges $$(u, v)$$ and $$(v, u)$$.** The resulting graph has an Euler tour. Two ways to see it:
+
+- _By Euler's theorem._ After doubling, every vertex has in-degree equal to out-degree (both equal its old degree), and the graph is still connected. A connected directed graph with in-degree equal to out-degree everywhere has an Euler tour. (In undirected terms, every degree has doubled, so every degree is even.)
+- _By construction, without the theorem._ Run a DFS from the root. When it enters a child $$c$$ of $$v$$, it uses $$(v, c)$$. When it finishes $$c$$'s subtree and returns, it uses $$(c, v)$$. Each tree edge $$\{v, c\}$$, with $$v$$ the parent, is crossed in exactly these two moves, so each of the $$2(n-1)$$ directed edges is used exactly once, and the walk starts and ends at the root. That is an Euler tour of the doubled graph.
+
+The directions carry the depths too. A down edge $$(v, c)$$ goes one level deeper, and an up edge $$(c, v)$$ goes one level up. Lemma 1 below is exactly this, read off the tour.
+
+Record the vertex the walk is at after every move, and you get the sequence `flatten` builds:
 
 ```cpp
 void flatten(int v, int p, int h) {
@@ -747,7 +761,7 @@ This is not the flattening used for subtree queries. That one records entry and 
 
 > **Lemma 1 (the tour moves by ±1).** $$m = 2n - 1$$, and $$\lvert A[i+1] - A[i] \rvert = 1$$ for every $$i$$.
 
-_Proof._ The walk crosses each of the $$n - 1$$ edges twice, once down and once up, so it makes $$2(n-1)$$ moves and records $$2(n-1) + 1 = 2n - 1$$ vertices. Each move goes from a vertex to one of its children, so the depth rises by $$1$$, or from a vertex to its parent, so the depth falls by $$1$$. $$\blacksquare$$
+_Proof._ The tour is an Euler tour of the doubled graph, so it makes one move per directed edge, $$2(n-1)$$ moves in all, and records $$2(n-1) + 1 = 2n - 1$$ vertices. Each move is a down edge $$(v, c)$$, from a vertex to one of its children, so the depth rises by $$1$$, or an up edge $$(c, v)$$, from a vertex to its parent, so the depth falls by $$1$$. $$\blacksquare$$
 
 Everything later rests on this lemma. The heights along the tour go up and down one step at a time, never jumping and never staying flat.
 
@@ -1212,7 +1226,7 @@ How the functions map to the argument:
 
 Pitfalls:
 
-- **Edges are undirected.** Store both directions.
+- **Edges are undirected.** Store both directions: `adj[a]` gets `b` and `adj[b]` gets `a`. The input doesn't say which end is the parent, so the DFS must be able to walk down the edge from either end. Then `if (u == p) continue` stops it from going back up the parent edge as if it were a child. The up move $$(c, v)$$ from Step 1 is never read from `adj`. It is the return from `flatten(c)`, followed by `euler_tour.pb(v)`.
 - **`log_2` must cover the tour, $$2n - 1$$ entries, not just $$n$$.**
 - **Reset between test cases** with `assign` and `clear`. A `push_back` or `resize` keeps old data on the second call.
 - **Recursion depth.** A path of $$5 \cdot 10^5$$ vertices recurses that deep. That is fine on Codeforces. Locally, run `ulimit -s 65520` first.
