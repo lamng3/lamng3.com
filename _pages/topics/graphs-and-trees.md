@@ -1298,7 +1298,7 @@ $$
 \text{answer} = \frac{d(s_1, s_2) + d(s_2, t) + d(t, s_1)}{2}.
 $$
 
-This is the meeting-vertex lemma again, for edges instead of vertices: each edge is on $$0$$ or $$2$$ of the three paths, and there is no exception like $$c$$, because one edge can't split three vertices three ways. The formula is symmetric, so which vertex is the destination doesn't matter. The answer is the weight of the smallest subtree that joins all three. On the problem's first example, the query $$(2, 3, 4)$$ has distances $$8$$, $$9$$ and $$7$$, and half of $$24$$ is $$12$$.
+This is the meeting-vertex lemma again, for edges instead of vertices: each edge is on $$0$$ or $$2$$ of the three paths, and there is no exception like $$c$$, because one edge can't split three vertices three ways. The formula is symmetric, so which vertex is the destination doesn't matter. The answer is the weight of the smallest subtree that joins all three, a [Steiner tree](/blog/graph-theory/#steiner-tree), and that page takes it to any number of vertices. On the problem's first example, the query $$(2, 3, 4)$$ has distances $$8$$, $$9$$ and $$7$$, and half of $$24$$ is $$12$$.
 
 **Distances from LCAs.** Root the tree at $$0$$ and let $$W(x)$$ be the weighted depth, the total weight from the root down to $$x$$. The path from $$u$$ to $$v$$ climbs to $$\operatorname{lca}(u, v)$$ and comes back down, so
 
@@ -1494,7 +1494,7 @@ public:
 
 </details>
 
-### Decomposing the queries: Xenia and Tree
+### Decomposing the queries: Xenia and Tree {#xenia-and-tree}
 
 Step 3 cut the array into blocks. [Codeforces 342E — Xenia and Tree](https://codeforces.com/problemset/problem/342/E) needs the same move cut along _time_, and it is a problem where an $$O(1)$$ LCA pays for itself.
 

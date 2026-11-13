@@ -1,5 +1,9 @@
 # Newest first. Keep this to the notes you still want on the algorithms index.
 # Drop a line when it is no longer current.
+- date: "2026-11-13"
+  title: Steiner Tree
+  topic: Graph Theory
+  url: /blog/graph-theory/#steiner-tree
 - date: "2026-11-12"
   title: "LCA in O(1): Farach-Colton and Bender"
   topic: Graphs and Trees
