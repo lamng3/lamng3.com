@@ -394,7 +394,7 @@ Fix a triplet $$\{u, v, w\}$$ and look at how many of the three paths $$P(u,v)$$
 
 **Everyone else is on $$0$$ or $$2$$.** Take $$x \ne c$$ and delete it; the tree breaks into components. If $$u, v, w$$ all land in one component, no pairwise path uses $$x$$, so $$x$$ is on $$0$$ paths. If they split across exactly two components, exactly two of the three pairs are separated by $$x$$, so $$x$$ is on $$2$$. If they split across three components, $$x$$ would separate all three pairs and hence lie on all three paths — making $$x$$ the unique common vertex, contradicting $$x \ne c$$. $$\blacksquare$$
 
-That vertex $$c$$ is the Steiner point of the triplet.
+That vertex $$c$$ is the Steiner point of the triplet. Counting edges the same way, each edge lies on $$0$$ or $$2$$ of the three paths, which gives the weight of the smallest subtree joining the triplet in [LeetCode 3553](#lca-3553).
 
 ### An LCA restatement: two of the three pairwise LCAs coincide
 
@@ -683,9 +683,9 @@ Farach-Colton and Bender showed how to do better: $$O(n)$$ preprocessing and $$O
 - An **Euler tour** flattens the tree so that LCA becomes a range-minimum query (RMQ). I had used a different flattening before, to turn subtree queries into range queries. This one turns _paths_ into ranges.
 - A **sparse table** answers RMQ in $$O(1)$$, but it costs $$O(n \log n)$$ to build.
 - **Blocks** shrink that table. This is the move behind square root decomposition, with a different block size than $$\sqrt n$$.
-- **Bitmasks** squeeze the possible shapes of a block into a space small enough to precompute every one of them.
+- **Bitmasks** squeeze the possible shapes of a block into a space small enough to precompute every one of them. Blocks plus one table per shape is the **Method of Four Russians**.
 
-The plan follows the thought process: reduce LCA to RMQ, solve RMQ with a sparse table, then ask exactly where the $$\log n$$ comes from and how to remove it. At the end, the same block move, cut along time instead of along the array, solves a problem that asks for tens of millions of LCAs.
+The plan follows the thought process: reduce LCA to RMQ, solve RMQ with a sparse table, then ask exactly where the $$\log n$$ comes from and how to remove it. Two problems close the section. LeetCode 3553 finds the smallest subtree joining three vertices with three LCAs per query, and Xenia and Tree cuts the same blocks along time instead of along the array, to ask for tens of millions of LCAs.
 
 The proofs are folded under **Proof**. The argument reads without them.
 
@@ -959,6 +959,8 @@ If $$b$$ does not divide $$m$$, the last block has fewer than $$b$$ entries, and
 Queries never ask past $$m - 1$$, so either way the answers are right.
 
 </details>
+
+**This is the Method of Four Russians.** Steps 3 and 4 together are a technique named after Arlazarov, Dinic, Kronrod and Faradzhev, who used it in 1970 to compute the transitive closure of a graph, which comes down to multiplying Boolean matrices. The recipe: cut the input into blocks of about $$\log n$$, so small that only a few kinds of block can occur, precompute the answer for every kind once, and turn each block's question into a table lookup. In the matrix product, a block is $$k \approx \log n$$ rows, and its table holds the OR of every subset of them, $$2^k$$ entries indexed by $$k$$ bits of the other matrix. Here a block is $$b - 1$$ up-or-down steps, and the tables hold every in-block minimum, one table per mask. The recipe leaves one decision open, the block size.
 
 ### Choosing b: why ½ log m
 
@@ -1279,6 +1281,219 @@ On my machine, with a random tree of $$5 \cdot 10^5$$ vertices and $$5 \cdot 10^
 
 Where Farach-Colton and Bender wins is memory: about $$1.9 \cdot 10^6$$ table entries against $$2 \cdot 10^7$$ (80 MB of `int`s). So in a contest, the plain Euler tour sparse table is the default, and binary lifting when you also need $$k$$-th ancestors. Reach for this one when memory is tight, or for the ideas, which go further than LCA.
 
+### Three distances, halved: LeetCode 3553 {#lca-3553}
+
+[LeetCode 3553 — Minimum Weighted Subgraph With the Required Paths II](https://leetcode.com/problems/minimum-weighted-subgraph-with-the-required-paths-ii/) gives a tree with $$n \le 10^5$$ vertices and edge weights $$1 \le w \le 10^4$$, and up to $$10^5$$ queries $$(s_1, s_2, t)$$ of three distinct vertices. For each query, find the minimum total weight of a subtree in which both $$s_1$$ and $$s_2$$ can reach $$t$$.
+
+**The first instinct.** Paths in a tree are unique, so the subtree must contain $$P(s_1, t)$$ and $$P(s_2, t)$$, and their union is enough. That suggests $$d(s_1, t) + d(s_2, t)$$, but it counts the stretch the two paths share twice. They run together from $$t$$ until they split at the [meeting vertex](#meeting-vertex) $$c$$, so the answer is $$d(s_1, t) + d(s_2, t) - d(c, t)$$. That works, but it needs $$c$$, the deepest of the three pairwise LCAs. Is there a way to never find $$c$$ at all?
+
+**Count each edge instead.** Delete an edge, and the tree falls into two parts. The three vertices split between them either 3–0 or 2–1.
+
+- **3–0.** The edge is on none of the three pairwise paths, and the subtree doesn't need it.
+- **2–1.** The edge is on exactly two of the three pairwise paths, the two whose ends it separates. The subtree needs it, since the lone vertex has no other way to the other two.
+
+So the three pairwise distances count every needed edge exactly twice and every other edge zero times:
+
+$$
+\text{answer} = \frac{d(s_1, s_2) + d(s_2, t) + d(t, s_1)}{2}.
+$$
+
+This is the meeting-vertex lemma again, for edges instead of vertices: each edge is on $$0$$ or $$2$$ of the three paths, and there is no exception like $$c$$, because one edge can't split three vertices three ways. The formula is symmetric, so which vertex is the destination doesn't matter. The answer is the weight of the smallest subtree that joins all three. On the problem's first example, the query $$(2, 3, 4)$$ has distances $$8$$, $$9$$ and $$7$$, and half of $$24$$ is $$12$$.
+
+**Distances from LCAs.** Root the tree at $$0$$ and let $$W(x)$$ be the weighted depth, the total weight from the root down to $$x$$. The path from $$u$$ to $$v$$ climbs to $$\operatorname{lca}(u, v)$$ and comes back down, so
+
+$$
+d(u, v) = W(u) + W(v) - 2\,W(\operatorname{lca}(u, v)).
+$$
+
+A query is three LCAs, $$O(1)$$ each, so the whole problem is $$O(n + q)$$. It runs in about 30 ms for $$n = q = 10^5$$. Binary lifting, at $$O((n + q) \log n)$$, passes too.
+
+**Two depths, not one.** `flatten` records both: `weight` for the distances, and the plain `height` for the LCA. Could the LCA use the weighted depth instead? With weights of at least $$1$$, the weighted depth also strictly increases going down, so Lemma 2 and the theorem still hold, and a plain sparse table would find the LCA either way. The masks would not. Step 4 needs every step of the tour to be $$+1$$ or $$-1$$, and a weighted step is $$\pm w$$, so two blocks with the same up/down pattern could have their minimums in different places.
+
+**Overflow.** The answer is at most the total edge weight, $$(n - 1) \cdot 10^4 < 10^9$$, so the sum of the three distances stays below $$2 \cdot 10^9 < 2^{31} - 1$$, and so does $$W(u) + W(v)$$. An `int` is enough, with about $$7\%$$ to spare. Heavier weights would need `long long`.
+
+<details markdown="1">
+<summary>C++ implementation</summary>
+
+```cpp
+const int MAX_N = 1e5, MAX_M = 1e5;
+
+int n, m;
+
+// adj matrix
+vector<pii> Adj[MAX_N + 5];
+
+// euler tour
+vi euler;
+vi first_visit;
+vi weight;
+vi height;
+
+// decomposition
+int block_sz, block_cnt;
+vii sparse;
+vector<vii> blocks;
+vi block_mask;
+
+// log2
+vi lg2;
+
+void precompute_log2() {
+    lg2.assign(2 * n + 1, 0);
+    lg2[0] = -1;
+    FOR(i, 1, 2 * n) lg2[i] = lg2[i/2] + 1;
+}
+
+void flatten(int u, int p, int W, int H) {
+    weight[u] = W;
+    height[u] = H;
+    first_visit[u] = sz(euler);
+    euler.pb(u);
+    for (auto& [v, w] : Adj[u]) {
+        if (v == p) continue;
+        flatten(v, u, W + w, H+1);
+        euler.pb(u);
+    }
+}
+
+int min_by_h(int i, int j) {
+    return height[euler[i]] < height[euler[j]] ? i : j;
+}
+
+void precompute_sparse_table(int k) { // offset factored in
+    sparse.assign(block_cnt, vi(lg2[block_cnt] + 1));
+    // sparse[b][0] = min of block
+    REP(i, k) {
+        int b = i / block_sz, j = i % block_sz;
+        if (j == 0) sparse[b][0] = i;
+        else sparse[b][0] = min_by_h(sparse[b][0], i);
+    }
+    // sparse[b][j] = min of blocks[b..b+2^j-1] = min of blocks[b..b+2^(j-1)-1], blocks[b+2^(j-1)..b+2^j-1]
+    FOR(j, 1, lg2[block_cnt]) {
+        REP(b, block_cnt) {
+            if (b + (1 << j) > block_cnt) continue;
+            sparse[b][j] = min_by_h(sparse[b][j-1], sparse[b+(1<<(j-1))][j-1]);
+        }
+    }
+}
+
+void precompute_block_mask(int k) {
+    block_mask.assign(block_cnt, 0);
+    REP(i, k) {
+        int b = i / block_sz, j = i % block_sz;
+        if (j > 0 && min_by_h(i, i-1) == i-1) block_mask[b] |= (1 << (j-1));
+    }
+}
+
+void precompute_blocks(int k) {
+    int FULL = 1 << (block_sz-1);
+    blocks.assign(FULL, {});
+
+    REP(b, block_cnt) {
+        int mask = block_mask[b];
+
+        if (!blocks[mask].empty()) continue;
+        blocks[mask].assign(block_sz, vi(block_sz));
+
+        int offset = b * block_sz;
+        REP(l, block_sz) {
+            blocks[mask][l][l] = l;
+            FOR(r, l+1, block_sz-1) {
+                blocks[mask][l][r] = blocks[mask][l][r-1];
+                if (offset + r >= k) continue;
+                blocks[mask][l][r] = min_by_h(blocks[mask][l][r] + offset, r + offset) - offset;
+            }
+        }
+    }
+}
+
+void precompute_lca() {
+    // euler tour flatten tree
+    euler.clear();
+    first_visit.assign(n, -1);
+    weight.assign(n, 0);
+    height.assign(n, 0);
+    flatten(0, -1, 0, 0);
+
+    // decomposition
+    int k = sz(euler);
+    block_sz = max(1, lg2[k] / 2);
+    block_cnt = (k + block_sz - 1) / block_sz;
+
+    precompute_sparse_table(k);
+    precompute_block_mask(k);
+    precompute_blocks(k);
+}
+
+int lca_in_block(int b, int l, int r) {
+    int offset = b * block_sz;
+    return blocks[block_mask[b]][l][r] + offset;
+}
+
+int lca_between_blocks(int bl, int br) {
+    int j = lg2[br - bl + 1];
+    return min_by_h(sparse[bl][j], sparse[br - (1 << j) + 1][j]);
+}
+
+int lca(int u, int v) {
+    int l = first_visit[u], r = first_visit[v];
+    if (l > r) swap(l, r);
+    int bl = l / block_sz, br = r / block_sz;
+
+    // same block
+    if (bl == br) return euler[lca_in_block(bl, l % block_sz, r % block_sz)];
+    // suffix of l
+    int suffix = lca_in_block(bl, l % block_sz, block_sz-1);
+    // prefix of r
+    int prefix = lca_in_block(br, 0, r % block_sz);
+
+    int ans = min_by_h(suffix, prefix);
+    // lca between blocks
+    if (bl < br-1) ans = min_by_h(ans, lca_between_blocks(bl+1, br-1));
+
+    return euler[ans];
+}
+
+int getWeight(int u, int v) {
+    return weight[u] + weight[v] - 2 * weight[lca(u, v)];
+}
+
+int minTotalWeight(vi query) {
+    int src1 = query[0], src2 = query[1], dest = query[2];
+    int res = 0;
+    res += getWeight(src1, src2);
+    res += getWeight(src2, dest);
+    res += getWeight(dest, src1);
+    res >>= 1;
+    return res;
+}
+
+class Solution {
+public:
+    vi minimumWeight(vii& edges, vii& queries) {
+        n = sz(edges) + 1;
+        m = sz(queries);
+        REP(i, n) Adj[i].clear();
+
+        for (auto& e : edges) {
+            int u = e[0], v = e[1], w = e[2];
+            // two-way edge
+            Adj[u].pb({v, w});
+            Adj[v].pb({u, w});
+        }
+
+        precompute_log2();
+        precompute_lca();
+
+        vi ans(m);
+        REP(i, m) ans[i] = minTotalWeight(queries[i]);
+        return ans;
+    }
+};
+```
+
+</details>
+
 ### Decomposing the queries: Xenia and Tree
 
 Step 3 cut the array into blocks. [Codeforces 342E — Xenia and Tree](https://codeforces.com/problemset/problem/342/E) needs the same move cut along _time_, and it is a problem where an $$O(1)$$ LCA pays for itself.
@@ -1396,7 +1611,7 @@ The full solution is [`342E.cpp`](https://github.com/lamng3/competitive-programm
 - **Any RMQ in $$O(n)$$ and $$O(1)$$.** Build the Cartesian tree of an arbitrary array (the minimum at the root, recursively on both sides; one pass with a stack). The minimum of $$[l, r]$$ is the LCA of $$l$$ and $$r$$ in that tree, and LCA is ±1 RMQ by Step 1. So RMQ reduces to LCA, which reduces to ±1 RMQ. That round trip is the main result of Bender and Farach-Colton's paper.
 - **Level ancestor.** The same authors later gave a simple $$O(n)$$ / $$O(1)$$ level ancestor structure, which is the problem binary lifting answers in $$O(\log n)$$.
 
-> **The pattern worth naming.** When a table indexed by position is too big, cut the input into blocks of size $$\Theta(\log n)$$. Summarize each block for the coarse level, and precompute the fine answers once per block _type_ rather than once per block. It works exactly when the number of types grows at most exponentially in the block size, so the thing to look for is structure, like ±1 steps or a Cartesian tree, that makes the types few. This table-per-type idea is often called the Four Russians technique.
+> **The pattern worth naming.** When a table indexed by position is too big, cut the input into blocks of size $$\Theta(\log n)$$. Summarize each block for the coarse level, and precompute the fine answers once per block _type_ rather than once per block. It works exactly when the number of types grows at most exponentially in the block size, so the thing to look for is structure, like ±1 steps or a Cartesian tree, that makes the types few. This table-per-type idea is the Method of Four Russians.
 
 ## From the Notebook {#notebook}
 
@@ -1439,6 +1654,7 @@ Implementations from my [competitive programming notebook](https://github.com/la
 - [CSES 1135 — Distance Queries](https://cses.fi/problemset/task/1135)
 - [Library Checker — Lowest Common Ancestor](https://judge.yosupo.jp/problem/lca)
 - [Library Checker — Static RMQ](https://judge.yosupo.jp/problem/staticrmq)
+- [LeetCode 3553 — Minimum Weighted Subgraph With the Required Paths II](https://leetcode.com/problems/minimum-weighted-subgraph-with-the-required-paths-ii/)
 - [Codeforces 342E — Xenia and Tree](https://codeforces.com/problemset/problem/342/E)
 - [LeetCode 1483 — Kth Ancestor of a Tree Node](https://leetcode.com/problems/kth-ancestor-of-a-tree-node/) (level ancestor, by binary lifting)
 
@@ -1455,3 +1671,4 @@ Implementations from my [competitive programming notebook](https://github.com/la
 - [cp-algorithms — Sqrt Decomposition](https://cp-algorithms.com/data_structures/sqrt_decomposition.html), the same block idea on arrays, and on queries with Mo's algorithm.
 - M. A. Bender and M. Farach-Colton, _The LCA Problem Revisited_, LATIN 2000. The RMQ to LCA to ±1 RMQ round trip.
 - M. A. Bender and M. Farach-Colton, _The Level Ancestor Problem Simplified_, LATIN 2002.
+- [Method of Four Russians](https://en.wikipedia.org/wiki/Method_of_Four_Russians) on Wikipedia, and the original: V. L. Arlazarov, E. A. Dinic, M. A. Kronrod and I. A. Faradzhev, _On Economical Construction of the Transitive Closure of an Oriented Graph_, Soviet Math. Doklady, 1970.
