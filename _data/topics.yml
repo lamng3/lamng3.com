@@ -73,6 +73,8 @@
       title: "Counting on Trees: The Meeting Vertex"
     - id: colored-root
       title: The Coloring Orients the Tree
+    - id: farach-colton-bender
+      title: "LCA in O(1): Farach-Colton and Bender"
 - slug: combinatorics
   title: Combinatorics
   sections:

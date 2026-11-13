@@ -1,15 +1,15 @@
 ---
 layout: post
 title: "Graphs and Trees"
-description: "Dependency graphs and trees. Kahn's algorithm kept as a live invariant resolves definitions as they arrive, and on a tree, counting by the vertex where three paths meet turns a triple loop into one pass. A colored tree orients its own edges."
+description: "Dependency graphs and trees. Kahn's algorithm kept as a live invariant resolves definitions as they arrive, and on a tree, counting by the vertex where three paths meet turns a triple loop into one pass. A colored tree orients its own edges. And an Euler tour, a sparse table, blocks and bitmasks together answer LCA in O(1) after O(n) preprocessing."
 permalink: /blog/graphs-and-trees/
-last_updated: 2026-10-18
+last_updated: 2026-11-12
 author: Lam Nguyen
 toc:
   sidebar: right
 ---
 
-Dependency graphs and trees. Kahn's algorithm kept as a live invariant resolves definitions as they arrive, and on a tree, counting by the vertex where three paths meet turns a triple loop into one pass. A colored tree orients its own edges.
+Dependency graphs and trees. Kahn's algorithm kept as a live invariant resolves definitions as they arrive, and on a tree, counting by the vertex where three paths meet turns a triple loop into one pass. A colored tree orients its own edges. And an Euler tour, a sparse table, blocks and bitmasks together answer LCA in O(1) after O(n) preprocessing.
 
 <details markdown="1">
 <summary>C++ template used by every implementation on this page</summary>
@@ -674,6 +674,562 @@ class Solution:
 
 > **The pattern worth naming.** When a global order (depth, time, ancestry) forces a local constraint on every edge, stop searching for the root and read the direction off the edge. The undirected graph becomes a directed one. The root is whoever has indegree $$0$$, and a second source is a node that grew a second parent.
 
+## LCA in O(1): Farach-Colton and Bender {#farach-colton-bender}
+
+The lowest common ancestor problem, and its bigger sibling the level ancestor problem ("what is the ancestor of $$v$$ at depth $$d$$?"), have a long and beautiful line of work behind them. In contests we almost always reach for binary lifting. It is short, it is hard to get wrong, and it also answers $$k$$-th ancestor queries. But every query costs $$O(\log n)$$.
+
+Farach-Colton and Bender showed how to do better: $$O(n)$$ preprocessing and $$O(1)$$ per query. What I like about it is that it is not one trick. Four ideas from different corners each do one job:
+
+- An **Euler tour** flattens the tree so that LCA becomes a range-minimum query (RMQ). I had used a different flattening before, to turn subtree queries into range queries. This one turns _paths_ into ranges.
+- A **sparse table** answers RMQ in $$O(1)$$, but it costs $$O(n \log n)$$ to build.
+- **Blocks** shrink that table. This is the move behind square root decomposition, with a different block size than $$\sqrt n$$.
+- **Bitmasks** squeeze the possible shapes of a block into a space small enough to precompute every one of them.
+
+The plan follows the thought process: reduce LCA to RMQ, solve RMQ with a sparse table, then ask exactly where the $$\log n$$ comes from and how to remove it.
+
+### Four ways to answer an LCA query
+
+| Method                    | Preprocessing   | Per query     | Memory          |
+| ------------------------- | --------------- | ------------- | --------------- |
+| Climb one level at a time | $$O(n)$$        | $$O(h)$$      | $$O(n)$$        |
+| Binary lifting            | $$O(n \log n)$$ | $$O(\log n)$$ | $$O(n \log n)$$ |
+| Euler tour + sparse table | $$O(n \log n)$$ | $$O(1)$$      | $$O(n \log n)$$ |
+| Farach-Colton and Bender  | $$O(n)$$        | $$O(1)$$      | $$O(n)$$        |
+
+Here $$h$$ is the height of the tree, which is $$n - 1$$ on a path.
+
+- **Climb.** One DFS records each vertex's parent and depth. To answer $$\operatorname{lca}(u, v)$$, move the deeper vertex up until the depths match, then move both up together until they meet. Each step rises one level, so a query takes $$O(h)$$ steps. On a path with $$n = q = 5 \cdot 10^5$$, that is on the order of $$10^{11}$$ steps.
+- **Binary lifting.** Store $$\mathrm{up}_k(v)$$, the $$2^k$$-th ancestor of $$v$$, for $$0 \le k \le \lfloor \log_2 n \rfloor$$, using $$\mathrm{up}_k(v) = \mathrm{up}_{k-1}(\mathrm{up}_{k-1}(v))$$. Rising $$d$$ levels takes one jump per 1-bit of $$d$$, and the final "rise together" step tries each $$k$$ once from high to low. Both are at most $$\lfloor \log_2 n \rfloor + 1$$ jumps.
+- **Euler tour + sparse table** and **Farach-Colton and Bender** are the rest of this section.
+
+A note on "$$O(1)$$". It means a constant number of operations on machine words, where a word holds $$\Theta(\log n)$$ bits. That is the usual model (array indices already need it), and the bitmasks below need it too: each one has about $$\tfrac{1}{2}\log_2 n$$ bits, so it fits in an `int` and can index an array directly.
+
+### Step 1: the Euler tour
+
+An **Euler tour** of a graph is a closed walk that uses every edge exactly once.
+
+A tree with at least one edge has no Euler tour. Each time a closed walk passes through a vertex, it arrives on one edge and leaves on another, so the edges the walk uses at that vertex pair up, and every vertex must have even degree. A leaf has degree $$1$$.
+
+The fix is to replace each edge $$\{u, v\}$$ with two directed edges, $$u \to v$$ and $$v \to u$$. Now every vertex has as many edges in as out, and the graph is connected, so by Euler's theorem it has an Euler tour. A DFS writes one down: go down $$v \to c$$, tour $$c$$'s subtree, come back up $$c \to v$$. Record the vertex the walk is at after every move, and you get the sequence `flatten` builds:
+
+```cpp
+void flatten(int v, int p, int h) {
+    first_visit[v] = sz(euler_tour);
+    euler_tour.pb(v);              // arrive at v
+    height[v] = h;
+    for (int u : adj[v]) {
+        if (u == p) continue;
+        flatten(u, v, h + 1);      // walk down to u, tour its subtree
+        euler_tour.pb(v);          // walk back up to v
+    }
+}
+```
+
+On this tree, rooted at $$1$$:
+
+```
+        1
+      /   \
+     2     3
+    / \   / \
+   4   5 6   7
+```
+
+```
+index  0 1 2 3 4 5 6 7 8 9 10 11 12
+T      1 2 4 2 5 2 1 3 6 3 7  3  1
+h      0 1 2 1 2 1 0 1 2 1 2  1  0
+```
+
+This is not the flattening used for subtree queries. That one records entry and exit times and writes each vertex once, so the subtree of $$v$$ is the contiguous range $$[\mathrm{tin}(v), \mathrm{tout}(v)]$$ and a subtree sum becomes a range sum (see [`EulerTour`](/library/eulertour/) in the library). The tour here writes $$v$$ again after _every_ child. It is the walk itself, and it is the walk that makes paths visible.
+
+**Notation.** $$T[0..m-1]$$ is the tour, $$h(x)$$ is the depth of $$x$$, $$\operatorname{sub}(x)$$ is the subtree of $$x$$, and $$f(x)$$ and $$\ell(x)$$ are the first and last indices where $$x$$ appears in $$T$$. Write $$A[i] = h(T[i])$$.
+
+> **Lemma 1 (the tour moves by ±1).** $$m = 2n - 1$$, and $$\lvert A[i+1] - A[i] \rvert = 1$$ for every $$i$$.
+
+_Proof._ The walk crosses each of the $$n - 1$$ edges twice, once down and once up, so it makes $$2(n-1)$$ moves and records $$2(n-1) + 1 = 2n - 1$$ vertices. Each move goes from a vertex to one of its children, so the depth rises by $$1$$, or from a vertex to its parent, so the depth falls by $$1$$. $$\blacksquare$$
+
+Everything later rests on this lemma. The heights along the tour go up and down one step at a time, never jumping and never staying flat.
+
+> **Lemma 2 (a subtree is one contiguous run).** $$T[f(x)..\ell(x)]$$ contains exactly the occurrences of vertices in $$\operatorname{sub}(x)$$. Every entry in it has depth at least $$h(x)$$, and only $$x$$ itself has depth exactly $$h(x)$$.
+
+_Proof._ The call `flatten(x)` makes the first write of $$x$$ at $$f(x)$$ and the last at $$\ell(x)$$. Everything written between those two writes comes from the calls on descendants of $$x$$, which all run inside `flatten(x)`, and no call on a descendant runs outside it. Every descendant other than $$x$$ is strictly deeper than $$x$$. $$\blacksquare$$
+
+> **Theorem.** Let $$w = \operatorname{lca}(u, v)$$, and take _any_ index $$i$$ with $$T[i] = u$$ and any $$j$$ with $$T[j] = v$$, with $$i \le j$$. Then $$w$$ appears in $$T[i..j]$$, and every other entry of $$T[i..j]$$ is strictly deeper than $$w$$.
+
+_Proof._ Both $$u$$ and $$v$$ are in $$\operatorname{sub}(w)$$, so by Lemma 2 both $$i$$ and $$j$$ lie in $$[f(w), \ell(w)]$$, and so does everything between them. By Lemma 2 again, every entry of $$T[i..j]$$ has depth at least $$h(w)$$, and only $$w$$ has depth exactly $$h(w)$$. It remains to show that $$w$$ actually appears in $$T[i..j]$$.
+
+- If $$u = w$$ or $$v = w$$, then $$T[i]$$ or $$T[j]$$ is $$w$$.
+- Otherwise $$u$$ and $$v$$ lie under two _different_ children $$c_1$$ and $$c_2$$ of $$w$$. If they were under the same child, that child would be a deeper common ancestor. By Lemma 2, $$i$$ lies in $$c_1$$'s run and $$j$$ lies in $$c_2$$'s run. The runs are disjoint and $$i \le j$$, so $$c_1$$'s run comes first. When `flatten(c1)` returns, `flatten(w)` writes $$w$$ at index $$\ell(c_1) + 1$$, which is before $$c_2$$'s run starts. So $$i \le \ell(c_1) < \ell(c_1) + 1 < f(c_2) \le j$$, and $$T[\ell(c_1) + 1] = w$$ is inside the range. $$\blacksquare$$
+
+For example, $$\operatorname{lca}(4, 6)$$ scans $$T[2..8] = 4\,2\,5\,2\,1\,3\,6$$ with depths $$2\,1\,2\,1\,0\,1\,2$$. The shallowest entry is vertex $$1$$.
+
+Three consequences are worth spelling out, because the code depends on each one.
+
+- **One index per vertex is enough.** The theorem holds for any occurrence of $$u$$ and of $$v$$, so the code stores only $$f$$ (`first_visit`). For example, $$\operatorname{lca}(2, 6)$$ comes out as $$1$$ whether you start from 2's first index (1) or its last (5).
+- **Ties don't matter.** Only $$w$$ reaches the minimum depth in $$T[i..j]$$. It may appear several times, but every index with that depth holds $$w$$, so a minimum-by-depth can break ties either way.
+- **$$v$$ must be written again after each child.** Without that write, the $$w$$ between $$c_1$$ and $$c_2$$ in the proof does not exist. The tour becomes $$1\,2\,4\,5\,3\,6\,7$$, $$\operatorname{lca}(4, 6)$$ scans $$4\,5\,3\,6$$ and answers $$3$$, and Lemma 1's ±1 steps break too.
+
+So
+
+$$
+\operatorname{lca}(u, v) = T\Big[\operatorname*{arg\,min}_{\min(f(u), f(v)) \,\le\, k \,\le\, \max(f(u), f(v))} A[k]\Big],
+$$
+
+a range-minimum query on $$A$$ of length $$m = 2n - 1$$. From here on the tree is gone, and we only need RMQ on an array whose neighbors differ by exactly $$1$$.
+
+### Step 2: the first instinct, a sparse table
+
+A sparse table stores, for every start $$i$$ and every $$k$$, the position of the minimum of the window $$[i, i + 2^k)$$:
+
+$$
+\mathrm{sp}_0[i] = i, \qquad \mathrm{sp}_k[i] = \operatorname{argmin}\big(\mathrm{sp}_{k-1}[i],\ \mathrm{sp}_{k-1}[i + 2^{k-1}]\big).
+$$
+
+A window of length $$2^k$$ is two windows of length $$2^{k-1}$$ side by side, so each entry takes one comparison.
+
+To answer $$[l, r]$$, let $$k = \lfloor \log_2(r - l + 1) \rfloor$$ and compare $$\mathrm{sp}_k[l]$$ with $$\mathrm{sp}_k[r - 2^k + 1]$$.
+
+_Why this is right._ From $$2^k \le r - l + 1$$, both windows $$[l, l + 2^k)$$ and $$[r - 2^k + 1, r]$$ lie inside $$[l, r]$$. From $$r - l + 1 < 2^{k+1}$$, the second window starts at $$r - 2^k + 1 \le l + 2^k$$, so there is no gap and together they cover $$[l, r]$$. They may overlap, and that is fine because $$\min(x, x) = x$$. Min is _idempotent_, so counting an element twice changes nothing. A sum is not, which is why a sparse table answers range minimum in $$O(1)$$ but range sum needs disjoint pieces.
+
+```cpp
+vii sp; // sp[k][i] = position of the min of A over [i, i + 2^k)
+void build_plain(int m) {
+    sp.assign(log_2[m] + 1, vi(m));
+    REP(i, m) sp[0][i] = i;
+    for (int k = 1; (1 << k) <= m; k++)
+        for (int i = 0; i + (1 << k) <= m; i++)
+            sp[k][i] = min_by_h(sp[k-1][i], sp[k-1][i + (1 << (k-1))]);
+}
+
+int lca_plain(int u, int v) {
+    int l = first_visit[u], r = first_visit[v];
+    if (l > r) swap(l, r);
+    int k = log_2[r - l + 1];
+    return euler_tour[min_by_h(sp[k][l], sp[k][r - (1 << k) + 1])];
+}
+```
+
+So far this algorithm is LCA reduced to RMQ, and the queries are already $$O(1)$$. The cost is entirely in preprocessing: $$m(\lfloor \log_2 m \rfloor + 1)$$ entries, which is $$\Theta(m \log m) = \Theta(n \log n)$$. For $$n = 5 \cdot 10^5$$ that is $$20 \times 999{,}999 \approx 2 \cdot 10^7$$ entries.
+
+Where does the $$\log$$ come from? Every one of the $$m$$ starting positions stores $$\log m$$ levels. The queries can't get faster, so the question is: **can we have fewer starting positions?**
+
+### Step 3: blocks
+
+Cut $$A$$ into blocks of $$b$$ consecutive entries. There are $$c = \lceil m / b \rceil$$ of them. Build the sparse table over the $$c$$ block minimums instead of over all $$m$$ entries.
+
+A query $$[l, r]$$ with $$b_l = \lfloor l / b \rfloor$$ and $$b_r = \lfloor r / b \rfloor$$ is either inside one block ($$b_l = b_r$$), or it splits into three disjoint parts:
+
+```
+   block b_l         b_l + 1  ...  b_r - 1          block b_r
+[ .  .  l  .  . ] [ . . . ] ... [ . . . ] [ .  .  r  .  . ]
+        └suffix─┘ └─────── sparse table ────────┘ └─prefix┘
+```
+
+The minimum of $$[l, r]$$ is the smallest of the three parts' minimums. The middle part is whole blocks, so the sparse table over blocks answers it. That table has
+
+$$
+c\,(\lfloor \log_2 c \rfloor + 1) \approx \frac{m}{b}\,\log_2 m
+$$
+
+entries, and it is linear as soon as $$b$$ is on the order of $$\log m$$.
+
+This is the move behind square root decomposition: handle whole blocks through a per-block summary, and the partial blocks at the ends separately. Square root decomposition picks $$b = \sqrt m$$ to balance two per-query scans, $$O(b)$$ inside the end blocks and $$O(m/b)$$ across the middle. Here both parts of a query must already be $$O(1)$$, so the thing being balanced is _preprocessing_, and that calls for a different factor.
+
+That leaves the two partial blocks, and they also have to be $$O(1)$$. The obvious options are not linear:
+
+- A table of all $$b^2$$ answers per block costs $$c \cdot b^2 \approx m b$$, which is $$\Theta(m \log m)$$ again.
+- A sparse table inside each block costs $$c \cdot b \log b \approx m \log b$$, which is $$\Theta(m \log \log m)$$. Close, but not linear.
+
+Both precompute something for every block. The question that unblocks it: **do different blocks really need different tables?**
+
+### Step 4: up, down, up: a block is its mask
+
+Lemma 1 says every step of the tour is $$+1$$ (one level deeper) or $$-1$$ (one level up). Take a block starting at $$s$$ and write its steps as $$\delta_j = A[s + j] - A[s + j - 1] \in \{+1, -1\}$$ for $$j = 1, \dots, b - 1$$. Then
+
+$$
+A[s + j] = A[s] + \underbrace{\delta_1 + \delta_2 + \cdots + \delta_j}_{D_j}.
+$$
+
+The block is a starting height plus a shape, and the shape is just $$b - 1$$ choices of up or down. Store it as a bitmask, with bit $$j - 1$$ set when step $$j$$ goes deeper:
+
+```cpp
+// precompute mask for each block
+void precompute_block_mask(int m) {
+    block_mask.assign(block_cnt, 0);
+    REP(i, m) { // iterate euler tour
+        int b = i / block_size, j = i % block_size;
+        // turn on bit j-1 if height is increased
+        if (j > 0 && height[euler_tour[i]] > height[euler_tour[i - 1]]) block_mask[b] |= 1 << (j - 1);
+    }
+}
+```
+
+For example, with $$b = 4$$, depths $$2\,3\,2\,1$$ have steps $$+\,-\,-$$, so the mask is `0b001`. Depths $$7\,8\,7\,6$$ have the same steps and the same mask. They are the same shape, shifted by $$5$$, and both have their minimum at offset $$3$$. Depths $$1\,2\,3\,2$$ have steps $$+\,+\,-$$ and mask `0b011`, with the minimum at offset $$0$$.
+
+> **Lemma 3 (blocks with the same mask share their answers).** If two full blocks have the same mask, then for every $$0 \le l \le r < b$$ the in-block minimum of $$[l, r]$$ sits at the same offset in both, ties broken the same way.
+
+_Proof._ Let the blocks start at $$s$$ and $$s'$$. The same mask means the same steps, so the same partial sums $$D_j$$, and $$A[s + j] = A[s] + D_j$$, $$A[s' + j] = A[s'] + D_j$$. Every comparison the table-building loop makes has the form "is $$A[s + x] < A[s + y]$$?", which is $$A[s] + D_x < A[s] + D_y$$, which is $$D_x < D_y$$. The starting height cancels. So both blocks go through the same sequence of comparisons with the same outcomes, ties included, and store the same offsets. $$\blacksquare$$
+
+The idea underneath is that $$\operatorname{argmin}$$ doesn't move when you add a constant to every entry. The ±1 property is what makes "the same shape up to a constant" something you can read off in $$b - 1$$ bits.
+
+So `precompute_blocks` fills `blocks[mask][l][r]` once per mask, from the first block that has it, and skips every later block with the same mask:
+
+```cpp
+// precompute RMQ for each unique block
+void precompute_blocks(int m) {
+    int FULL = 1 << (block_size - 1);
+    blocks.assign(FULL, {});
+
+    REP(b, block_cnt) {
+        int mask = block_mask[b];
+
+        if (!blocks[mask].empty()) continue;        // this shape is already solved
+        blocks[mask].assign(block_size, vi(block_size));
+
+        int offset = b * block_size;
+        REP(l, block_size) {
+            blocks[mask][l][l] = l;
+            FOR(r, l + 1, block_size - 1) {
+                blocks[mask][l][r] = blocks[mask][l][r - 1];
+                if (offset + r >= m) continue;       // short last block
+                blocks[mask][l][r] = min_by_h(offset + blocks[mask][l][r], offset + r) - offset;
+            }
+        }
+    }
+}
+```
+
+There are at most $$2^{b-1}$$ masks, however many blocks there are. The question is no longer "how many blocks?" but "how many shapes?", and the answer doesn't grow with $$m$$ except through $$b$$.
+
+**The short last block.** If $$b$$ does not divide $$m$$, the last block has fewer than $$b$$ entries, and its missing steps stay $$0$$ in the mask, which reads as "down". Two cases:
+
+- An earlier full block has the same mask. The two agree on every step the last block really has, and a query in the last block only uses offsets below $$m - \text{offset}$$, so by the same argument as Lemma 3 the answers agree on every range it can ask.
+- No earlier block has that mask. Then the table is built from the last block itself, the guard `offset + r >= m` keeps it inside the tour, and since blocks are processed in order, no other block ever reads that table.
+
+Queries never ask past $$m - 1$$, so either way the answers are right.
+
+### Choosing b: why ½ log m
+
+Why $$b = \lfloor \tfrac{1}{2} \log_2 m \rfloor$$, and not something else? A part of me felt the whole construction is bottlenecked by this choice. It is, and seeing exactly how is the best way to see why the algorithm works at all.
+
+The preprocessing, as a function of $$b$$, is roughly
+
+$$
+\underbrace{\frac{m}{b}\log_2 m}_{\text{sparse table over blocks}} \;+\; \underbrace{2^{b-1}\, b^2}_{\text{one table per mask}} \;+\; O(m).
+$$
+
+The first term falls as $$b$$ grows, and the second rises, exponentially.
+
+- **$$b$$ constant.** The first term is $$\Theta(m \log m)$$. With $$b = 1$$ this is exactly the plain sparse table from Step 2.
+- **$$b = \log_2 m$$.** The second term is $$\tfrac{m}{2}\log_2^2 m$$, worse than where we started.
+- **$$b = \alpha \log_2 m$$ with $$0 < \alpha < 1$$.** The first term is $$m / \alpha$$, and the second is at most $$m^{\alpha} \cdot \alpha^2 \log_2^2 m / 2$$, which is $$o(m)$$. Linear.
+
+So $$b$$ is squeezed from both sides. It must be at least a constant times $$\log m$$, or the sparse table is superlinear. It must be at most about $$\log_2 m - 2 \log_2 \log_2 m$$, or the mask tables are, because $$2^{b-1} b^2 \le Cm$$ means $$b + 2\log_2 b \le \log_2 m + O(1)$$. Any fixed $$\alpha \in (0, 1)$$ lands inside the window. $$\alpha = \tfrac12$$ is the usual choice because it makes the mask count a clean $$\sqrt m / 2$$.
+
+Here are the exact counts for $$m = 999{,}999$$ ($$n = 5 \cdot 10^5$$), with $$c = \lceil m/b \rceil$$ blocks and $$\lfloor \log_2 c \rfloor + 1$$ levels:
+
+| $$b$$           | blocks $$c$$ | sparse table entries | mask table entries | total      |
+| --------------- | ------------ | -------------------- | ------------------ | ---------- |
+| 1 (plain)       | 999,999      | 19,999,980           | 1                  | 19,999,981 |
+| 4               | 250,000      | 4,500,000            | 128                | 4,500,128  |
+| 8               | 125,000      | 2,125,000            | 8,192              | 2,133,192  |
+| **9** (½ log m) | 111,111      | 1,888,887            | 20,736             | 1,909,623  |
+| 12              | 83,334       | 1,416,678            | 294,912            | 1,711,590  |
+| 14              | 71,429       | 1,214,293            | 1,605,632          | 2,819,925  |
+| 16              | 62,500       | 1,000,000            | 8,388,608          | 9,388,608  |
+| 19 (log m)      | 52,632       | 842,112              | 94,633,984         | 95,476,096 |
+
+The valley is wide and flat. Anything from $$8$$ to $$12$$ is within about $$25\%$$ of the best total, and $$b = 9$$ keeps the mask tables at $$256 \times 81$$ entries, small enough to stay in cache. Past $$14$$ the masks take over, and at $$b = \lfloor \log_2 m \rfloor$$ the total is almost five times the plain sparse table.
+
+So the real bottleneck isn't $$b$$. It's **how many shapes a block of size $$b$$ can have**. Call that $$N(b)$$: the number of block types such that a type determines every in-block answer. We need some $$b = \Omega(\log m)$$ with $$N(b)\, b^2 = O(m)$$.
+
+- **±1 arrays, typed by mask:** $$N(b) = 2^{b-1}$$, so $$b = \tfrac12 \log_2 m$$ works.
+- **Any array, typed by Cartesian tree** (which position is the minimum, then recursively on each side): $$N(b)$$ is the Catalan number $$C_b \le 4^b$$, so $$b = \tfrac14 \log_2 m$$ works.
+- **Any array, typed by sorted order:** $$N(b) = b! \ge (b/e)^b$$. Then $$N(b) \le m$$ forces $$b \log_2(b/e) \le \log_2 m$$, so $$b = O(\log m / \log \log m)$$, which is below the window. The sparse table then costs $$\Omega(m \log \log m)$$. Typing by sorted order is too fine.
+
+The window exists only if the number of shapes grows at most exponentially in $$b$$. The ±1 structure from Lemma 1 is what gives us that, and the bitmask is just the most direct way to write it down. That is what I mean by using a bitmask to constrain the combinatorial space.
+
+### Proof of the complexity
+
+We use the limit forms of the definitions: $$f = O(g)$$ if $$\limsup_{m \to \infty} f(m)/g(m) < \infty$$, and $$f = o(g)$$ if $$\lim_{m \to \infty} f(m)/g(m) = 0$$.
+
+**Setup.** Let $$L = \lfloor \log_2 m \rfloor$$ and $$b = \lfloor L / 2 \rfloor$$. (The code takes `max(1, ...)` so tiny trees still get $$b \ge 1$$. Asymptotics only care about large $$m$$.) Then
+
+$$
+\frac{\log_2 m}{2} - 1 \;<\; b \;\le\; \frac{\log_2 m}{2}.
+$$
+
+The right side holds because $$b \le L/2 \le (\log_2 m)/2$$. The left side holds because $$b \ge (L - 1)/2$$ and $$L > \log_2 m - 1$$.
+
+> **Claim A.** The sparse table over blocks has $$S(m) = O(m)$$ entries, and in fact $$\limsup_{m \to \infty} S(m)/m \le 2$$.
+
+_Proof._ $$c = \lceil m/b \rceil \le m/b + 1$$ and $$\lfloor \log_2 c \rfloor + 1 \le \log_2 m + 1$$, so
+
+$$
+\frac{S(m)}{m} \le \Big(\frac{1}{b} + \frac{1}{m}\Big)(\log_2 m + 1)
+< \frac{\log_2 m + 1}{\tfrac12 \log_2 m - 1} + \frac{\log_2 m + 1}{m}.
+$$
+
+Divide the top and bottom of the first fraction by $$\log_2 m$$: it is $$\dfrac{1 + 1/\log_2 m}{\tfrac12 - 1/\log_2 m} \to \dfrac{1}{1/2} = 2$$. The second term goes to $$0$$. So $$\limsup S(m)/m \le 2$$. $$\blacksquare$$
+
+Each entry takes one comparison, and the block minimums take one pass over $$A$$, so the time is $$O(m)$$ as well. At $$m = 999{,}999$$ the ratio is $$1{,}888{,}887 / 999{,}999 \approx 1.89$$.
+
+> **Claim B.** The mask tables have $$M(m) = o(m)$$ entries.
+
+_Proof._ There are at most $$2^{b-1}$$ masks, each with a $$b \times b$$ table, so
+
+$$
+M(m) \le 2^{b-1} b^2 \le 2^{\frac12 \log_2 m - 1} \cdot \frac{\log_2^2 m}{4} = \frac{\sqrt m \,\log_2^2 m}{8},
+\qquad\text{so}\qquad
+\frac{M(m)}{m} \le \frac{\log_2^2 m}{8\sqrt m}.
+$$
+
+Let $$t = \log_2 m$$, so $$\sqrt m = 2^{t/2} = e^{x}$$ with $$x = \tfrac{t \ln 2}{2}$$. Every term of $$e^x = \sum_k x^k / k!$$ is nonnegative for $$x \ge 0$$, so $$e^x \ge x^3 / 6$$, which gives $$\sqrt m \ge \dfrac{(t \ln 2)^3}{48}$$. Then
+
+$$
+\frac{M(m)}{m} \le \frac{t^2}{8} \cdot \frac{48}{(t \ln 2)^3} = \frac{6}{(\ln 2)^3\, t} \xrightarrow[\,m \to \infty\,]{} 0. \qquad \blacksquare
+$$
+
+The mask tables are asymptotically free. At $$m = 999{,}999$$ the bound gives about $$49{,}700$$, and the actual count is $$256 \times 81 = 20{,}736$$. On a random tree with $$5 \cdot 10^5$$ vertices, all $$256$$ masks show up.
+
+The time to build them is $$O(b^2)$$ per distinct mask, plus an $$O(1)$$ "already solved?" check per block, so $$O(c + M(m)) = O(m)$$.
+
+> **Theorem.** Preprocessing takes $$O(n)$$ time and memory, and each query takes $$O(1)$$.
+
+_Proof._ The tour takes $$O(n)$$, since each edge is walked twice. The log table, the block minimums and the masks are each one pass, $$O(m)$$. Add Claims A and B:
+
+$$
+T(n) = O(n) + O(m) + S(m) + O(c + M(m)) = O(m) = O(n),
+$$
+
+because $$m = 2n - 1$$. Memory is the same sum. A query does at most two mask-table lookups, one sparse-table query (one `log_2` lookup and two table reads), and three comparisons, so it is $$O(1)$$. $$\blacksquare$$
+
+A note on the code: it builds `log_2` up to `2 * MAX_N` in `preprocess`, which is `O(MAX_N)` once for the whole run rather than per test case. That does not change the bound.
+
+### Implementation
+
+<details markdown="1">
+<summary>C++ implementation</summary>
+
+```cpp
+/*
+    LCA with Farach-Colton and Bender: O(n) build, O(1) per query
+    https://cp-algorithms.com/graph/lca_farachcoltonbender.html
+*/
+
+const int MAX_N = 5e5;
+
+int n;
+vii adj;
+
+int block_size, block_cnt;
+vi first_visit;
+vi euler_tour;
+vi height;
+vi log_2;
+vii st;
+vector<vii> blocks;
+vi block_mask;
+
+void flatten(int v, int p, int h) {
+    first_visit[v] = sz(euler_tour);
+    euler_tour.pb(v);
+    height[v] = h;
+    for (int u : adj[v]) {
+        if (u == p) continue;
+        flatten(u, v, h + 1);
+        euler_tour.pb(v);
+    }
+}
+
+int min_by_h(int i, int j) {
+    return height[euler_tour[i]] < height[euler_tour[j]] ? i : j;
+}
+
+// precompute all log values
+void precompute_log(int m) {
+    log_2.assign(m + 1, -1);
+    FOR(i, 1, m) log_2[i] = log_2[i / 2] + 1;
+}
+
+// precompute minimum of each block and build sparse table
+// st[b][j] = index of the min over blocks [b, b + 2^j)
+void precompute_sparse_table(int m) {
+    st.assign(block_cnt, vi(log_2[block_cnt] + 1));
+
+    // st[b][0] = min of block b
+    REP(i, m) {
+        int b = i / block_size, j = i % block_size;
+        if (j == 0) st[b][0] = i;
+        else st[b][0] = min_by_h(st[b][0], i);
+    }
+
+    // st[b][j] = min of { blocks [b, b + 2^(j-1)), [b + 2^(j-1), b + 2^j) }
+    FOR(j, 1, log_2[block_cnt]) {
+        REP(b, block_cnt) {
+            if (b + (1 << j) > block_cnt) continue;
+            st[b][j] = min_by_h(st[b][j-1], st[b + (1 << (j-1))][j-1]);
+        }
+    }
+}
+
+// min over blocks [L, R]
+int query_sparse_table(int L, int R) {
+    int k = log_2[R - L + 1];
+    return min_by_h(st[L][k], st[R - (1 << k) + 1][k]);
+}
+
+// precompute mask for each block
+void precompute_block_mask(int m) {
+    block_mask.assign(block_cnt, 0);
+    REP(i, m) { // iterate euler tour
+        int b = i / block_size, j = i % block_size;
+        // turn on bit j-1 if height is increased
+        if (j > 0 && height[euler_tour[i]] > height[euler_tour[i - 1]]) block_mask[b] |= 1 << (j - 1);
+    }
+}
+
+// precompute RMQ for each unique block
+void precompute_blocks(int m) {
+    int FULL = 1 << (block_size - 1);
+    blocks.assign(FULL, {});
+
+    REP(b, block_cnt) {
+        int mask = block_mask[b];
+
+        if (!blocks[mask].empty()) continue;
+        blocks[mask].assign(block_size, vi(block_size));
+
+        int offset = b * block_size;
+        REP(l, block_size) {
+            blocks[mask][l][l] = l;
+            FOR(r, l + 1, block_size - 1) {
+                blocks[mask][l][r] = blocks[mask][l][r - 1];
+                if (offset + r >= m) continue;
+                blocks[mask][l][r] = min_by_h(offset + blocks[mask][l][r], offset + r) - offset;
+            }
+        }
+    }
+}
+
+void precompute_lca(int root) {
+    // get euler tour & indices of first occurrences
+    first_visit.assign(n, -1);
+    height.assign(n, 0);
+    euler_tour.clear();
+    euler_tour.reserve(2 * n);
+    flatten(root, -1, 0);
+
+    // decomposition
+    int m = sz(euler_tour);
+    block_size = max(1, log_2[m] / 2);
+    block_cnt = (m + block_size - 1) / block_size;
+
+    precompute_sparse_table(m);
+    precompute_block_mask(m);
+    precompute_blocks(m);
+}
+
+int lca_in_block(int b, int l, int r) {
+    int offset = b * block_size;
+    return offset + blocks[block_mask[b]][l][r];
+}
+
+int lca(int v, int u) {
+    int l = first_visit[v];
+    int r = first_visit[u];
+    if (l > r) swap(l, r);
+    int bl = l / block_size;
+    int br = r / block_size;
+    // both ends in one block
+    if (bl == br) return euler_tour[lca_in_block(bl, l % block_size, r % block_size)];
+    // suffix of l's block, prefix of r's block
+    int suffix = lca_in_block(bl, l % block_size, block_size - 1);
+    int prefix = lca_in_block(br, 0, r % block_size);
+    int ans = min_by_h(suffix, prefix);
+    // whole blocks in between
+    if (bl + 1 < br) ans = min_by_h(ans, query_sparse_table(bl + 1, br - 1));
+    return euler_tour[ans];
+}
+
+void preprocess() {
+    // log values up to the longest euler tour, 2n - 1
+    precompute_log(2 * MAX_N);
+}
+
+void solve() {
+    // read tree
+    int q; cin >> n >> q;
+    adj.assign(n, {});
+    REP(i, n-1) {
+        int a, b; cin >> a >> b;
+        a--; b--;
+        adj[a].pb(b);
+        adj[b].pb(a);
+    }
+
+    // precompute lca, rooted at vertex 1
+    precompute_lca(0);
+
+    // answer queries
+    REP(i, q) {
+        int u, v; cin >> u >> v;
+        u--; v--;
+        cout << lca(u, v) + 1 << '\n';
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cerr.tie(0);
+    preprocess();
+    int tt = 1;
+    // cin >> tt;
+    while (tt--) solve();
+    return 0;
+}
+```
+
+</details>
+
+The same code as a reusable class, `FCB fcb(adj, root); fcb.lca(u, v);`, is [`FCB.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/trees/farach-colton_bender/FCB.h) in the notebook. I checked this version against a climb-one-level brute force on 3,000 random trees (random, path-like and caterpillar shapes, up to 3,000 vertices, random roots), 900,000 queries in all.
+
+How the functions map to the argument:
+
+| Function                     | Role                                                                 |
+| ---------------------------- | -------------------------------------------------------------------- |
+| `flatten(v, p, h)`           | The Euler tour: fills `euler_tour`, `first_visit`, `height` (Step 1) |
+| `min_by_h(i, j)`             | The tour index whose vertex is shallower                             |
+| `precompute_log(m)`          | `log_2[x]` $$= \lfloor \log_2 x \rfloor$$                            |
+| `precompute_sparse_table(m)` | Block minimums and the sparse table over blocks (Step 3, Claim A)    |
+| `query_sparse_table(L, R)`   | Minimum over whole blocks $$[L, R]$$, two overlapping windows        |
+| `precompute_block_mask(m)`   | One bit per step inside each block (Step 4)                          |
+| `precompute_blocks(m)`       | In-block minimums, once per mask (Lemma 3, Claim B)                  |
+| `lca_in_block(b, l, r)`      | In-block minimum, turned back into a tour index                      |
+| `lca(v, u)`                  | One block, or suffix + whole blocks + prefix                         |
+
+Pitfalls:
+
+- **Edges are undirected.** Store both directions.
+- **`log_2` must cover the tour, $$2n - 1$$ entries, not just $$n$$.**
+- **Reset between test cases** with `assign` and `clear`. A `push_back` or `resize` keeps old data on the second call.
+- **Recursion depth.** A path of $$5 \cdot 10^5$$ vertices recurses that deep. That is fine on Codeforces. Locally, run `ulimit -s 65520` first.
+
+### In practice
+
+On my machine, with a random tree of $$5 \cdot 10^5$$ vertices and $$5 \cdot 10^5$$ queries at `-O2`, the build times are close (about 25 to 40 ms each), and the plain sparse table answers queries two to two and a half times as fast (7 to 10 ms against 16 to 18 ms). A block query touches the mask array, two mask tables and the block sparse table, all in different places, while the plain query reads two entries of one table.
+
+Where Farach-Colton and Bender wins is memory: about $$1.9 \cdot 10^6$$ table entries against $$2 \cdot 10^7$$ (80 MB of `int`s). So in a contest, the plain Euler tour sparse table is the default, and binary lifting when you also need $$k$$-th ancestors. Reach for this one when memory is tight, or for the ideas, which go further than LCA.
+
+### Where it goes next
+
+- **Any RMQ in $$O(n)$$ and $$O(1)$$.** Build the Cartesian tree of an arbitrary array (the minimum at the root, recursively on both sides; one pass with a stack). The minimum of $$[l, r]$$ is the LCA of $$l$$ and $$r$$ in that tree, and LCA is ±1 RMQ by Step 1. So RMQ reduces to LCA, which reduces to ±1 RMQ. That round trip is the main result of Bender and Farach-Colton's paper.
+- **Level ancestor.** The same authors later gave a simple $$O(n)$$ / $$O(1)$$ level ancestor structure, which is the problem binary lifting answers in $$O(\log n)$$.
+
+> **The pattern worth naming.** When a table indexed by position is too big, cut the input into blocks of size $$\Theta(\log n)$$. Summarize each block for the coarse level, and precompute the fine answers once per block _type_ rather than once per block. It works exactly when the number of types grows at most exponentially in the block size, so the thing to look for is structure, like ±1 steps or a Cartesian tree, that makes the types few. This table-per-type idea is often called the Four Russians technique.
+
 ## From the Notebook {#notebook}
 
 Implementations from my [competitive programming notebook](https://github.com/lamng3/competitive-programming-notebook), tagged with their [USACO Guide](https://usaco.guide/) level where they have one.
@@ -681,6 +1237,7 @@ Implementations from my [competitive programming notebook](https://github.com/la
 - **Graph search** (silver). [`BFS.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/graphs/bfs/BFS.py): Multi-source BFS on a graph or a grid, and 0-1 BFS. [`DFS.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/graphs/dfs/DFS.py): Components, flood fill, and a rooted tree's parent, depth, and size, with explicit stacks. [`Dijkstra.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/graphs/shortest_path/Dijkstra.py): Dijkstra with path recovery. [`TopoSort.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/graphs/topological_sort/TopoSort.py): Kahn's algorithm.
 - **Disjoint set union** (gold). [`DSU.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/graphs/dsu/DSU.h): Parent and size, with path compression. [`DSU.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/graphs/dsu/DSU.py): The same structure in Python. [`323.cpp`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/examples/graphs/dsu/323.cpp): A worked DSU problem.
 - **Euler tour** (gold). [`EulerTour.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/trees/euler_tour/EulerTour.h): Entry and exit times on a tree. [`euler_tour/`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/leetcode/solve/euler_tour): Solved Euler-tour problems. [`EulerTour.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/trees/euler_tour/EulerTour.py): The same tour in Python, with an explicit stack.
+- **LCA in O(1)** (advanced). [`FCB.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/trees/farach-colton_bender/FCB.h): Farach-Colton and Bender as a class. [`README.md`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/trees/farach-colton_bender/README.md): The proofs in short. [`fcb.cpp`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/examples/trees/farach-colton_bender/fcb.cpp): The same code as a full solution.
 - **Binary lifting** (platinum). [`binary_lifting/`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/leetcode/solve/binary_lifting): Binary lifting solutions.
 - **Small to large** (platinum). [`small_to_large_merging/`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/leetcode/solve/small_to_large_merging): Small-to-large merging solutions.
 - **DSU rollback** (advanced). [`DSURollback.h`](https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/graphs/dsu/DSURollback.h): Disjoint set union that can undo unions. [`dsu_rollback/`](https://github.com/lamng3/competitive-programming-notebook/blob/main/contests/leetcode/solve/dsu_rollback): A solved rollback problem. [`DSURollback.py`](https://github.com/lamng3/competitive-programming-notebook/blob/main/python/graphs/dsu/DSURollback.py): The same structure in Python.
@@ -708,8 +1265,24 @@ Implementations from my [competitive programming notebook](https://github.com/la
 
 - [LeetCode 4085 — Find Root of a Colored Tree](https://leetcode.com/problems/find-root-of-a-colored-tree/)
 
+**LCA in O(1): Farach-Colton and Bender**
+
+- [CSES 1688 — Company Queries II](https://cses.fi/problemset/task/1688)
+- [CSES 1135 — Distance Queries](https://cses.fi/problemset/task/1135)
+- [Library Checker — Lowest Common Ancestor](https://judge.yosupo.jp/problem/lca)
+- [Library Checker — Static RMQ](https://judge.yosupo.jp/problem/staticrmq)
+- [Codeforces 342E — Xenia and Tree](https://codeforces.com/problemset/problem/342/E)
+- [LeetCode 1483 — Kth Ancestor of a Tree Node](https://leetcode.com/problems/kth-ancestor-of-a-tree-node/) (level ancestor, by binary lifting)
+
 ## Further reading {#further-reading}
 
 **Counting on Trees: The Meeting Vertex**
 
 - [Codeforces 2241E editorial](https://codeforces.com/blog/entry/154698) — the meeting-vertex proof in full.
+
+**LCA in O(1): Farach-Colton and Bender**
+
+- [cp-algorithms — Farach-Colton and Bender](https://cp-algorithms.com/graph/lca_farachcoltonbender.html), the implementation this one follows.
+- [cp-algorithms — Sparse Table](https://cp-algorithms.com/data_structures/sparse-table.html).
+- M. A. Bender and M. Farach-Colton, _The LCA Problem Revisited_, LATIN 2000. The RMQ to LCA to ±1 RMQ round trip.
+- M. A. Bender and M. Farach-Colton, _The Level Ancestor Problem Simplified_, LATIN 2002.

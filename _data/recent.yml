@@ -1,5 +1,9 @@
 # Newest first. Keep this to the notes you still want on the algorithms index.
 # Drop a line when it is no longer current.
+- date: "2026-11-12"
+  title: "LCA in O(1): Farach-Colton and Bender"
+  topic: Graphs and Trees
+  url: /blog/graphs-and-trees/#farach-colton-bender
 - date: "2026-11-11"
   title: Accumulators and Aggregates
   topic: Databases
@@ -28,7 +32,3 @@
   title: Sums of Powers
   topic: Algebra
   url: /blog/algebra/#sums-of-powers
-- date: "2026-10-18"
-  title: The Coloring Orients the Tree
-  topic: Graphs and Trees
-  url: /blog/graphs-and-trees/#colored-root
