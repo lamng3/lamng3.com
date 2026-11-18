@@ -10,4 +10,7 @@ stickies:
   - text: Reading about ANN algorithms and their variations (e.g. DiskANN)
     kind: todo
     at: "2026-11-18T12:51:10"
+  - text: The overall idea is combining ANN search and feature filtering, allowing kernel fusion when working with GPU
+    kind: idea
+    at: "2026-11-18T12:52:22"
 ---
