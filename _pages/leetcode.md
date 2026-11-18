@@ -3,7 +3,7 @@ layout: post
 title: "Selected LeetCode Problems"
 description: "A running, hand-picked list of LeetCode problems I found interesting, each tagged with the topic or technique it exercises. A companion index to the technique write-ups on this site."
 permalink: /blog/selected-leetcode-problems/
-last_updated: 2026-11-13
+last_updated: 2026-11-18
 author: Lam Nguyen
 toc:
   sidebar: right
@@ -49,3 +49,4 @@ A running list of LeetCode problems worth remembering, each labeled with the top
 | [4104 — Count Valid Substrings II](https://leetcode.com/problems/count-valid-substrings-ii/)                                                                         | [Counting Valid Intervals by Right End](/blog/stacks/#follow-up-counting-valid-intervals)                             |
 | [3105 — Longest Strictly Increasing or Strictly Decreasing Subarray](https://leetcode.com/problems/longest-strictly-increasing-or-strictly-decreasing-subarray/)     | [Accumulator, Aggregate Functions](/blog/databases/#accumulator)                                                      |
 | [3553 — Minimum Weighted Subgraph With the Required Paths II](https://leetcode.com/problems/minimum-weighted-subgraph-with-the-required-paths-ii/)                   | [LCA in O(1)](/blog/graphs-and-trees/#lca-3553), [Steiner Tree](/blog/graph-theory/#steiner-tree)                     |
+| [359 — Logger Rate Limiter](https://leetcode.com/problems/logger-rate-limiter/)                                                                                      | [Lambdas as Callbacks, Hash Map](/blog/performance/#lambda-callbacks)                                                 |

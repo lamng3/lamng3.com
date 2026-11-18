@@ -1,5 +1,9 @@
 # Newest first. Keep this to the notes you still want on the algorithms index.
 # Drop a line when it is no longer current.
+- date: "2026-11-18"
+  title: Lambdas as Callbacks
+  topic: Performance Optimization
+  url: /blog/performance/#lambda-callbacks
 - date: "2026-11-13"
   title: Steiner Tree
   topic: Graph Theory
@@ -32,7 +36,3 @@
   title: Cauchy–Schwarz and AM-GM
   topic: Algebra
   url: /blog/algebra/#cauchy-schwarz
-- date: "2026-10-27"
-  title: Sums of Powers
-  topic: Algebra
-  url: /blog/algebra/#sums-of-powers

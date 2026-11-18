@@ -107,6 +107,11 @@
       title: Name the Query First
     - id: static-precompute
       title: Static Precompute
+- slug: performance
+  title: Performance Optimization
+  sections:
+    - id: lambda-callbacks
+      title: Lambdas as Callbacks
 - slug: databases
   title: Databases
   sections:
