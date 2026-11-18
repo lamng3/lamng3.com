@@ -6,5 +6,8 @@ started: "2026-11-18"
 updated: "2026-11-18"
 ideas: []
 related: []
-stickies: []
+stickies:
+  - text: Reading about ANN algorithms and their variations (e.g. DiskANN)
+    kind: todo
+    at: "2026-11-18T12:51:10"
 ---
