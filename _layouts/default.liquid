@@ -26,6 +26,7 @@
       {%- assign section = '' -%}
       {%- if page.url contains '/papers/' -%}
         {%- assign section = 'papers' -%}
+        {%- assign section_name = 'Paper notes' -%}
       {%- elsif page.url contains '/projects/' -%}
         {%- assign section = 'projects' -%}
       {%- elsif page.url contains '/library/' -%}
@@ -46,6 +47,29 @@
               {{- section_name | default: section | capitalize -}}
             </a>
           {%- endif -%}
+          {%- comment -%} The desk: only a browser signed in there (it holds Lam's GitHub token) shows this link. {%- endcomment -%}
+          <a
+            class="desk-link"
+            href="{{ '/papers/desk/' | relative_url }}"
+            data-desk-link
+            hidden
+            title="Paper desk"
+            aria-label="Paper desk"
+            {% if page.url == '/papers/desk/' %}
+              aria-current="page"
+            {% endif %}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 20h4L19 9l-4-4L4 16v4z" /><path d="M13.5 6.5l4 4" />
+            </svg>
+          </a>
+          <script>
+            try {
+              if (localStorage.getItem('papernotes.token') || location.pathname === '/papers/desk/') {
+                document.querySelector('[data-desk-link]').hidden = false;
+              }
+            } catch (e) {}
+          </script>
         </div>
         <nav class="sitenav" aria-label="Site">
           <a

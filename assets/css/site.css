@@ -2545,3 +2545,38 @@ button.sticky-kind {
     margin-left: 0;
   }
 }
+
+/* the desk link after the name: shown only in a browser signed in at the desk */
+/* It sits in the gap before the nav and takes no width, so the masthead wraps exactly as it does for visitors. */
+.masthead > div {
+  position: relative;
+}
+
+.desk-link {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  margin-left: 0.4rem;
+  color: var(--faint);
+}
+
+.desk-link[hidden] {
+  display: none;
+}
+
+.desk-link:hover,
+.desk-link[aria-current="page"] {
+  color: var(--text);
+}
+
+.desk-link svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
