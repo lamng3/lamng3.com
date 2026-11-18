@@ -45,10 +45,17 @@ noindex: true
     <form class="desk-new" id="new-form">
       <h2>New paper</h2>
       <div class="desk-inline">
-        <input id="new-title" placeholder="Title" aria-label="Title" required />
+        <input id="new-title" placeholder="Title" aria-label="Title" />
         <input id="new-link" type="url" placeholder="Link: arXiv, DOI, PDF" aria-label="Link" />
         <button type="submit" class="btn primary">Start notes</button>
       </div>
+      <details class="desk-bib">
+        <summary>Or paste its BibTeX</summary>
+        <textarea id="new-bibtex" rows="6" spellcheck="false" placeholder="@inproceedings{vaswani2017attention, …}" aria-label="BibTeX"></textarea>
+        <p class="desk-sub" id="new-bib-hint">
+          Fills in the title, authors, year, venue, and link. Google Scholar, arXiv, DBLP, and ACM exports all work.
+        </p>
+      </details>
     </form>
 
     <h2>Drafts</h2>
@@ -117,6 +124,11 @@ noindex: true
           <div class="chip-input" id="f-related"></div>
         </div>
         <label>One-line description <input id="f-description" /></label>
+        <label
+          >BibTeX
+          <textarea id="f-bibtex" rows="4" spellcheck="false" placeholder="Paste an entry to fill the details above"></textarea>
+        </label>
+        <p class="desk-sub desk-bib-hint" id="f-bib-hint" hidden></p>
         <p class="desk-slug">File <code id="f-path"></code></p>
       </aside>
     </div>

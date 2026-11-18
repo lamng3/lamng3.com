@@ -22,7 +22,7 @@
       API = root.localStorage.getItem("papernotes.api");
   } catch (e) {}
   var KINDS = ["idea", "question", "quote", "critique", "todo"];
-  var META_ORDER = ["title", "description", "authors", "year", "venue", "link", "status", "started", "updated", "ideas", "related"];
+  var META_ORDER = ["title", "description", "authors", "year", "venue", "link", "status", "started", "updated", "ideas", "related", "bibtex"];
 
   /* ---------- storage: every call may throw (private windows, blocked storage) ---------- */
 
@@ -93,7 +93,11 @@
       .replace(/đ/g, "d")
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "")
-      .slice(0, 60)
+      .replace(/^.{61,}$/, function (long) {
+        // Cut a long title at the last word boundary within 60 characters, never mid-word.
+        var cut = long.lastIndexOf("-", 60);
+        return cut > 0 ? long.slice(0, cut) : long.slice(0, 60);
+      })
       .replace(/-+$/g, "");
   }
 
@@ -133,6 +137,141 @@
       out.push(name.trim());
     });
     return out;
+  }
+
+  /* ---------- BibTeX: fill title, authors, year, venue, and link from a pasted entry ---------- */
+
+  var ACCENTS = {
+    "'": "\u0301",
+    "`": "\u0300",
+    "^": "\u0302",
+    '"': "\u0308",
+    "~": "\u0303",
+    "=": "\u0304",
+    ".": "\u0307",
+    c: "\u0327",
+    v: "\u030c",
+    u: "\u0306",
+    H: "\u030b",
+    r: "\u030a",
+  };
+  var LETTERS = { ss: "ß", o: "ø", O: "Ø", ae: "æ", AE: "Æ", oe: "œ", OE: "Œ", aa: "å", AA: "Å", l: "ł", L: "Ł", i: "ı", j: "ȷ" };
+
+  /* LaTeX to plain text: accents, a few letters and symbols, then drop the braces. Math ($…$) is kept. */
+  function delatex(s) {
+    return String(s || "")
+      .replace(/\\([`'^"~=.]|[cvuHr](?![a-zA-Z]))\s*\{?\\?([a-zA-Z])\}?/g, function (_, acc, ch) {
+        return (ch + ACCENTS[acc]).normalize("NFC");
+      })
+      .replace(/\{?\\(ss|ae|AE|oe|OE|aa|AA|o|O|l|L|i|j)(?![a-zA-Z])\}?\s?/g, function (_, l) {
+        return LETTERS[l];
+      })
+      .replace(/\\&/g, "&")
+      .replace(/\\%/g, "%")
+      .replace(/\\_/g, "_")
+      .replace(/---/g, "\u2014")
+      .replace(/--/g, "\u2013")
+      .replace(/~/g, " ")
+      .replace(/\\(textit|textbf|emph|textsc|texttt|mathrm)\s*\{/g, "{")
+      .replace(/\\(em|it|bf|sc|tt|rm|sl)(?![a-zA-Z])\s*/g, "")
+      .replace(/[{}]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  /* "Vaswani, Ashish and Shazeer, Noam and others" -> "Ashish Vaswani, Noam Shazeer, et al." */
+  function bibAuthors(s) {
+    var depth = 0;
+    var parts = [""];
+    var words = String(s || "").split(/(\s+and\s+|[{}])/);
+    words.forEach(function (w) {
+      if (w === "{") depth++;
+      if (w === "}") depth--;
+      if (depth === 0 && /^\s+and\s+$/.test(w)) parts.push("");
+      else parts[parts.length - 1] += w;
+    });
+    var others = false;
+    var names = parts
+      .map(function (p) {
+        p = p.trim();
+        if (/^others$/i.test(p)) {
+          others = true;
+          return "";
+        }
+        var bits = p.split(",");
+        if (bits.length >= 2) p = bits.slice(1).join(" ").trim() + " " + bits[0].trim();
+        return delatex(p);
+      })
+      .filter(Boolean);
+    return names.join(", ") + (others ? ", et al." : "");
+  }
+
+  function parseBibtex(text) {
+    var src = String(text || "");
+    var head = /@\s*([a-zA-Z]+)\s*[{(]\s*([^,\s]*)\s*,/.exec(src);
+    if (!head) return null;
+    var i = head.index + head[0].length;
+    var fields = {};
+    while (i < src.length) {
+      var m = /^\s*([a-zA-Z][\w-]*)\s*=\s*/.exec(src.slice(i));
+      if (!m) break;
+      i += m[0].length;
+      var name = m[1].toLowerCase();
+      var value = "";
+      if (src[i] === "{") {
+        var depth = 0;
+        var j = i;
+        for (; j < src.length; j++) {
+          if (src[j] === "{") depth++;
+          else if (src[j] === "}" && --depth === 0) break;
+        }
+        value = src.slice(i + 1, j);
+        i = j + 1;
+      } else if (src[i] === '"') {
+        var k = i + 1;
+        var d = 0;
+        for (; k < src.length; k++) {
+          if (src[k] === "{") d++;
+          else if (src[k] === "}") d--;
+          else if (src[k] === '"' && d === 0) break;
+        }
+        value = src.slice(i + 1, k);
+        i = k + 1;
+      } else {
+        var bare = /^[^,}\s]+/.exec(src.slice(i));
+        value = bare ? bare[0] : "";
+        i += value.length;
+      }
+      fields[name] = value;
+      var comma = /^\s*,/.exec(src.slice(i));
+      if (comma) i += comma[0].length;
+    }
+    var out = { type: head[1].toLowerCase(), key: head[2], fields: fields };
+    if (fields.title) out.title = delatex(fields.title);
+    if (fields.author) out.authors = bibAuthors(fields.author);
+    if (/^\d{4}$/.test((fields.year || "").trim())) out.year = Number(fields.year.trim());
+    var venue = fields.booktitle || fields.journal || fields.howpublished || fields.school || fields.publisher || "";
+    if (/^arxiv/i.test(fields.journal || "") || /^arxiv/i.test(fields.archiveprefix || fields.eprinttype || "")) venue = venue || "arXiv";
+    if (/^arxiv(\s+preprint)?\b/i.test(venue)) venue = "arXiv";
+    if (venue) out.venue = delatex(venue);
+    var eprint = (fields.eprint || "").trim();
+    var arxivId = /arxiv[:\s]*(\d{4}\.\d{4,5})/i.exec(fields.journal || "");
+    if (fields.url) out.link = fields.url.trim();
+    else if (fields.doi) out.link = "https://doi.org/" + fields.doi.trim().replace(/^https?:\/\/(dx\.)?doi\.org\//, "");
+    else if (eprint && /arxiv/i.test(fields.archiveprefix || fields.eprinttype || "arxiv")) out.link = "https://arxiv.org/abs/" + eprint;
+    else if (arxivId) out.link = "https://arxiv.org/abs/" + arxivId[1];
+    // A Scholar or arXiv style key (dao2022flashattention) makes a short, readable address.
+    if (/^[a-z]+\d{4}[a-z]+$/i.test(out.key)) out.slug = out.key.toLowerCase();
+    out.bibtex = src.slice(head.index).trim();
+    return out;
+  }
+
+  /* Copy what a BibTeX entry knows into a note's details. */
+  function applyBibtex(meta, bib) {
+    ["title", "authors", "year", "venue", "link", "bibtex"].forEach(function (k) {
+      if (bib[k] != null && bib[k] !== "") meta[k] = bib[k];
+    });
+    return meta;
   }
 
   /* ---------- the note format ---------- */
@@ -473,6 +612,8 @@
     b64decode: b64decode,
     uniqCI: uniqCI,
     wikilinks: wikilinks,
+    parseBibtex: parseBibtex,
+    applyBibtex: applyBibtex,
     emptyNote: emptyNote,
     parseNote: parseNote,
     serializeNote: serializeNote,

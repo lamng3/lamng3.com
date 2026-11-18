@@ -83,4 +83,10 @@ layout: default
       {{ linked }}
     </ul>
   {% endif %}
+  {% if page.bibtex %}
+    <details class="note-cite" id="cite">
+      <summary>Cite</summary>
+      <pre class="bibtex"><code>{{ page.bibtex | escape }}</code></pre>
+    </details>
+  {% endif %}
 </article>

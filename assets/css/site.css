@@ -2580,3 +2580,34 @@ button.sticky-kind {
   stroke-linejoin: round;
   stroke-linecap: round;
 }
+
+/* BibTeX on the desk and the Cite box on a note */
+.desk-bib {
+  margin-top: 0.6rem;
+}
+
+.desk-bib summary,
+.note-cite summary {
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.desk-bib textarea {
+  margin-top: 0.5rem;
+}
+
+.desk-bib textarea,
+.desk #f-bibtex {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+}
+
+.desk-bib-hint {
+  margin: -0.4rem 0 0;
+  font-size: 0.8rem;
+}
+
+.note-cite {
+  margin: 2rem 0 0;
+}

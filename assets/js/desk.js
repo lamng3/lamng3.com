@@ -275,11 +275,29 @@
       : '<li class="desk-empty">Nothing published yet.</li>';
   }
 
+  function bibSummary(bib) {
+    return [bib.title, bib.authors, [bib.venue, bib.year].filter(Boolean).join(" ")].filter(Boolean).join(" · ");
+  }
+
+  var NEW_BIB_HINT = $("new-bib-hint").textContent;
+  $("new-bibtex").addEventListener("input", function () {
+    var text = $("new-bibtex").value.trim();
+    var bib = text ? P.parseBibtex(text) : null;
+    if (bib && bib.title) $("new-title").value = bib.title;
+    if (bib && bib.link) $("new-link").value = bib.link;
+    $("new-bib-hint").textContent = !text ? NEW_BIB_HINT : bib ? "Read: " + bibSummary(bib) : "This does not look like a BibTeX entry yet.";
+  });
+
   $("new-form").addEventListener("submit", function (ev) {
     ev.preventDefault();
-    var title = $("new-title").value.trim();
-    var slug = P.slugify(title);
-    if (!slug) return;
+    var bibText = $("new-bibtex").value.trim();
+    var bib = bibText ? P.parseBibtex(bibText) : null;
+    var title = $("new-title").value.trim() || (bib && bib.title) || "";
+    var slug = bib && bib.slug && (!$("new-title").value.trim() || $("new-title").value.trim() === bib.title) ? bib.slug : P.slugify(title);
+    if (!slug) {
+      $("new-title").focus();
+      return;
+    }
     var exists =
       P.drafts.get(slug) ||
       state.published.some(function (p) {
@@ -289,9 +307,15 @@
         return pr.head.ref === P.branchOf(slug);
       });
     if (!exists) {
+      var note = P.emptyNote(title, $("new-link").value.trim());
+      if (bib) {
+        P.applyBibtex(note.meta, bib);
+        note.meta.title = title;
+        if ($("new-link").value.trim()) note.meta.link = $("new-link").value.trim();
+      }
       P.drafts.put({
         slug: slug,
-        note: P.emptyNote(title, $("new-link").value.trim()),
+        note: note,
         base: null,
         baseSha: null,
         pr: null,
@@ -302,6 +326,8 @@
     }
     $("new-title").value = "";
     $("new-link").value = "";
+    $("new-bibtex").value = "";
+    $("new-bib-hint").textContent = NEW_BIB_HINT;
     location.hash = "#/edit/" + slug;
   });
 
@@ -431,6 +457,10 @@
       if (el.value !== v && document.activeElement !== el) el.value = v;
     });
     if (document.activeElement !== $("f-body")) $("f-body").value = d.note.body;
+    if (document.activeElement !== $("f-bibtex")) {
+      $("f-bibtex").value = m.bibtex || "";
+      $("f-bib-hint").hidden = true;
+    }
     $("f-path").textContent = P.notePath(d.slug);
     $("claude-cmd").textContent = "/paper-note " + d.slug;
     ideasInput.render();
@@ -492,6 +522,24 @@
   });
   $("f-body").addEventListener("input", function (ev) {
     state.d.note.body = ev.target.value;
+    changed();
+  });
+  /* Pasting BibTeX fills the details; the entry itself is kept for the page's Cite box. */
+  $("f-bibtex").addEventListener("input", function (ev) {
+    var text = ev.target.value.trim();
+    var meta = state.d.note.meta;
+    var bib = text ? P.parseBibtex(text) : null;
+    var hint = $("f-bib-hint");
+    hint.hidden = !text;
+    if (bib) {
+      P.applyBibtex(meta, bib);
+      meta.bibtex = text;
+      renderEditor();
+      hint.textContent = "Filled in: " + bibSummary(bib);
+    } else {
+      meta.bibtex = text;
+      hint.textContent = "This does not look like a BibTeX entry yet.";
+    }
     changed();
   });
 
