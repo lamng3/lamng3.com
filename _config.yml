@@ -37,3 +37,17 @@ exclude:
   - SYNC.md
   - LICENSE
   - scripts
+  - netlify.toml
+
+# Paper notes: one file per paper in _papers/, written at /papers/desk/ (see CLAUDE.md).
+collections:
+  papers:
+    output: true
+    permalink: /papers/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: papers
+    values:
+      layout: paper-note

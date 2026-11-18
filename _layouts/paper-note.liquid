@@ -1,0 +1,86 @@
+---
+layout: default
+---
+{%- assign slug = page.slug -%}
+{%- assign writeup = content | strip_html | strip -%}
+<article class="post paper-note" data-papers="{{ site.papers | map: 'slug' | join: ' ' }}">
+  <header>
+    <p class="paper-kicker">
+      <a href="{{ '/papers/' | relative_url }}">Paper notes</a>
+      {%- if page.venue or page.year %}
+        · {{ page.venue -}}
+        {%- if page.venue and page.year %}, {% endif -%}
+        {{- page.year -}}
+      {%- endif %}
+    </p>
+    <h1>{{ page.title }}</h1>
+    {% if page.authors %}
+      <p class="authors">{{ page.authors }}</p>
+    {% endif %}
+    <p class="paper-actions">
+      {% if page.link -%}
+        <a href="{{ page.link }}" target="_blank" rel="noopener">Paper</a>
+      {%- endif %}
+      <a href="{{ '/papers/map/' | relative_url }}#{{ slug }}">Map</a>
+      <span class="note-status">
+        {%- if page.status == 'reading' %}Still reading{% elsif page.status == 'read' %}Read{% else %}Written up{% endif -%}
+        {%- if page.updated %} · updated {{ page.updated | date: '%b %-d, %Y' }}{% endif -%}
+      </span>
+    </p>
+    {% if page.ideas.size > 0 %}
+      <p class="chips">
+        {% for idea in page.ideas %}
+          <a class="chip" href="{{ '/papers/' | relative_url }}?idea={{ idea | url_encode }}">{{ idea }}</a>
+        {% endfor %}
+      </p>
+    {% endif %}
+  </header>
+
+  {% if writeup != '' %}
+    {{ content }}
+  {% endif %}
+
+  {% if page.stickies.size > 0 %}
+    <h2 id="sticky-notes">Sticky notes</h2>
+    <ul class="sticky-board sticky-board--page">
+      {% for s in page.stickies %}
+        <li class="sticky kind-{{ s.kind | default: 'idea' }}">
+          <div class="sticky-head">
+            <span class="sticky-kind">{{ s.kind | default: 'idea' }}</span>
+            {% if s.where -%}
+              <span class="sticky-where">{{ s.where }}</span>
+            {%- endif %}
+          </div>
+          <div class="sticky-text">{{ s.text | markdownify }}</div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {%- comment -%} Connected: papers this one names, papers that name it, and papers that share an idea. {%- endcomment -%}
+  {%- assign linked = '' -%}
+  {%- for other in site.papers -%}
+    {%- if other.slug == slug -%}{%- continue -%}{%- endif -%}
+    {%- assign why = '' -%}
+    {%- if page.related contains other.slug or other.related contains slug -%}
+      {%- assign why = 'linked' -%}
+    {%- else -%}
+      {%- for idea in other.ideas -%}
+        {%- if page.ideas contains idea -%}
+          {%- assign why = idea -%}
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+    {%- if why != '' -%}
+      {%- capture item -%}<li><a href="{{ other.url | relative_url }}">{{ other.title }}</a>{% if why != 'linked' %} <span class="muted">· {{ why }}</span>{% endif %}</li>{%- endcapture -%}
+      {%- assign linked = linked | append: item -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {% if linked != '' %}
+    <h2 id="connected">Connected papers</h2>
+    <ul class="connected">
+      {{ linked }}
+    </ul>
+  {% endif %}
+</article>

@@ -1,0 +1,5 @@
+---
+permalink: /papers/graph.json
+layout: null
+---
+{"papers":[{% for p in site.papers %}{"slug":{{ p.slug | jsonify }},"title":{{ p.title | jsonify }},"year":{{ p.year | jsonify }},"venue":{{ p.venue | jsonify }},"url":{{ p.url | relative_url | jsonify }},"status":{{ p.status | jsonify }},"notes":{{ p.stickies.size | default: 0 }},"ideas":{{ p.ideas | jsonify }},"related":{{ p.related | jsonify }}}{% unless forloop.last %},{% endunless %}{% endfor %}]}

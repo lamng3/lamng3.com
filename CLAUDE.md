@@ -40,6 +40,19 @@ toc:
 - Quote `title` and `description`. A `: ` inside an unquoted YAML value breaks the page.
 - `_redirects` maps the old dated post URLs (`/blog/2026/<slug>/`) to their sections. Keep it.
 
+## Paper notes (`_papers/`, /papers/)
+
+Notes on papers Lam reads, one file per paper at `_papers/<slug>.md`, published at `/papers/<slug>/` (layout `paper-note`, set by the `papers` collection in `_config.yml`). Not in the nav yet.
+
+- **Writing happens at `/papers/desk/`**, a page that talks to the GitHub API from the browser with a fine-grained token Lam pastes in (Contents and Pull requests, read and write, this repository only; kept in localStorage). It is `noindex` and disallowed in `robots.txt`, but the token is what keeps it private: without push access the page can do nothing. Anyone else can only open a PR from a fork, and the desk ignores those.
+- **Each draft is a branch `paper-notes/<slug>` with an open PR.** The desk saves every keystroke to localStorage first, and pushes to the branch on Save (⌘S), a minute after the last edit, and when the tab is hidden. If the branch moved (Claude pushed a write-up), it merges three ways (`mergeNotes` in `assets/js/papernotes.js`) and retries. Publish squash-merges the PR and deletes the branch; Discard closes it. Editing a published note opens a new PR.
+- **Front matter**: quoted `title`, optional `description`, `authors`, `year`, `venue`, `link`, `status` (`reading`, `read`, `written`), `started`, `updated`, `ideas` (free text; they become the map's idea nodes and the index filters), `related` (other paper slugs), and `stickies`: a list of `{text, kind, where, at}` with `kind` one of idea, question, quote, critique, todo. The body is the write-up.
+- **Stickies are Lam's own words.** Never edit, reorder, or delete them. `[[Name]]` in a sticky or the body links to the paper with that slug, or else to the idea; the desk adds such names to `related` or `ideas` when it saves.
+- **Write-ups**: `/paper-note <slug or PR#>` (`.claude/commands/paper-note.md`) checks out the PR branch, writes the body from the stickies (Summary, Key ideas, Questions, Connections), and pushes to the same PR. Lam reviews and publishes from the desk.
+- `/papers/` is the index (filter by text and idea, `?idea=` preselects one), `/papers/map/` is the force-directed map (d3, from `/papers/graph.json`; open drafts join it, dashed, when the browser is signed in at the desk).
+- `_papers/` is in `.prettierignore` because the desk writes the files; `netlify.toml` skips deploy previews for `paper-notes/*` branches, which get a commit a minute while Lam writes.
+- Code: `assets/js/papernotes.js` (format, GitHub client, merge; also loads in Node for tests), `assets/js/desk.js`, `assets/js/papermap.js`, `assets/js/papers.js` (index filter and `[[links]]` on a note page).
+
 ## OntoDB
 
 The OntoDB book, manual, and code are kept in step with this site. `SYNC.md` lists what to update, where, and in what order.

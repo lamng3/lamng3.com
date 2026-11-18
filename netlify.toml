@@ -1,0 +1,5 @@
+# The site's build command and publish folder are set in the Netlify UI; this file only adds the rule below.
+# Paper-note drafts (branches paper-notes/*) are saved to their pull request every minute or so while Lam
+# writes at /papers/desk/, so skip deploy previews for them. Exit 0 skips the build; exit 1 builds as usual.
+[build]
+  ignore = 'case "$HEAD" in paper-notes/*) exit 0 ;; *) exit 1 ;; esac'

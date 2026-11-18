@@ -1,0 +1,152 @@
+---
+layout: default
+title: Paper desk
+permalink: /papers/desk/
+description: "Where Lam writes paper notes. Saving opens a pull request on the site's repository, and merging it publishes the note."
+noindex: true
+---
+
+<div class="desk" id="desk">
+  <noscript><p>The desk needs JavaScript.</p></noscript>
+  <p class="desk-loading" id="desk-loading">Loading…</p>
+
+  <section id="desk-signin" hidden>
+    <h2>Sign in</h2>
+    <p>
+      The desk saves notes to <a href="https://github.com/lamng3/lamng3.com">lamng3/lamng3.com</a> with a GitHub token that stays in this browser.
+      Only an account that can push to the repository can save, so the page does nothing for anyone else.
+    </p>
+    <ol>
+      <li>
+        Create a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained token</a>: repository
+        access <em>Only select repositories</em>, then <code>lamng3.com</code>; permissions <em>Contents</em> and <em>Pull requests</em>, both
+        <em>Read and write</em>.
+      </li>
+      <li>Paste it here. It is kept in this browser only, until you sign out.</li>
+    </ol>
+    <form class="desk-inline" id="signin-form">
+      <input type="password" id="token-input" placeholder="github_pat_…" autocomplete="off" spellcheck="false" aria-label="GitHub token" required />
+      <button type="submit" class="btn primary">Sign in</button>
+    </form>
+    <p class="desk-error" id="signin-error" hidden></p>
+  </section>
+
+  <section id="desk-home" hidden>
+    <div class="desk-bar">
+      <span class="desk-who">Signed in as <strong id="who"></strong></span>
+      <span class="desk-actions">
+        <a href="{{ '/papers/' | relative_url }}">Published</a>
+        <a href="{{ '/papers/map/' | relative_url }}">Map</a>
+        <button type="button" class="btn" id="signout">Sign out</button>
+      </span>
+    </div>
+    <p class="desk-banner" id="home-banner" hidden></p>
+
+    <form class="desk-new" id="new-form">
+      <h2>New paper</h2>
+      <div class="desk-inline">
+        <input id="new-title" placeholder="Title" aria-label="Title" required />
+        <input id="new-link" type="url" placeholder="Link: arXiv, DOI, PDF" aria-label="Link" />
+        <button type="submit" class="btn primary">Start notes</button>
+      </div>
+    </form>
+
+    <h2>Drafts</h2>
+    <p class="desk-sub">Each draft is an open pull request. Publishing merges it; the note goes live a minute or two later.</p>
+    <ul class="desk-list" id="draft-list"></ul>
+
+    <h2>Published</h2>
+    <p class="desk-sub">Editing a published note opens a new pull request; the page stays as it is until you publish again.</p>
+    <ul class="desk-list" id="published-list"></ul>
+  </section>
+
+  <section id="desk-editor" hidden>
+    <div class="desk-bar desk-bar--sticky">
+      <a href="#/">← All notes</a>
+      <span class="desk-status" id="status" role="status" aria-live="polite"></span>
+      <span class="desk-actions">
+        <a id="pr-link" target="_blank" rel="noopener" hidden></a>
+        <button type="button" class="btn" id="save-btn" title="⌘S">Save to GitHub</button>
+        <button type="button" class="btn primary" id="publish-btn">Publish</button>
+        <button type="button" class="btn danger" id="discard-btn">Discard</button>
+      </span>
+    </div>
+    <div class="desk-banner" id="banner" hidden></div>
+
+    <input class="desk-title" id="f-title" placeholder="Title" aria-label="Title" />
+
+    <div class="desk-grid">
+      <section class="desk-stickies" aria-label="Sticky notes">
+        <form class="composer" id="composer">
+          <textarea
+            id="c-text"
+            rows="3"
+            placeholder="Write a sticky note. Enter adds it, Shift+Enter starts a new line. [[Name]] links an idea or another paper."
+            aria-label="New sticky note"
+          ></textarea>
+          <div class="composer-row">
+            <div class="kinds" id="c-kinds" role="radiogroup" aria-label="Kind"></div>
+            <input id="c-where" placeholder="p. 3, §3.2" aria-label="Where in the paper" />
+            <button type="submit" class="btn primary">Add</button>
+          </div>
+        </form>
+        <ul class="sticky-board" id="sticky-list"></ul>
+      </section>
+
+      <aside class="desk-meta" aria-label="Paper details">
+        <label>Authors <input id="f-authors" /></label>
+        <div class="desk-two">
+          <label>Year <input id="f-year" inputmode="numeric" /></label>
+          <label>Venue <input id="f-venue" /></label>
+        </div>
+        <label>Link <input id="f-link" type="url" /></label>
+        <label
+          >Status
+          <select id="f-status">
+            <option value="reading">reading</option>
+            <option value="read">read</option>
+            <option value="written">written</option>
+          </select>
+        </label>
+        <div class="chip-field">
+          <span class="chip-label">Ideas</span>
+          <div class="chip-input" id="f-ideas"></div>
+        </div>
+        <div class="chip-field">
+          <span class="chip-label">Related papers</span>
+          <div class="chip-input" id="f-related"></div>
+        </div>
+        <label>One-line description <input id="f-description" /></label>
+        <p class="desk-slug">File <code id="f-path"></code></p>
+      </aside>
+    </div>
+
+    <section class="desk-writeup">
+      <div class="writeup-head">
+        <h2>Write-up</h2>
+        <div class="library-cats" role="group" aria-label="View">
+          <button type="button" data-view="write" aria-pressed="true">Write</button>
+          <button type="button" data-view="preview" aria-pressed="false">Preview</button>
+        </div>
+      </div>
+      <textarea
+        id="f-body"
+        rows="16"
+        placeholder="Summary, key ideas, questions, connections. Or let Claude write it from the sticky notes."
+      ></textarea>
+      <div class="desk-preview post" id="body-preview" hidden></div>
+      <p class="desk-sub">
+        To have Claude write this from your sticky notes, run <code id="claude-cmd"></code> in Claude Code inside the site's repository. It pushes the
+        write-up to this pull request; reopen the note to see it.
+      </p>
+    </section>
+  </section>
+</div>
+
+<datalist id="dl-ideas"></datalist>
+<datalist id="dl-papers"></datalist>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="{{ '/assets/js/papernotes.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/desk.js' | relative_url }}"></script>
