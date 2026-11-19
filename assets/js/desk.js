@@ -167,6 +167,11 @@
   /* ---------- routing ---------- */
 
   function route() {
+    var add = /^#\/add\?(.*)$/.exec(location.hash);
+    if (add) {
+      if (state.d) leaveEditor();
+      return fromTab(new URLSearchParams(add[1]));
+    }
     var m = /^#\/edit\/([a-z0-9-]+)$/.exec(location.hash);
     if (state.d && (!m || m[1] !== state.d.slug)) leaveEditor();
     if (m) openNote(m[1]);
@@ -184,6 +189,12 @@
     if (message) $("home-banner").innerHTML = message;
     $("draft-list").innerHTML = '<li class="desk-empty">Loading…</li>';
     $("published-list").innerHTML = '<li class="desk-empty">Loading…</li>';
+    $("queue-list").innerHTML = '<li class="desk-empty">Loading…</li>';
+    loadQueue()
+      .then(renderQueue)
+      .catch(function (e) {
+        $("queue-list").innerHTML = '<li class="desk-error">' + esc(errText(e)) + "</li>";
+      });
     Promise.all([gh.notePRs(), gh.listDir(P.CFG.dir, P.CFG.base)])
       .then(function (r) {
         state.prs = r[0];
@@ -231,24 +242,26 @@
     $("draft-list").innerHTML = rows.length
       ? rows
           .map(function (r) {
-            var bits = [];
-            if (r.pr) bits.push('<a href="' + esc(r.url) + '" target="_blank" rel="noopener">PR #' + r.pr + "</a>");
-            else bits.push("only on this device");
-            if (r.stickies != null) bits.push(r.stickies + " sticky note" + (r.stickies === 1 ? "" : "s"));
-            if (r.local) bits.push("unsaved changes");
-            bits.push(ago(r.at));
             return (
-              '<li><a class="desk-row-title" href="#/edit/' +
+              '<li class="draft-card" data-slug="' +
               esc(r.slug) +
               '">' +
-              esc(r.title) +
-              '</a><span class="desk-row-meta">' +
-              bits.join(" · ") +
-              "</span></li>"
+              cardHTML(r, P.drafts.get(r.slug) ? P.drafts.get(r.slug).note : null) +
+              "</li>"
             );
           })
           .join("")
       : '<li class="desk-empty">No drafts. Start one above.</li>';
+    // Drafts that are not on this device: read their notes from the PR branch to fill the cards.
+    rows.forEach(function (r) {
+      if (!r.pr || P.drafts.get(r.slug)) return;
+      gh.getFile(P.notePath(r.slug), P.branchOf(r.slug))
+        .then(function (f) {
+          var li = document.querySelector('.draft-card[data-slug="' + r.slug + '"]');
+          if (f && li) li.innerHTML = cardHTML(r, P.parseNote(f.text));
+        })
+        .catch(noop);
+    });
 
     var drafted = {};
     rows.forEach(function (r) {
@@ -275,6 +288,256 @@
       : '<li class="desk-empty">Nothing published yet.</li>';
   }
 
+  /* ---------- "Save to desk": the bookmark sends a paper's tab here as #/add?title=…&link=… ---------- */
+
+  var BOOKMARKLET =
+    "(function(){var m=function(n){return Array.prototype.map.call(document.querySelectorAll('meta[name=\"'+n+'\"],meta[property=\"'+n+'\"]'),function(e){return e.content})};" +
+    "var u=location.href,x=u.match(/arxiv\\.org\\/(?:abs|pdf|html)\\/([0-9]{4}\\.[0-9]{4,5})/);if(x)u='https://arxiv.org/abs/'+x[1];" +
+    "var t=(m('citation_title')[0]||m('og:title')[0]||document.title||'').replace(/\\s+/g,' ').trim();" +
+    "var a=m('citation_author').map(function(s){var p=s.split(',');return p.length>1?p.slice(1).join(' ').trim()+' '+p[0].trim():s.trim()}).join(', ');" +
+    "var y=((m('citation_publication_date')[0]||m('citation_date')[0]||m('citation_online_date')[0]||'').match(/[0-9]{4}/)||[''])[0];" +
+    "var v=m('citation_conference_title')[0]||m('citation_journal_title')[0]||(x?'arXiv':'');" +
+    "var q=new URLSearchParams({title:t,link:u,authors:a,year:y,venue:v});" +
+    "window.open('" +
+    SITE_BASE +
+    "/papers/desk/#/add?'+q.toString(),'paperdesk')})()";
+  $("bookmarklet").href = "javascript:" + BOOKMARKLET;
+  $("bookmarklet").addEventListener("click", function (ev) {
+    ev.preventDefault();
+    $("home-banner").hidden = false;
+    $("home-banner").textContent = "Drag Save to desk onto the bookmarks bar (⌘⇧B shows it), then click it on a paper's page.";
+  });
+
+  /* Open the paper's notes if it has some; otherwise fill the New paper form from the tab. */
+  function fromTab(q) {
+    var tab = {
+      title: (q.get("title") || "").trim(),
+      link: (q.get("link") || "").trim(),
+      authors: (q.get("authors") || "").trim(),
+      year: (q.get("year") || "").trim(),
+      venue: (q.get("venue") || "").trim(),
+    };
+    history.replaceState(null, "", location.pathname + "#/");
+    var key = P.normLink(tab.link);
+    var local = P.drafts.all().filter(function (d) {
+      return (key && P.normLink(d.note.meta.link) === key) || (tab.title && d.slug === P.slugify(tab.title));
+    })[0];
+    if (local) return route2edit(local.slug);
+    show("desk-loading");
+    Promise.all([gh.notePRs(), gh.listDir(P.CFG.dir, P.CFG.base)])
+      .then(function (r) {
+        var slug = P.slugify(tab.title);
+        var pr = r[0].filter(function (p) {
+          return p.head.ref === P.branchOf(slug);
+        })[0];
+        var pub = r[1].some(function (f) {
+          return f.name === slug + ".md";
+        });
+        if (slug && (pr || pub)) return route2edit(slug);
+        prefill(tab);
+      })
+      .catch(function () {
+        prefill(tab);
+      });
+  }
+  function route2edit(slug) {
+    location.hash = "#/edit/" + slug;
+  }
+  function prefill(tab) {
+    openHome(
+      "From your tab: <strong>" +
+        esc(tab.title || tab.link) +
+        "</strong>" +
+        (tab.authors ? " · " + esc(tab.authors) : "") +
+        (tab.venue || tab.year ? " · " + esc([tab.venue, tab.year].filter(Boolean).join(" ")) : "") +
+        ". Start notes now, or save it to read later."
+    );
+    $("new-title").value = tab.title;
+    $("new-link").value = tab.link;
+    state.extra = { authors: tab.authors, year: /^\d{4}$/.test(tab.year) ? Number(tab.year) : null, venue: tab.venue };
+    $("new-title").focus();
+  }
+
+  /* One draft on the board: status, counts, its latest sticky notes, and its ideas. */
+  function cardHTML(r, note) {
+    var meta = note ? note.meta : {};
+    var stickies = note ? note.stickies : [];
+    var bits = [];
+    if (meta.status) bits.push(esc(meta.status));
+    if (note) bits.push(stickies.length + " sticky note" + (stickies.length === 1 ? "" : "s"));
+    bits.push(ago(r.at));
+    if (r.pr) bits.push('<a href="' + esc(r.url) + '" target="_blank" rel="noopener">PR #' + r.pr + "</a>");
+    else bits.push("only on this device");
+    if (r.local) bits.push('<span class="draft-unsaved">unsaved changes</span>');
+    var latest = stickies.slice(-3).reverse();
+    return (
+      '<a class="draft-card-title" href="#/edit/' +
+      esc(r.slug) +
+      '">' +
+      esc(meta.title || r.title) +
+      "</a>" +
+      (meta.authors ? '<p class="draft-card-authors">' + esc(meta.authors) + "</p>" : "") +
+      '<p class="draft-card-meta">' +
+      bits.join(" · ") +
+      "</p>" +
+      (latest.length
+        ? '<ul class="draft-card-stickies">' +
+          latest
+            .map(function (s) {
+              var t = s.text.length > 160 ? s.text.slice(0, 159) + "…" : s.text;
+              return '<li class="kind-' + esc(s.kind) + '"><span class="draft-kind">' + esc(s.kind) + "</span> " + linkify(esc(t)) + "</li>";
+            })
+            .join("") +
+          "</ul>"
+        : note
+          ? '<p class="draft-card-empty">No sticky notes yet.</p>'
+          : "") +
+      (meta.ideas && meta.ideas.length
+        ? '<p class="draft-card-ideas">' +
+          meta.ideas
+            .slice(0, 6)
+            .map(function (i) {
+              return '<span class="chip">' + esc(i) + "</span>";
+            })
+            .join("") +
+          "</p>"
+        : "")
+    );
+  }
+
+  $("draft-list").addEventListener("click", function (ev) {
+    var card = ev.target.closest(".draft-card");
+    if (!card || ev.target.closest("a")) return;
+    location.hash = "#/edit/" + card.getAttribute("data-slug");
+  });
+
+  /* ---------- the reading queue: _data/reading.yml on main ---------- */
+
+  var QUEUE_PATH = "_data/reading.yml";
+  var QUEUE_HEAD =
+    "# Papers to read, managed at https://lamng3.com/papers/desk/ (To read). Start notes there turns one into a draft.\n" +
+    "# Each item: title, link, and optionally topic, added (YYYY-MM-DD), bibtex.\n";
+
+  function queueKey(item) {
+    return (item.link || item.title || "").trim().toLowerCase();
+  }
+  function parseQueue(text) {
+    var list = text ? window.jsyaml.load(text) : [];
+    return (Array.isArray(list) ? list : [])
+      .filter(function (x) {
+        return x && (x.title || x.link);
+      })
+      .map(function (x) {
+        var out = { title: String(x.title || x.link) };
+        ["link", "topic", "bibtex", "authors", "venue"].forEach(function (k) {
+          if (x[k]) out[k] = String(x[k]);
+        });
+        if (x.year) out.year = Number(x.year) || x.year;
+        if (x.added) out.added = x.added instanceof Date ? x.added.toISOString().slice(0, 10) : String(x.added);
+        return out;
+      });
+  }
+  function loadQueue() {
+    return gh.getFile(QUEUE_PATH, P.CFG.base).then(function (f) {
+      state.queue = { items: f ? parseQueue(f.text) : [], sha: f ? f.sha : null };
+      return state.queue;
+    });
+  }
+  /* Apply a change to the latest queue on GitHub and commit it; if someone else committed in between, reload and retry. */
+  function saveQueue(change, message, retried) {
+    return loadQueue()
+      .then(function (q) {
+        var items = change(q.items.slice());
+        var text = QUEUE_HEAD + (items.length ? window.jsyaml.dump(items, { lineWidth: -1, noRefs: true, quotingType: '"' }) : "[]\n");
+        return gh.putFile(QUEUE_PATH, text, message, P.CFG.base, q.sha).then(function (res) {
+          state.queue = { items: items, sha: res.sha };
+          return state.queue;
+        });
+      })
+      .catch(function (e) {
+        if (!retried && (e.status === 409 || e.status === 422)) return saveQueue(change, message, true);
+        throw e;
+      });
+  }
+  function queueAdd(item) {
+    return saveQueue(
+      function (items) {
+        if (
+          items.some(function (x) {
+            return queueKey(x) === queueKey(item);
+          })
+        )
+          return items;
+        return items.concat([item]);
+      },
+      "Reading list: add " + item.title + "."
+    );
+  }
+  function queueRemove(item, why) {
+    return saveQueue(
+      function (items) {
+        return items.filter(function (x) {
+          return queueKey(x) !== queueKey(item);
+        });
+      },
+      "Reading list: " + (why || "remove") + " " + item.title + "."
+    );
+  }
+
+  function renderQueue() {
+    var items = (state.queue && state.queue.items) || [];
+    $("queue-list").innerHTML = items.length
+      ? items
+          .map(function (x, i) {
+            var meta = [x.authors, [x.venue, x.year].filter(Boolean).join(" "), x.topic, x.added ? "added " + x.added : ""]
+              .filter(Boolean)
+              .join(" · ");
+            return (
+              '<li data-i="' +
+              i +
+              '"><span class="queue-main">' +
+              (x.link
+                ? '<a class="desk-row-title" href="' + esc(x.link) + '" target="_blank" rel="noopener">' + esc(x.title) + "</a>"
+                : '<span class="desk-row-title">' + esc(x.title) + "</span>") +
+              (meta ? '<span class="desk-row-meta">' + esc(meta) + "</span>" : "") +
+              '</span><span class="queue-actions"><button type="button" class="btn" data-q="start">Start notes</button><button type="button" class="btn danger" data-q="remove" aria-label="Remove from the reading list">Remove</button></span></li>'
+            );
+          })
+          .join("")
+      : '<li class="desk-empty">Nothing queued. Use Read later above to save a paper for later.</li>';
+  }
+
+  $("queue-list").addEventListener("click", function (ev) {
+    var btn = ev.target.closest("[data-q]");
+    if (!btn) return;
+    var item = state.queue.items[Number(btn.closest("li").getAttribute("data-i"))];
+    if (!item) return;
+    if (btn.getAttribute("data-q") === "start") {
+      var bib = item.bibtex ? P.parseBibtex(item.bibtex) : null;
+      var slug = startDraft(item.title, item.link || "", bib, null, item);
+      queueRemove(item, "start notes on").catch(function (e) {
+        console.error("Reading list not updated:", e);
+      });
+      location.hash = "#/edit/" + slug;
+    } else if (btn.dataset.armed) {
+      btn.disabled = true;
+      queueRemove(item)
+        .then(renderQueue)
+        .catch(function (e) {
+          btn.disabled = false;
+          $("home-banner").hidden = false;
+          $("home-banner").textContent = "Not removed: " + errText(e);
+        });
+    } else {
+      btn.dataset.armed = "1";
+      btn.textContent = "Click again to remove";
+      setTimeout(function () {
+        delete btn.dataset.armed;
+        btn.textContent = "Remove";
+      }, 4000);
+    }
+  });
+
   function bibSummary(bib) {
     return [bib.title, bib.authors, [bib.venue, bib.year].filter(Boolean).join(" ")].filter(Boolean).join(" · ");
   }
@@ -288,16 +551,9 @@
     $("new-bib-hint").textContent = !text ? NEW_BIB_HINT : bib ? "Read: " + bibSummary(bib) : "This does not look like a BibTeX entry yet.";
   });
 
-  $("new-form").addEventListener("submit", function (ev) {
-    ev.preventDefault();
-    var bibText = $("new-bibtex").value.trim();
-    var bib = bibText ? P.parseBibtex(bibText) : null;
-    var title = $("new-title").value.trim() || (bib && bib.title) || "";
-    var slug = bib && bib.slug && (!$("new-title").value.trim() || $("new-title").value.trim() === bib.title) ? bib.slug : P.slugify(title);
-    if (!slug) {
-      $("new-title").focus();
-      return;
-    }
+  /* Make a local draft (pushed as a new PR when the editor opens) and return its slug. */
+  function startDraft(title, link, bib, typedTitle, extra) {
+    var slug = bib && bib.slug && (!typedTitle || typedTitle === bib.title) ? bib.slug : P.slugify(title);
     var exists =
       P.drafts.get(slug) ||
       state.published.some(function (p) {
@@ -307,12 +563,16 @@
         return pr.head.ref === P.branchOf(slug);
       });
     if (!exists) {
-      var note = P.emptyNote(title, $("new-link").value.trim());
+      var note = P.emptyNote(title, link);
       if (bib) {
         P.applyBibtex(note.meta, bib);
         note.meta.title = title;
-        if ($("new-link").value.trim()) note.meta.link = $("new-link").value.trim();
+        if (link) note.meta.link = link;
       }
+      // Details read from the paper's tab (or saved with a queue item) fill what BibTeX did not.
+      ["authors", "year", "venue"].forEach(function (k) {
+        if (extra && extra[k] && !note.meta[k]) note.meta[k] = extra[k];
+      });
       P.drafts.put({
         slug: slug,
         note: note,
@@ -324,11 +584,72 @@
         fresh: true,
       });
     }
+    return slug;
+  }
+
+  function readForm() {
+    var bibText = $("new-bibtex").value.trim();
+    var bib = bibText ? P.parseBibtex(bibText) : null;
+    var typed = $("new-title").value.trim();
+    return {
+      bib: bib,
+      typed: typed,
+      title: typed || (bib && bib.title) || "",
+      link: $("new-link").value.trim() || (bib && bib.link) || "",
+      extra: state.extra,
+    };
+  }
+  function clearForm() {
+    state.extra = null;
     $("new-title").value = "";
     $("new-link").value = "";
     $("new-bibtex").value = "";
     $("new-bib-hint").textContent = NEW_BIB_HINT;
+  }
+
+  $("new-form").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var f = readForm();
+    if (!P.slugify(f.title)) return $("new-title").focus();
+    var slug = startDraft(f.title, f.link, f.bib, f.typed, f.extra);
+    // Starting notes on a paper that was waiting in the reading list takes it off the list.
+    var key = P.normLink(f.link);
+    var queued =
+      key &&
+      ((state.queue && state.queue.items) || []).filter(function (x) {
+        return P.normLink(x.link) === key;
+      })[0];
+    if (queued) queueRemove(queued, "start notes on").catch(noop);
+    clearForm();
     location.hash = "#/edit/" + slug;
+  });
+
+  $("later-btn").addEventListener("click", function () {
+    var f = readForm();
+    if (!f.title) return $("new-title").focus();
+    var item = { title: f.title };
+    if (f.link) item.link = f.link;
+    ["authors", "year", "venue"].forEach(function (k) {
+      var v = (f.bib && f.bib[k]) || (f.extra && f.extra[k]);
+      if (v) item[k] = v;
+    });
+    item.added = P.today();
+    if (f.bib) item.bibtex = f.bib.bibtex;
+    $("later-btn").disabled = true;
+    queueAdd(item)
+      .then(function () {
+        clearForm();
+        renderQueue();
+        $("home-banner").hidden = false;
+        $("home-banner").textContent = "Added " + item.title + " to your reading list.";
+      })
+      .catch(function (e) {
+        $("home-banner").hidden = false;
+        $("home-banner").textContent = "Not added: " + errText(e);
+      })
+      .then(function () {
+        $("later-btn").disabled = false;
+      });
   });
 
   /* ---------- the editor ---------- */

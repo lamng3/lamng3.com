@@ -130,6 +130,21 @@
     return out;
   }
 
+  /* One key per paper whatever page it was saved from: arxiv:2506.18384, doi:10.1145/..., or the bare URL. */
+  function normLink(u) {
+    u = String(u || "").trim();
+    if (!u) return "";
+    var ax = /arxiv\.org\/(?:abs|pdf|html)\/(\d{4}\.\d{4,5})/i.exec(u);
+    if (ax) return "arxiv:" + ax[1];
+    var doi = /(?:doi\.org\/|\/doi\/(?:abs\/|full\/|pdf\/)?)(10\.\d{4,9}\/[^\s?#]+)/i.exec(u);
+    if (doi) return "doi:" + doi[1].toLowerCase();
+    return u
+      .toLowerCase()
+      .replace(/^https?:\/\/(www\.)?/, "")
+      .replace(/[?#].*$/, "")
+      .replace(/\/+$/, "");
+  }
+
   /* [[name]] inside sticky notes and the write-up */
   function wikilinks(text) {
     var out = [];
@@ -612,6 +627,7 @@
     b64decode: b64decode,
     uniqCI: uniqCI,
     wikilinks: wikilinks,
+    normLink: normLink,
     parseBibtex: parseBibtex,
     applyBibtex: applyBibtex,
     emptyNote: emptyNote,

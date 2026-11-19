@@ -48,7 +48,13 @@ noindex: true
         <input id="new-title" placeholder="Title" aria-label="Title" />
         <input id="new-link" type="url" placeholder="Link: arXiv, DOI, PDF" aria-label="Link" />
         <button type="submit" class="btn primary">Start notes</button>
+        <button type="button" class="btn" id="later-btn">Read later</button>
       </div>
+      <p class="desk-sub desk-bookmarklet">
+        From any paper's tab: drag <a class="bookmarklet" id="bookmarklet" href="#" title="Drag me to the bookmarks bar">Save to desk</a> to your
+        bookmarks bar, then click it on the paper's page (arXiv abstract, ACM, OpenReview, PMLR…). The desk opens with the paper filled in, or with
+        your notes if you have some. Chrome does not run bookmarks on PDF tabs, so use the abstract page.
+      </p>
       <details class="desk-bib">
         <summary>Or paste its BibTeX</summary>
         <textarea id="new-bibtex" rows="6" spellcheck="false" placeholder="@inproceedings{vaswani2017attention, …}" aria-label="BibTeX"></textarea>
@@ -58,9 +64,15 @@ noindex: true
       </details>
     </form>
 
-    <h2>Drafts</h2>
+    <h2>In progress</h2>
     <p class="desk-sub">Each draft is an open pull request. Publishing merges it; the note goes live a minute or two later.</p>
-    <ul class="desk-list" id="draft-list"></ul>
+    <ul class="draft-board" id="draft-list"></ul>
+
+    <h2>To read</h2>
+    <p class="desk-sub">
+      Papers saved for later, kept in <code>_data/reading.yml</code> in the site's repository. Start notes turns one into a draft.
+    </p>
+    <ul class="desk-list" id="queue-list"></ul>
 
     <h2>Published</h2>
     <p class="desk-sub">Editing a published note opens a new pull request; the page stays as it is until you publish again.</p>

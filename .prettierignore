@@ -8,7 +8,8 @@ package-lock.json
 _data/library.yml
 _pages/library/
 
-# Paper notes are written in the browser at /papers/desk/, not by hand.
+# Paper notes and the reading list are written in the browser at /papers/desk/, not by hand.
 _papers/
 # JSON made by Liquid; its front matter is not JSON.
 _pages/papers-graph.json
+_data/reading.yml

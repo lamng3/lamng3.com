@@ -2611,3 +2611,135 @@ button.sticky-kind {
 .note-cite {
   margin: 2rem 0 0;
 }
+
+/* the desk home: drafts as cards with their latest sticky notes, and the reading queue */
+.draft-board {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  gap: 0.75rem;
+}
+
+.draft-board > .desk-empty {
+  grid-column: 1 / -1;
+}
+
+.draft-card {
+  margin: 0;
+  padding: 0.9rem 1rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.draft-card:hover {
+  border-color: var(--muted);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+.draft-card-title {
+  display: block;
+  font-weight: 600;
+  line-height: 1.35;
+  text-decoration: none;
+}
+
+.draft-card-authors,
+.draft-card-meta,
+.draft-card-empty {
+  margin: 0.2rem 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.draft-unsaved {
+  color: #b45309;
+}
+
+.draft-card-stickies {
+  list-style: none;
+  padding: 0;
+  margin: 0.7rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.draft-card-stickies li {
+  margin: 0;
+  padding: 0.3rem 0.55rem;
+  border-radius: 6px;
+  background: var(--sticky-idea);
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.draft-card-stickies li.kind-question {
+  background: var(--sticky-question);
+}
+.draft-card-stickies li.kind-quote {
+  background: var(--sticky-quote);
+}
+.draft-card-stickies li.kind-critique {
+  background: var(--sticky-critique);
+}
+.draft-card-stickies li.kind-todo {
+  background: var(--sticky-todo);
+}
+
+.draft-kind {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.draft-card-ideas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin: 0.6rem 0 0;
+}
+
+.draft-card-ideas .chip {
+  font-size: 0.75rem;
+}
+
+#queue-list li {
+  align-items: center;
+}
+
+.queue-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1 1 20rem;
+}
+
+.queue-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.desk-bookmarklet {
+  margin: 0.6rem 0 0;
+}
+
+a.bookmarklet {
+  display: inline-block;
+  padding: 0 0.55rem;
+  border: 1px dashed var(--muted);
+  border-radius: 999px;
+  color: var(--text);
+  text-decoration: none;
+  cursor: grab;
+  white-space: nowrap;
+}

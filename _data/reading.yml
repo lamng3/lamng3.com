@@ -1,0 +1,58 @@
+# Papers to read, managed at https://lamng3.com/papers/desk/ (To read). Start notes there turns one into a draft.
+# Each item: title, link, and optionally topic, added (YYYY-MM-DD), bibtex.
+- title: "Fully-Dynamic Parallel Algorithms for Single-Linkage Clustering"
+  link: https://arxiv.org/abs/2506.18384
+  topic: Kruskal trees and single-linkage
+  added: "2026-11-19"
+- title: "Batch-Parallel Euler Tour Trees"
+  link: https://arxiv.org/abs/1810.10738
+  topic: Dynamic trees and parallel algorithms
+  added: "2026-11-19"
+- title: "Parallel Batch-Dynamic Graph Connectivity"
+  link: https://arxiv.org/abs/1903.08794
+  topic: Dynamic trees and parallel algorithms
+  added: "2026-11-19"
+- title: "Fast and Theoretically-Efficient Batch-Parallel Link-Cut Trees, Euler Tour Trees, and Treaps"
+  link: https://dl.acm.org/doi/10.1145/3816782.3819216
+  topic: Dynamic trees and parallel algorithms
+  added: "2026-11-19"
+- title: "Parallel Batch-Dynamic Maximal Independent Set"
+  link: https://arxiv.org/abs/2604.07515
+  topic: Dynamic trees and parallel algorithms
+  added: "2026-11-19"
+- title: "A Provably Correct Scalable Concurrent Skip List"
+  link: https://people.csail.mit.edu/shanir/publications/OPODIS2006-BA.pdf
+  topic: Dynamic trees and parallel algorithms
+  added: "2026-11-19"
+- title: "cobtree.pdf (Jeremy Fineman's papers)"
+  link: https://people.cs.georgetown.edu/~jfineman/papers/cobtree.pdf
+  topic: Dynamic trees and parallel algorithms
+  added: "2026-11-19"
+- title: "PiPNN: Ultra-Scalable Graph-Based Nearest Neighbor Indexing"
+  link: https://arxiv.org/abs/2602.21247
+  topic: Vector search
+  added: "2026-11-19"
+- title: "GINGER: Spicing Up Graph-Based Vector Search"
+  link: https://arxiv.org/abs/2611.08306
+  topic: Vector search
+  added: "2026-11-19"
+- title: "Vamsa: Automated Provenance Tracking in Data Science Scripts"
+  link: https://arxiv.org/abs/2001.01861
+  topic: Databases
+  added: "2026-11-19"
+- title: "PoisonedRAG: Knowledge Corruption Attacks to Retrieval-Augmented Generation of Large Language Models"
+  link: https://arxiv.org/abs/2402.07867
+  topic: Ontologies and RAG security
+  added: "2026-11-19"
+- title: "Statistical Foundations of Reinforcement Learning: A Non-Asymptotic Perspective"
+  link: https://arxiv.org/abs/2610.41903
+  topic: Reinforcement learning
+  added: "2026-11-19"
+- title: "Bandit Algorithms for Tree Search"
+  link: https://arxiv.org/abs/1408.2028
+  topic: Reinforcement learning
+  added: "2026-11-19"
+- title: "Bandit Based Monte-Carlo Planning (UCT)"
+  link: http://ggp.stanford.edu/readings/uct.pdf
+  topic: Reinforcement learning
+  added: "2026-11-19"
