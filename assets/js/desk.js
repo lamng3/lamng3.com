@@ -302,6 +302,39 @@
     SITE_BASE +
     "/papers/desk/#/add?'+q.toString(),'paperdesk')})()";
   $("bookmarklet").href = "javascript:" + BOOKMARKLET;
+  $("bm-copy").addEventListener("click", function () {
+    var done = function () {
+      $("home-banner").hidden = false;
+      $("home-banner").innerHTML =
+        "Copied. Now right-click the bookmarks bar (⌘⇧B shows it), choose <strong>Add page…</strong>, name it <strong>Save to desk</strong>, paste into <strong>URL</strong>, and save.";
+    };
+    var text = "javascript:" + BOOKMARKLET;
+    // If the clipboard is blocked, show the code selected so ⌘C copies it.
+    var manual = function () {
+      $("home-banner").hidden = false;
+      $("home-banner").innerHTML =
+        "Press <strong>⌘C</strong> to copy this, then right-click the bookmarks bar, choose <strong>Add page…</strong>, name it <strong>Save to desk</strong>, and paste it into <strong>URL</strong>.";
+      var box = document.createElement("input");
+      box.className = "bm-code";
+      box.readOnly = true;
+      box.value = text;
+      $("home-banner").appendChild(box);
+      box.focus();
+      box.select();
+    };
+    if (!navigator.clipboard || !navigator.clipboard.writeText) return manual();
+    var settled = false;
+    var finish = function (fn) {
+      return function () {
+        if (!settled) {
+          settled = true;
+          fn();
+        }
+      };
+    };
+    navigator.clipboard.writeText(text).then(finish(done), finish(manual));
+    setTimeout(finish(manual), 1500);
+  });
   $("bookmarklet").addEventListener("click", function (ev) {
     ev.preventDefault();
     $("home-banner").hidden = false;
@@ -348,7 +381,7 @@
       "From your tab: <strong>" +
         esc(tab.title || tab.link) +
         "</strong>" +
-        (tab.authors ? " · " + esc(tab.authors) : "") +
+        (tab.authors ? " · " + esc(shortAuthors(tab.authors)) : "") +
         (tab.venue || tab.year ? " · " + esc([tab.venue, tab.year].filter(Boolean).join(" ")) : "") +
         ". Start notes now, or save it to read later."
     );
@@ -359,49 +392,53 @@
   }
 
   /* One draft on the board: status, counts, its latest sticky notes, and its ideas. */
+  /* "Bi Xue, Hong Wu, …" -> "Bi Xue et al."; two authors stay "A and B". */
+  function shortAuthors(a) {
+    var parts = String(a || "")
+      .split(/\s*,\s*/)
+      .filter(Boolean);
+    var etal = parts.length && /^et al\.?$/i.test(parts[parts.length - 1]);
+    if (etal) parts.pop();
+    if (!parts.length) return "";
+    if (parts.length === 1 && !etal) return parts[0];
+    if (parts.length === 2 && !etal) return parts[0] + " and " + parts[1];
+    return parts[0] + " et al.";
+  }
+
+  /* One draft as a thin row: title and details on one line, the latest sticky note under it. */
   function cardHTML(r, note) {
     var meta = note ? note.meta : {};
     var stickies = note ? note.stickies : [];
     var bits = [];
+    if (meta.authors) bits.push(esc(shortAuthors(meta.authors)));
     if (meta.status) bits.push(esc(meta.status));
-    if (note) bits.push(stickies.length + " sticky note" + (stickies.length === 1 ? "" : "s"));
+    if (note) bits.push(stickies.length + " note" + (stickies.length === 1 ? "" : "s"));
     bits.push(ago(r.at));
     if (r.pr) bits.push('<a href="' + esc(r.url) + '" target="_blank" rel="noopener">PR #' + r.pr + "</a>");
     else bits.push("only on this device");
-    if (r.local) bits.push('<span class="draft-unsaved">unsaved changes</span>');
-    var latest = stickies.slice(-3).reverse();
+    if (r.local) bits.push('<span class="draft-unsaved">unsaved</span>');
+    var last = stickies[stickies.length - 1];
     return (
-      '<a class="draft-card-title" href="#/edit/' +
+      '<div class="draft-row-head"><a class="draft-card-title" href="#/edit/' +
       esc(r.slug) +
+      '" title="' +
+      esc(meta.title || r.title) +
       '">' +
       esc(meta.title || r.title) +
-      "</a>" +
-      (meta.authors ? '<p class="draft-card-authors">' + esc(meta.authors) + "</p>" : "") +
-      '<p class="draft-card-meta">' +
+      '</a><span class="draft-card-meta">' +
       bits.join(" · ") +
-      "</p>" +
-      (latest.length
-        ? '<ul class="draft-card-stickies">' +
-          latest
-            .map(function (s) {
-              var t = s.text.length > 160 ? s.text.slice(0, 159) + "…" : s.text;
-              return '<li class="kind-' + esc(s.kind) + '"><span class="draft-kind">' + esc(s.kind) + "</span> " + linkify(esc(t)) + "</li>";
-            })
-            .join("") +
-          "</ul>"
-        : note
-          ? '<p class="draft-card-empty">No sticky notes yet.</p>'
-          : "") +
-      (meta.ideas && meta.ideas.length
-        ? '<p class="draft-card-ideas">' +
-          meta.ideas
-            .slice(0, 6)
-            .map(function (i) {
-              return '<span class="chip">' + esc(i) + "</span>";
-            })
-            .join("") +
+      "</span></div>" +
+      (last
+        ? '<p class="draft-row-sticky kind-' +
+          esc(last.kind) +
+          '"><span class="draft-kind">' +
+          esc(last.kind) +
+          "</span> " +
+          linkify(esc(last.text.replace(/\s+/g, " "))) +
           "</p>"
-        : "")
+        : note
+          ? '<p class="draft-row-sticky draft-row-empty">No sticky notes yet.</p>'
+          : "")
     );
   }
 
@@ -489,7 +526,7 @@
     $("queue-list").innerHTML = items.length
       ? items
           .map(function (x, i) {
-            var meta = [x.authors, [x.venue, x.year].filter(Boolean).join(" "), x.topic, x.added ? "added " + x.added : ""]
+            var meta = [shortAuthors(x.authors), [x.venue, x.year].filter(Boolean).join(" "), x.topic, x.added ? "added " + x.added : ""]
               .filter(Boolean)
               .join(" · ");
             return (
