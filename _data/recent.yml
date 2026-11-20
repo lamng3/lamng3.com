@@ -1,5 +1,17 @@
 # Newest first. Keep this to the notes you still want on the algorithms index.
 # Drop a line when it is no longer current.
+- date: "2026-11-20"
+  title: "Min Cut and König's Theorem"
+  topic: Network Flow
+  url: /blog/network-flow/#min-cut
+- date: "2026-11-20"
+  title: Bipartite Matching Is a Max Flow
+  topic: Network Flow
+  url: /blog/network-flow/#bipartite-matching
+- date: "2026-11-20"
+  title: Change the Units
+  topic: Network Flow
+  url: /blog/network-flow/#change-the-units
 - date: "2026-11-18"
   title: Lambdas as Callbacks
   topic: Performance Optimization
@@ -24,15 +36,3 @@
   title: Bitmask DP
   topic: Dynamic Programming
   url: /blog/dynamic-programming/#bitmask-dp
-- date: "2026-11-02"
-  title: Search the Slope, Not the Value
-  topic: Binary Search
-  url: /blog/binary-search/#search-the-slope
-- date: "2026-11-01"
-  title: Difference Arrays and Inversion Counts
-  topic: Range Queries
-  url: /blog/range-queries/#difference-array
-- date: "2026-10-27"
-  title: Cauchy–Schwarz and AM-GM
-  topic: Algebra
-  url: /blog/algebra/#cauchy-schwarz
