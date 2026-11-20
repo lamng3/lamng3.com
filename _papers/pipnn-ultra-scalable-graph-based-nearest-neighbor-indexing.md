@@ -21,3 +21,7 @@ bibtex: |-
   }
 stickies: []
 ---
+
+HNSW and Vamana have SOTA performance but large construction time due to relying on random-access-heavy beam searches.
+
+PiPNN: Pick-in-Partitions Nearest Neighbors avoids this "search bottleneck"
