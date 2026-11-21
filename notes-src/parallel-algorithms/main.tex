@@ -1,0 +1,74 @@
+% Study notes: Scalable Parallel Algorithms and Data Structures.
+%
+% Lam writes the notes; each lecture becomes a chapter in chapters/, written
+% up from Lam's own notes (start from chapters/_template.tex) and added to the
+% list at the end. Build the PDF from the repository root with
+% scripts/build-notes.sh, then bump \updated below and `updated` in
+% _data/notes.yml.
+
+\documentclass[11pt,letterpaper]{report}
+
+\usepackage[margin=1.1in]{geometry}
+\usepackage{amsmath,amsthm}
+\usepackage{newpxtext,newpxmath} % Palatino; newpxmath also provides the AMS symbols
+\usepackage[varqu]{zi4}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+
+\newcommand{\updated}{November 21, 2026}
+
+\definecolor{accent}{HTML}{1F4E9A}
+\hypersetup{colorlinks=true, linkcolor=accent, urlcolor=accent, citecolor=accent,
+  pdftitle={Scalable Parallel Algorithms and Data Structures: Study Notes}, pdfauthor={Lam Nguyen}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+
+\lstset{language=C++, basicstyle=\ttfamily\small, columns=fullflexible, keepspaces=true,
+  xleftmargin=1em, showstringspaces=false, breaklines=true,
+  commentstyle=\color{black!55}\itshape, keywordstyle=\bfseries}
+
+\setlist{itemsep=2pt}
+
+\begin{document}
+
+\begin{titlepage}
+  \vspace*{1.8in}
+  {\LARGE\bfseries Scalable Parallel Algorithms\\[4pt] and Data Structures\par}
+  \vspace{12pt}
+  {\Large Study notes\par}
+  \vspace{36pt}
+  {\large Lam Nguyen\par}
+  \vspace{6pt}
+  Last updated \updated\par
+\end{titlepage}
+
+\chapter*{About these notes}
+
+These are my notes from following \emph{Scalable Parallel Algorithms and Data Structures} (CMSC~858N, University of Maryland, Fall 2026), taught by Laxman Dhulipala, through its public schedule and readings:
+\begin{center}
+  \url{https://www.cs.umd.edu/~laxman/paralg-f26.html}
+\end{center}
+Each chapter covers one lecture or reading, in my own words: what I understood, the proofs I worked through, and the questions I still have. The mistakes are mine.
+
+Alongside the notes, I write the algorithms myself and time them on my own machine. That code, with a harness that checks and benchmarks it, is at
+\begin{center}
+  \url{https://github.com/lamng3/lamng3.com/tree/main/notes-src/parallel-algorithms/practice}
+\end{center}
+
+% Chapters, one per lecture, in course order. Start each from chapters/_template.tex.
+% \input{chapters/01-models}
+
+\end{document}

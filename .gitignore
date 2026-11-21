@@ -13,3 +13,6 @@ node_modules/
 .npm-cache/
 vendor
 .idea
+# Study-notes practice: ParlayLib is cloned by each Makefile, and binaries are built locally.
+notes-src/*/practice/parlaylib/
+notes-src/*/practice/scan

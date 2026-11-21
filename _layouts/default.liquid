@@ -38,6 +38,8 @@
         {%- assign section = 'publications' -%}
       {%- elsif page.url contains '/resume/' -%}
         {%- assign section = 'resume' -%}
+      {%- elsif page.url contains '/notes/' -%}
+        {%- assign section = 'notes' -%}
       {%- endif -%}
       <header class="masthead">
         <div>
@@ -62,6 +64,13 @@
               aria-current="page"
             {% endif %}
             >algorithms</a
+          >
+          <a
+            href="{{ '/notes/' | relative_url }}"
+            {% if section == 'notes' %}
+              aria-current="page"
+            {% endif %}
+            >notes</a
           >
           <a
             href="{{ '/publications/' | relative_url }}"

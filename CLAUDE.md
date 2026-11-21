@@ -40,9 +40,17 @@ toc:
 - Quote `title` and `description`. A `: ` inside an unquoted YAML value breaks the page.
 - `_redirects` maps the old dated post URLs (`/blog/2026/<slug>/`) to their sections. Keep it.
 
+## Study notes (`notes-src/`, /notes/)
+
+The **notes** tab (`_pages/notes.md`) lists study notes from courses Lam follows, one LaTeX document per course, from `_data/notes.yml` (slug, title, course, course_url, blurb, practice, updated). The nav's 0.95rem type and 1rem gaps keep its five tabs on one line beside every section name.
+
+- **Sources** are `notes-src/<slug>/main.tex`, with one chapter per lecture in `chapters/` (start from `chapters/_template.tex`). `scripts/build-notes.sh` builds each `main.tex` with Tectonic into `assets/notes/<slug>.pdf`. Commit the PDF, since Netlify doesn't run LaTeX, and bump `\updated` in `main.tex` and `updated` in `_data/notes.yml`. `notes-src` is excluded from the Jekyll build.
+- **Lam writes the notes; Claude writes them up.** Lam types or scans the notes for a lecture, and Claude turns them into a clean chapter that keeps Lam's understanding, in the teaching voice of the topic pages. Don't copy the course's material in, and don't write chapters ahead of Lam's notes.
+- **Practice code** is in `notes-src/<slug>/practice/`: a harness that tests and times Lam's own implementations against a sequential baseline and the library's (ParlayLib, cloned by the Makefile and ignored by git). The exercises start as `TODO()`. Don't fill them in or commit solutions; review Lam's code when asked.
+
 ## Paper notes (`_papers/`, /papers/)
 
-Notes on papers Lam reads, one file per paper at `_papers/<slug>.md`, published at `/papers/<slug>/` (layout `paper-note`, set by the `papers` collection in `_config.yml`). They are not in the public nav (a fifth tab wraps the masthead onto two lines on section pages), and nothing on the site links to the desk: Lam opens `/papers/desk/` directly, so visitors see only the main work.
+Notes on papers Lam reads, one file per paper at `_papers/<slug>.md`, published at `/papers/<slug>/` (layout `paper-note`, set by the `papers` collection in `_config.yml`). They are not in the public nav (it has five tabs, and a sixth would wrap the masthead onto two lines on section pages), and nothing on the site links to the desk: Lam opens `/papers/desk/` directly, so visitors see only the main work.
 
 - **Writing happens at `/papers/desk/`**, a page that talks to the GitHub API from the browser with a fine-grained token Lam pastes in (Contents and Pull requests, read and write, this repository only; kept in localStorage). It is `noindex` and disallowed in `robots.txt`, but the token is what keeps it private: without push access the page can do nothing. Anyone else can only open a PR from a fork, and the desk ignores those.
 - **Each draft is a branch `paper-notes/<slug>` with an open PR.** The desk saves every keystroke to localStorage first, and pushes to the branch on Save (⌘S), a minute after the last edit, and when the tab is hidden. If the branch moved (Claude pushed a write-up), it merges three ways (`mergeNotes` in `assets/js/papernotes.js`) and retries. Publish squash-merges the PR and deletes the branch; Discard closes it. Editing a published note opens a new PR.

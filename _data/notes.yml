@@ -1,0 +1,9 @@
+# Study notes on /notes/: one LaTeX document per course or subject, written up from Lam's own notes.
+# Source: notes-src/<slug>/main.tex. scripts/build-notes.sh writes assets/notes/<slug>.pdf; commit it.
+- slug: parallel-algorithms
+  title: Scalable Parallel Algorithms and Data Structures
+  course: CMSC 858N, University of Maryland, Fall 2026
+  course_url: https://www.cs.umd.edu/~laxman/paralg-f26.html
+  blurb: "One chapter per lecture, written from my notes as I go through its public schedule and readings, with practice code for writing the parallel algorithms myself."
+  practice: notes-src/parallel-algorithms/practice
+  updated: 2026-11-21

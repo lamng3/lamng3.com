@@ -38,6 +38,7 @@ exclude:
   - LICENSE
   - scripts
   - netlify.toml
+  - notes-src
 
 # Paper notes: one file per paper in _papers/, written at /papers/desk/ (see CLAUDE.md).
 collections:
