@@ -21,7 +21,7 @@ description: >-
     <li><strong>Semantic data</strong>: ontology matching, dynamic knowledge bases, and governance.</li>
     <li><strong>Trustworthy agents</strong>: agentic memory, dream engine, security, and NLIDB.</li>
     <li><strong>AI for science</strong>: scientific agents and hypothesis validation.</li>
-    <li><strong>Decision theory</strong>: MDPs, Bellman equations, bandits, and UCB.</li>
+    <li><strong>Parallel algorithms</strong>: batch-dynamic graphs, tree search, and bandits.</li>
   </ul>
 </section>
 
