@@ -1,6 +1,18 @@
 # Newest first. Keep this to the notes you still want on the algorithms index.
 # Drop a line when it is no longer current.
 - date: "2026-11-21"
+  title: Batch-Dynamic Connectivity
+  topic: Graph Theory
+  url: /blog/graph-theory/#batch-dynamic-connectivity
+- date: "2026-11-21"
+  title: Parallel Connectivity
+  topic: Graph Theory
+  url: /blog/graph-theory/#parallel-connectivity
+- date: "2026-11-21"
+  title: Spanning Forests
+  topic: Graph Theory
+  url: /blog/graph-theory/#spanning-forests
+- date: "2026-11-21"
   title: Max Flow
   topic: Network Flow
   url: /blog/network-flow/#max-flow
@@ -24,15 +36,3 @@
   title: "LCA in O(1): Farach-Colton and Bender"
   topic: Graphs and Trees
   url: /blog/graphs-and-trees/#farach-colton-bender
-- date: "2026-11-11"
-  title: Accumulators and Aggregates
-  topic: Databases
-  url: /blog/databases/#accumulator
-- date: "2026-11-07"
-  title: Cancellation Stack
-  topic: Stacks
-  url: /blog/stacks/#cancellation-stack
-- date: "2026-11-03"
-  title: Bitmask DP
-  topic: Dynamic Programming
-  url: /blog/dynamic-programming/#bitmask-dp

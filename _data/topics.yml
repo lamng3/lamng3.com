@@ -80,6 +80,12 @@
   sections:
     - id: steiner-tree
       title: Steiner Tree
+    - id: spanning-forests
+      title: Spanning Forests
+    - id: parallel-connectivity
+      title: Parallel Connectivity
+    - id: batch-dynamic-connectivity
+      title: Batch-Dynamic Connectivity
 - slug: network-flow
   title: Network Flow
   sections:
