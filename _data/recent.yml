@@ -1,14 +1,14 @@
 # Newest first. Keep this to the notes you still want on the algorithms index.
 # Drop a line when it is no longer current.
-- date: "2026-11-20"
-  title: "Min Cut and König's Theorem"
+- date: "2026-11-21"
+  title: Max Flow
   topic: Network Flow
-  url: /blog/network-flow/#min-cut
-- date: "2026-11-20"
-  title: Bipartite Matching Is a Max Flow
+  url: /blog/network-flow/#max-flow
+- date: "2026-11-21"
+  title: Vertex Cover and Independent Set
   topic: Network Flow
-  url: /blog/network-flow/#bipartite-matching
-- date: "2026-11-20"
+  url: /blog/network-flow/#vertex-cover
+- date: "2026-11-21"
   title: Change the Units
   topic: Network Flow
   url: /blog/network-flow/#change-the-units

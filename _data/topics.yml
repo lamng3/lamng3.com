@@ -83,12 +83,16 @@
 - slug: network-flow
   title: Network Flow
   sections:
-    - id: change-the-units
-      title: Change the Units
+    - id: max-flow
+      title: Max Flow
+    - id: min-cut
+      title: Min Cut
     - id: bipartite-matching
       title: Bipartite Matching Is a Max Flow
-    - id: min-cut
-      title: "Min Cut and König's Theorem"
+    - id: vertex-cover
+      title: Vertex Cover and Independent Set
+    - id: change-the-units
+      title: Change the Units
 - slug: combinatorics
   title: Combinatorics
   sections:
