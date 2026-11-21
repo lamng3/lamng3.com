@@ -39,6 +39,7 @@ TITLES = {
     "eviction_cache": "Eviction Cache Interface",
     "hash": "Hash Function Factory",
     "skiplist": "Skip List",
+    "hillissteelescan": "Hillis–Steele Scan",
     "bloomfilter": "Bloom Filter",
     "countminsketch": "Count-Min Sketch",
     "cuckoofilter": "Cuckoo Filter",
@@ -109,6 +110,9 @@ def collect():
         else:
             category, folder = dirs[0], dirs[1:]
         if category == "utils" and path.stem.lower() == "hash":
+            continue
+        # A stub still to be written (notebook/parallel/ has some) stays off the site.
+        if "TODO: write it" in path.read_text():
             continue
         stem = path.stem.lower()
         if folder[-1:] == ["utils"]:
