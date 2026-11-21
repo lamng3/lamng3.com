@@ -14,14 +14,14 @@ description: >-
 
 <section id="about" class="intro">
   <p><strong>I build semantic data infrastructure for trustworthy AI agents.</strong></p>
-  <p>I work on AI for science at the Center for Materials Data Science and agentic security at Microsoft. I want agents to get the right context, from the right source, at a bounded cost. I approach LLM reasoning through the lens of <em>databases</em>: agentic retrieval, agent memory, natural language interfaces, and fast, verifiable query processing.</p>
+  <p>I work on AI for science at the Center for Materials Data Science and agentic security at Microsoft. I want agents to get the right context, from the right source, at a bounded cost. I see LLM reasoning through the lens of <em>databases</em> and <em>algorithms</em>: vector search, agent memory, natural language interfaces, and fast, verifiable query processing.</p>
   <p><strong>Research interests</strong></p>
   <ul class="interests">
     <li><strong>Vector search</strong>: graph-based indexing, hardware-aware algorithms, and graph theory.</li>
+    <li><strong>Algorithms</strong>: incremental refinement, Monte Carlo tree search, and bandits.</li>
     <li><strong>Semantic data</strong>: ontology matching, dynamic knowledge bases, and governance.</li>
     <li><strong>Trustworthy agents</strong>: agentic memory, dream engine, security, and NLIDB.</li>
     <li><strong>AI for science</strong>: scientific agents and hypothesis validation.</li>
-    <li><strong>Parallel algorithms</strong>: batch-dynamic graphs, tree search, and bandits.</li>
   </ul>
 </section>
 
