@@ -18,7 +18,7 @@ description: >-
   <p><strong>Research interests</strong></p>
   <ul class="interests">
     <li><strong>Vector search</strong>: graph-based indexing, hardware-aware algorithms, and graph theory.</li>
-    <li><strong>Algorithms</strong>: incremental refinement, Monte Carlo tree search, and bandits.</li>
+    <li><strong>Algorithms</strong>: batch-dynamic graphs, tree search, and bandits.</li>
     <li><strong>Semantic data</strong>: ontology matching, dynamic knowledge bases, and governance.</li>
     <li><strong>Trustworthy agents</strong>: agentic memory, dream engine, security, and NLIDB.</li>
     <li><strong>AI for science</strong>: scientific agents and hypothesis validation.</li>
