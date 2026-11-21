@@ -62,6 +62,7 @@ CATEGORIES = {
     "strings": "Strings",
     "math": "Math",
     "databases": "Databases",
+    "parallel": "Parallel Algorithms",
     "utils": "Utilities",
 }
 

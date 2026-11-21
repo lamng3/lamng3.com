@@ -1,0 +1,29 @@
+---
+layout: default
+---
+{%- assign note = site.data.notes | where: 'slug', page.note | first -%}
+{%- assign pdf = '/assets/notes/' | append: note.slug | append: '.pdf' | relative_url -%}
+<article class="post paper">
+  <header>
+    <p class="paper-kicker">
+      <a href="{{ '/notes/' | relative_url }}">Notes</a>
+      · Updated {{ note.updated | date: '%B %-d, %Y' }}
+    </p>
+    <h1>{{ note.title }}</h1>
+    <p class="authors">
+      Following <a href="{{ note.course_url }}">{{ note.course }}</a>.
+    </p>
+  </header>
+
+  <p class="paper-actions">
+    <a class="button" href="{{ pdf }}" target="_blank" rel="noopener">Read the PDF</a>
+    {% if note.practice_url -%}
+      <a href="{{ note.practice_url }}">Practice code</a>
+    {%- endif %}
+  </p>
+
+  <div class="pdf-frame">
+    <iframe src="{{ pdf }}#view=FitH" title="{{ note.title }} PDF" loading="lazy"></iframe>
+  </div>
+  <p class="pdf-note">On a phone, <a href="{{ pdf }}" target="_blank" rel="noopener">open the PDF</a> in your browser's reader.</p>
+</article>

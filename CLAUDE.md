@@ -42,11 +42,11 @@ toc:
 
 ## Study notes (`notes-src/`, /notes/)
 
-The **notes** tab (`_pages/notes.md`) lists study notes from courses Lam follows, one LaTeX document per course, from `_data/notes.yml` (slug, title, course, course_url, blurb, practice, updated). The nav's 0.95rem type and 1rem gaps keep its five tabs on one line beside every section name.
+The **notes** tab (`_pages/notes.md`) lists study notes from courses Lam follows, one LaTeX document per course, from `_data/notes.yml` (slug, title, course, course_url, practice_url, updated). The list keeps each to one line: the title, the PDF, and the practice code. The title opens `/notes/<slug>/` (`_pages/notes/<slug>.md`, layout `study-note`), which says which course it follows, when it was updated, and shows the PDF. The nav's 0.95rem type and 1rem gaps keep its five tabs on one line beside every section name.
 
 - **Sources** are `notes-src/<slug>/main.tex`, with one chapter per lecture in `chapters/` (start from `chapters/_template.tex`). `scripts/build-notes.sh` builds each `main.tex` with Tectonic into `assets/notes/<slug>.pdf`. Commit the PDF, since Netlify doesn't run LaTeX, and bump `\updated` in `main.tex` and `updated` in `_data/notes.yml`. `notes-src` is excluded from the Jekyll build.
 - **Lam writes the notes; Claude writes them up.** Lam types or scans the notes for a lecture, and Claude turns them into a clean chapter that keeps Lam's understanding, in the teaching voice of the topic pages. Don't copy the course's material in, and don't write chapters ahead of Lam's notes.
-- **Practice code** is in `notes-src/<slug>/practice/`: a harness that tests and times Lam's own implementations against a sequential baseline and the library's (ParlayLib, cloned by the Makefile and ignored by git). The exercises start as `TODO()`. Don't fill them in or commit solutions; review Lam's code when asked.
+- **Practice code** lives in the competitive programming notebook (`../competitive-programming`), as a study-list section: `todo/19_parallel_algorithms/` for this course, with empty stubs, a test (`cpunit todo_parallel`), and `bench.py`, which times Lam's code against a sequential loop and ParlayLib. Don't fill the stubs in or commit solutions; review Lam's code when asked. Finished code moves to `notebook/parallel/`, and `scripts/sync-library.py` then shows it on /library/ under Parallel Algorithms.
 
 ## Paper notes (`_papers/`, /papers/)
 
