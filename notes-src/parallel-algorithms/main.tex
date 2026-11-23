@@ -10,17 +10,43 @@
 
 \usepackage[margin=1.1in]{geometry}
 \usepackage{amsmath,amsthm}
-\usepackage{newpxtext,newpxmath} % Palatino; newpxmath also provides the AMS symbols
-\usepackage[varqu]{zi4}
+\usepackage{iftex}
+% Palatino throughout, with Inconsolata for code. Tectonic runs XeTeX, which takes
+% OpenType fonts: newpxmath and zi4 only cover pdfLaTeX, where they are the fallback.
+\ifTUTeX
+  \usepackage{newpxtext}
+  \usepackage{unicode-math}
+  \setmathfont{texgyrepagella-math.otf}
+  \setmonofont{Inconsolatazi4}[Extension=.otf, UprightFont=*-Regular, BoldFont=*-Bold,
+    Scale=MatchLowercase, Ligatures=TeXOff]
+\else
+  \usepackage{newpxtext,newpxmath}
+  \usepackage[varqu]{zi4}
+\fi
 \usepackage{microtype}
 \usepackage{booktabs}
 \usepackage{enumitem}
 \usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\usepackage[chapter]{algorithm}
+\usepackage[noend]{algpseudocode}
 \usepackage{hyperref}
 
-\newcommand{\updated}{November 21, 2026}
+\newcommand{\updated}{November 23, 2026}
+
+% Pseudocode: the reading's parallel loop, parfor, as a block like for.
+\algnewcommand\algorithmicparfor{\textbf{parfor}}
+\algdef{SE}[PARFOR]{ParFor}{EndParFor}[1]{\algorithmicparfor\ #1}{\algorithmicend\ \algorithmicparfor}
+\algtext*{EndParFor}
+
+% A link to a file in the competitive programming notebook, where the practice code lives:
+% \notebook{notebook/parallel/book/sum.cpp} shows the path, and
+% \notebook[book/sum.cpp]{notebook/parallel/book/sum.cpp} a shorter label.
+\newcommand{\notebook}[2][]{\href{https://github.com/lamng3/competitive-programming-notebook/blob/main/#2}{%
+  \texttt{\if\relax\detokenize{#1}\relax\detokenize{#2}\else#1\fi}}}
 
 \definecolor{accent}{HTML}{1F4E9A}
 \hypersetup{colorlinks=true, linkcolor=accent, urlcolor=accent, citecolor=accent,
@@ -39,6 +65,13 @@
 \lstset{language=C++, basicstyle=\ttfamily\small, columns=fullflexible, keepspaces=true,
   xleftmargin=1em, showstringspaces=false, breaklines=true,
   commentstyle=\color{black!55}\itshape, keywordstyle=\bfseries}
+% Code from the notebook: \begin{code} ... \end{code}, set like a display and kept on one
+% page. \small comes before the listing starts so that its line spacing matches the code.
+\makeatletter
+\newcommand{\code@begin}{\par\medskip\noindent\minipage{\linewidth}\small}
+\newcommand{\code@end}{\endminipage\par\medskip\@endpetrue}
+\lstnewenvironment{code}{\code@begin\lstset{aboveskip=0pt, belowskip=0pt}}{\code@end}
+\makeatother
 
 \setlist{itemsep=2pt}
 
@@ -68,7 +101,9 @@ Alongside the notes, I write the algorithms myself and time them on my own machi
   \url{https://github.com/lamng3/competitive-programming-notebook/tree/main/notebook/parallel}
 \end{center}
 
+\tableofcontents
+
 % Chapters, one per lecture, in course order. Start each from chapters/_template.tex.
-% \input{chapters/01-models}
+\input{chapters/01-models}
 
 \end{document}
