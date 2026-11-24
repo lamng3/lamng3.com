@@ -204,6 +204,12 @@
   topic: "farach-colton bender"
   files:
     - { label: C++, name: "FCB_simple.h", url: "https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/trees/farach-colton_bender/FCB_simple.h" }
+- slug: linkcuttree
+  title: "Link Cut Tree"
+  category: "Trees"
+  topic: "dynamic connectivity"
+  files:
+    - { label: C++, name: "LinkCutTree.h", url: "https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/trees/dynamic_connectivity/LinkCutTree.h" }
 - slug: art
   title: "ART"
   category: "Strings"
