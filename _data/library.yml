@@ -30,6 +30,18 @@
   topic: ""
   files:
     - { label: Python, name: "template.py", url: "https://github.com/lamng3/competitive-programming-notebook/blob/main/python/template.py" }
+- slug: gen
+  title: "gen"
+  category: "Templates"
+  topic: ""
+  files:
+    - { label: C++, name: "gen.cpp", url: "https://github.com/lamng3/competitive-programming-notebook/blob/main/templates/gen.cpp" }
+- slug: parlay
+  title: "parlay"
+  category: "Templates"
+  topic: ""
+  files:
+    - { label: C++, name: "parlay.cpp", url: "https://github.com/lamng3/competitive-programming-notebook/blob/main/templates/parlay.cpp" }
 - slug: monotonicstack
   title: "Monotonic Stack"
   category: "Arrays"
@@ -116,6 +128,12 @@
   files:
     - { label: C++, name: "SparseSegmentTree.h", url: "https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/data_structures/rurq/SparseSegmentTree.h" }
     - { label: Python, name: "SparseSegmentTree.py", url: "https://github.com/lamng3/competitive-programming-notebook/blob/main/python/data_structures/rurq/SparseSegmentTree.py" }
+- slug: splaytree
+  title: "Splay Tree"
+  category: "Data Structures"
+  topic: "balanced trees"
+  files:
+    - { label: C++, name: "SplayTree.h", url: "https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/data_structures/balanced_trees/SplayTree.h" }
 - slug: srd
   title: "Square Root Decomposition"
   category: "Data Structures"
@@ -174,12 +192,54 @@
   files:
     - { label: C++, name: "EulerTour.h", url: "https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/trees/euler_tour/EulerTour.h" }
     - { label: Python, name: "EulerTour.py", url: "https://github.com/lamng3/competitive-programming-notebook/blob/main/python/trees/euler_tour/EulerTour.py" }
+- slug: fcb
+  title: "FCB"
+  category: "Trees"
+  topic: "farach-colton bender"
+  files:
+    - { label: C++, name: "FCB.h", url: "https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/trees/farach-colton_bender/FCB.h" }
+- slug: fcb-simple
+  title: "FCB simple"
+  category: "Trees"
+  topic: "farach-colton bender"
+  files:
+    - { label: C++, name: "FCB_simple.h", url: "https://github.com/lamng3/competitive-programming-notebook/blob/main/notebook/trees/farach-colton_bender/FCB_simple.h" }
+- slug: art
+  title: "ART"
+  category: "Strings"
+  topic: "trie"
+  files:
+    - { label: Python, name: "ART.py", url: "https://github.com/lamng3/competitive-programming-notebook/blob/main/python/strings/trie/ART.py" }
+- slug: artiterator
+  title: "ARTIterator"
+  category: "Strings"
+  topic: "trie"
+  files:
+    - { label: Python, name: "ARTIterator.py", url: "https://github.com/lamng3/competitive-programming-notebook/blob/main/python/strings/trie/ARTIterator.py" }
+- slug: adaptiveradixtrie
+  title: "Adaptive Radix Trie"
+  category: "Strings"
+  topic: "trie"
+  files:
+    - { label: Python, name: "AdaptiveRadixTrie.py", url: "https://github.com/lamng3/competitive-programming-notebook/blob/main/python/strings/trie/AdaptiveRadixTrie.py" }
 - slug: filesystem
   title: "File System Trie"
   category: "Strings"
   topic: "trie"
   files:
     - { label: Python, name: "FileSystem.py", url: "https://github.com/lamng3/competitive-programming-notebook/blob/main/python/strings/trie/FileSystem.py" }
+- slug: persistentart
+  title: "Persistent ART"
+  category: "Strings"
+  topic: "trie"
+  files:
+    - { label: Python, name: "PersistentART.py", url: "https://github.com/lamng3/competitive-programming-notebook/blob/main/python/strings/trie/PersistentART.py" }
+- slug: persistenttrie
+  title: "Persistent Trie"
+  category: "Strings"
+  topic: "trie"
+  files:
+    - { label: Python, name: "PersistentTrie.py", url: "https://github.com/lamng3/competitive-programming-notebook/blob/main/python/strings/trie/PersistentTrie.py" }
 - slug: rollinghash
   title: "Rolling Hash"
   category: "Strings"
