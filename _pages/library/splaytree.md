@@ -16,33 +16,28 @@ using namespace std;
 
 struct SplayTree {
     vector<array<int, 2>> ch;
-    vi par, cnt, rev;
-    vector<ll> val, sum;
+    vector<int> par, cnt, rev;
+    vector<long long> val, sum;
     int root;
 
     // a[i] sits at position i + 1, between two sentinels, so a[L - 1] and a[R + 1] always exist
-    SplayTree(const vector<ll>& a = {}) {
-        newNode(0);
-        cnt[0] = 0;
-        vector<ll> b = {0};
-        for (ll x : a) b.pb(x);
-        b.pb(0);
-        root = build(b, 0, sz(b) - 1, 0);
+    SplayTree(const vector<long long>& a = {}) : ch(1), par(1), cnt(1), rev(1), val(1), sum(1) {
+        root = newNode(0);
+        for (long long x : a) attach(newNode(x));
+        attach(newNode(0));
     }
 
-    int newNode(ll v) {
-        ch.pb({0, 0}); par.pb(0); cnt.pb(1); rev.pb(0); val.pb(v); sum.pb(v);
-        return sz(val) - 1;
+    int newNode(long long v) {
+        ch.push_back({0, 0}); par.push_back(0); cnt.push_back(1);
+        rev.push_back(0); val.push_back(v); sum.push_back(v);
+        return (int)val.size() - 1;
     }
 
-    int build(const vector<ll>& b, int L, int R, int p) {
-        if (L > R) return 0;
-        int m = (L + R) / 2, x = newNode(b[m]);
-        par[x] = p;
-        int l = build(b, L, m - 1, x), r = build(b, m + 1, R, x);
-        ch[x] = {l, r};
+    void attach(int x) {
+        ch[x][0] = root;
+        par[root] = x;
         pull(x);
-        return x;
+        root = x;
     }
 
     void pull(int x) {
@@ -99,13 +94,13 @@ struct SplayTree {
         return ch[ch[root][1]][0];
     }
 
-    ll query(int L, int R) { return sum[range(L, R)]; }
+    long long query(int L, int R) { return sum[range(L, R)]; }
 
     void reverse(int L, int R) { rev[range(L, R)] ^= 1; }
 
-    ll get(int i) { return val[range(i, i)]; }
+    long long get(int i) { return val[range(i, i)]; }
 
-    void assign(int i, ll v) {
+    void assign(int i, long long v) {
         int x = range(i, i);
         val[x] = sum[x] = v;
         pull(par[x]);
@@ -131,7 +126,7 @@ struct SplayTree {
         pull(root);
     }
 
-    void insert(int i, ll v) { paste(i, newNode(v)); }
+    void insert(int i, long long v) { paste(i, newNode(v)); }
 
     void erase(int i) { cut(i, i); }
 
