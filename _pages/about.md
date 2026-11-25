@@ -14,7 +14,7 @@ description: >-
 
 <section id="about" class="intro">
   <p><strong>I build semantic data infrastructure for trustworthy AI agents.</strong></p>
-  <p>I work on AI for science at the Center for Materials Data Science and agentic security at Microsoft. I want agents to get the right context, from the right source, at a bounded cost. I see LLM reasoning through the lens of <em>databases</em> and <em>algorithms</em>: vector search, agent memory, natural language interfaces, and fast, verifiable query processing.</p>
+  <p>I work on AI for science at the Center for Materials Data Science and agentic security at Microsoft. I want agents to get the right context, from the right source, at a bounded cost. I apply methods from <em>databases</em> and <em>algorithms</em> to LLM reasoning: vector search, agent memory, natural language interfaces, and fast, verifiable query processing.</p>
   <p><strong>Research interests</strong></p>
   <ul class="interests">
     <li><strong>Vector search</strong>: graph-based indexing, hardware-aware algorithms, and graph theory.</li>
@@ -46,7 +46,7 @@ description: >-
 </section>
 
 <section id="background" class="intro">
-  <p>Previously, I interned at Microsoft and Amazon. Before that, I trained competitive programming, with honorable mentions at the <a href="https://icpc.global/ICPCID/6R4PCMCBJSSW">ICPC East Central North America</a> regional and a place in the top 1% of <a href="https://leetcode.com/u/lamng3/">LeetCode contests</a>. I still find data structures a useful lens for thinking about semantic data infrastructure. Growing up, I trained competitive math, earning gold at the Hanoi Open Mathematics Competition and silver at the Singapore Mathematical Olympiad.</p>
+  <p>Previously, I interned at Microsoft and Amazon. Before that, I trained competitive programming, with honorable mentions at the <a href="https://icpc.global/ICPCID/6R4PCMCBJSSW">ICPC East Central North America</a> regional and a place in the top 1% of <a href="https://leetcode.com/u/lamng3/">LeetCode contests</a>. I still find data structures a useful way to think about semantic data infrastructure. Growing up, I trained competitive math, earning gold at the Hanoi Open Mathematics Competition and silver at the Singapore Mathematical Olympiad.</p>
   <p>I hold a B.S. and an M.S. in Computer Science from <a href="https://case.edu">Case Western Reserve University</a>, where I was advised by <a href="https://yinghwu.github.io">Yinghui&nbsp;Wu</a> and wrote my <a href="https://etd.ohiolink.edu/acprod/odb_etd/ws/send_file/send?accession=case1751987504689716&amp;disposition=inline">thesis</a> on ontology matching with knowledge retrieval and efficient language models.</p>
   <p>Reaching me is O(log log log n), technically polylog and practically a constant. Feel free to reach out at <strong>lamng3.work [at] gmail [dot] com</strong> to talk about any of the above.</p>
 </section>
@@ -54,7 +54,7 @@ description: >-
 <section id="experience">
   <h2>Experience</h2>
   <ul class="timeline">
-    <li><span><strong>Center for Materials Data Science</strong> · AI Researcher</span><time>2026–Present</time></li>
+    <li><span><strong>Center for Materials Data Science</strong> · Applied Researcher</span><time>2026–Present</time></li>
     <li><span><strong>Microsoft</strong> · Software Engineer</span><time>2025–2026</time></li>
     <li><span><strong>Center for Materials Data Science</strong> · Affiliate Researcher</span><time>2025–2026</time></li>
     <li><span><strong>Center for Materials Data Science</strong> · Graduate Student Researcher</span><time>2024–2025</time></li>
